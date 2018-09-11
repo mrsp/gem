@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node pkg="rolling_median" type="rolling_median_node" name="rolling_median" respawn="false" output="screen" >
+ 	<!-- Load configurations from YAML file to parameter server -->
+   	 <rosparam file="$(find rolling_median)/config/estimation_params.yaml" command="load"/> 
+  </node>
+</launch>
