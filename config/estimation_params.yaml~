@@ -1,6 +1,0 @@
-gem_left_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/left"
-gem_right_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/right"
-gem_imu_topic: "/pelvisMiddleImu/imu"
-gem_com_topic: "/SERoW/rel_CoM/pose"
-gem_path: "/home/master/serow_ws/src/gem/train"
-gem_freq: 500
