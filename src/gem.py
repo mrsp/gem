@@ -39,30 +39,29 @@ from sklearn.metrics import mean_squared_error
 
 from sklearn import mixture
 from sklearn.cluster import KMeans
-import keras
+#import keras
 from keras.layers import Input, Dense
 from keras.models import Model
 
-
 class GeM():
-
     def __init__(self):
         self.pca = PCA(n_components=2)
-        self.gmm = mixture.BayesianGaussianMixture(weight_concentration_prior_type = "dirichlet_process",n_components=3, covariance_type='full', max_iter=10000, tol=1e-6, init_params = 'kmeans', n_init=10, random_state=0)
-        self.kmeans = KMeans(init='k-means++',n_clusters=3, n_init=100)
+        self.gmm = mixture.GaussianMixture(n_components=3, covariance_type='full', max_iter=100, tol=7e-3, init_params = 'kmeans', n_init=30,warm_start=False,verbose=1)
+        self.kmeans = KMeans(init='k-means++',n_clusters=3, n_init=500,tol=6.5e-2)
         self.pca_dim = False
         self.gmm_cl_id = False
         self.kmeans_cl_id = False
 
 
 
-        input_= Input(shape=(6,))
+	
+        input_= Input(shape=(11,))
         # "encoded" is the encoded representation of the input
-        encoded = Dense(4, activation='linear')(input_)
+        encoded = Dense(5, activation='linear')(input_)
         encoded = Dense(2, activation='linear')(encoded)
         ## "decoded" is the lossy reconstruction of the input
-        decoded = Dense(4, activation='linear')(encoded)
-        decoded = Dense(6, activation='linear')(decoded)
+        decoded = Dense(5, activation='linear')(encoded)
+        decoded = Dense(11, activation='linear')(decoded)
         # this model maps an input to its reconstruction
         self.autoencoder = Model(input_, decoded)
         # this model maps an input to its encoded representation
@@ -71,14 +70,15 @@ class GeM():
         encoded_input = Input(shape=(2,))
         # retrieve the last layer of the autoencoder model
         deco = self.autoencoder.layers[-2](encoded_input)
-        # deco = autoencoder.layers[-2](deco)
+        #deco = self.autoencoder.layers[-2](deco)
         deco = self.autoencoder.layers[-1](deco)
         # create the decoder model
         self.decoder = Model(encoded_input, deco)
         self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
-
+	
 
     def fit(self,data_train,red,cl):
+	self.data_train = data_train
         if red == 'pca':
             print("Dimensionality reduction with PCA")
             self.reducePCA(data_train)
@@ -88,6 +88,7 @@ class GeM():
 
 
         else:
+	    self.reduced_data_train = data_train
             print("Choose a valid dimensionality reduction method")
 
         
@@ -130,19 +131,19 @@ class GeM():
         print(mean_squared_error(data_train, self.pca.inverse_transform(self.reduced_data_train)))
 
     def reduceAE(self,data_train):
+        
         self.autoencoder.fit(data_train, data_train,
                              epochs=5,
                              batch_size=14,
                              shuffle=True,
                              validation_data=(data_train, data_train))
         self.reduced_data_train =  self.encoder.predict(data_train)
+        
         self.pca_dim = False
 
     def clusterGMM(self):
         self.gmm.fit(self.reduced_data_train)
         self.predicted_labels_train = self.gmm.predict(self.reduced_data_train)
-
-
 
     def clusterKMeans(self):
         self.kmeans.fit(self.reduced_data_train)
