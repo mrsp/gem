@@ -45,26 +45,26 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 
 #color_iter = itertools.cycle(['navy', 'c', 'cornflowerblue', 'gold',
-                              #'darkorange'])
-                              
+#'darkorange'])
+
 
 my_colors = [(0.5,0,0.5),(0,0.5,0.5),(0.8,0.36,0.36)]
 cmap_name = 'my_list'
 my_cmap = LinearSegmentedColormap.from_list(
-                                       cmap_name, my_colors, N=10000)
+    cmap_name, my_colors, N=10000)
 
 params = {
-   'axes.labelsize': 15,
- #  'text.fontsize': 15,
-   'font.size' : 15,
-   'axes.labelsize': 15,
-   'axes.titlesize': 15,
-   'legend.fontsize': 15,
-   'xtick.labelsize': 15,
-   'ytick.labelsize': 15,
-   'text.usetex': False,
-   'figure.figsize': [7, 4] # instead of 4.5, 4.5
-   }
+    'axes.labelsize': 15,
+    #  'text.fontsize': 15,
+    'font.size' : 15,
+    'axes.labelsize': 15,
+    'axes.titlesize': 15,
+    'legend.fontsize': 15,
+    'xtick.labelsize': 15,
+    'ytick.labelsize': 15,
+    'text.usetex': False,
+    'figure.figsize': [7, 4] # instead of 4.5, 4.5
+}
 plt.rcParams.update(params)
 
 color_iter = itertools.cycle(my_colors)
@@ -87,38 +87,38 @@ class GeM_tools():
 
         cX = np.loadtxt(setpath+'c_encx.txt')
         cY = np.loadtxt(setpath+'c_ency.txt')
-        cZ = np.loadtxt(setpath+'c_encz.txt')   
+        cZ = np.loadtxt(setpath+'c_encz.txt')
         lfZ = np.loadtxt(setpath+'lfZ.txt')
         rfZ = np.loadtxt(setpath+'rfZ.txt')
-	rfX = np.loadtxt(setpath+'rfX.txt')
-	rfY = np.loadtxt(setpath+'rfY.txt')
-	lfX = np.loadtxt(setpath+'lfX.txt')
-	lfY = np.loadtxt(setpath+'lfY.txt')
-	ltX = np.loadtxt(setpath+'ltX.txt')
-	ltY = np.loadtxt(setpath+'ltY.txt')
-	ltZ = np.loadtxt(setpath+'ltZ.txt')
-	rtX = np.loadtxt(setpath+'rtX.txt')
-	rtY = np.loadtxt(setpath+'rtY.txt')
-	rtZ = np.loadtxt(setpath+'rtZ.txt')
+        rfX = np.loadtxt(setpath+'rfX.txt')
+        rfY = np.loadtxt(setpath+'rfY.txt')
+        lfX = np.loadtxt(setpath+'lfX.txt')
+        lfY = np.loadtxt(setpath+'lfY.txt')
+        ltX = np.loadtxt(setpath+'ltX.txt')
+        ltY = np.loadtxt(setpath+'ltY.txt')
+        ltZ = np.loadtxt(setpath+'ltZ.txt')
+        rtX = np.loadtxt(setpath+'rtX.txt')
+        rtY = np.loadtxt(setpath+'rtY.txt')
+        rtZ = np.loadtxt(setpath+'rtZ.txt')
 
 
-	#biases removal from F/T
-	lfX += blf[0]
-	lfY += blf[1]
-	lfZ += blf[2]
-	rfX += brf[0]
-	rfY += brf[1]
-	rfZ += brf[2]
-	ltX += blt[0]
-	ltY += blt[1]
-	ltZ += blt[2]
-	rtX += brt[0]
-	rtY += brt[1]
-	rtZ += brt[2]
-	self.blf = blf
-	self.brf = brf
-	self.blt = blt
-	self.brt = brt
+        #biases removal from F/T
+        lfX += blf[0]
+        lfY += blf[1]
+        lfZ += blf[2]
+        rfX += brf[0]
+        rfY += brf[1]
+        rfZ += brf[2]
+        ltX += blt[0]
+        ltY += blt[1]
+        ltZ += blt[2]
+        rtX += brt[0]
+        rtY += brt[1]
+        rtZ += brt[2]
+        self.blf = blf
+        self.brf = brf
+        self.blt = blt
+        self.brt = brt
         if(self.gt_comparison):
             gt_lfZ  = np.loadtxt(setpath+'gt_lfZ.txt')
             gt_rfZ  = np.loadtxt(setpath+'gt_rfZ.txt')
@@ -142,7 +142,7 @@ class GeM_tools():
             roll_ = np.loadtxt(setpath+'roll.txt')
             pitch_ = np.loadtxt(setpath + 'pitch.txt')
             roll_ = signal.decimate(roll_,2)
-            pitch_ = signal.decimate(pitch_,2)	
+            pitch_ = signal.decimate(pitch_,2)
 
 
 
@@ -211,7 +211,7 @@ class GeM_tools():
 
 
 
-	
+
         #Normalization + Standarization
         self.data_train = np.zeros((dlen, 11))
         self.data_train[:, 0] = lfX[0:dlen] - rfX[0:dlen]
@@ -221,7 +221,7 @@ class GeM_tools():
         self.data_train[:, 4] = ltY[0:dlen] - rtY[0:dlen]
         self.data_train[:, 5] = ltZ[0:dlen] - rtZ[0:dlen]
 
-	
+
         self.data_train[1:dlen, 6] = dcX[1:dlen]
         self.data_train[1:dlen, 7] = dcY[1:dlen]
         self.data_train[1:dlen, 8] = dcZ[1:dlen]
@@ -232,7 +232,6 @@ class GeM_tools():
         self.data_train[0, 8] = dcZ[1]
         self.data_train[0, 9] = droll[1]
         self.data_train[0, 10] = dpitch[1]
-        
 
 
 
@@ -240,112 +239,97 @@ class GeM_tools():
 
 
 
-	self.dfX_train_min = min(self.data_train[:, 0])
+
+        self.dfX_train_min = min(self.data_train[:, 0])
         self.dfX_train_max = max(self.data_train[:, 0])
         self.data_train[:, 0] = (self.data_train[:, 0] -self.dfX_train_min) / (self.dfX_train_max - self.dfX_train_min)
-	
+
         self.dfY_train_min = min(self.data_train[:, 1])
         self.dfY_train_max = max(self.data_train[:, 1])
         self.data_train[:, 1] = (self.data_train[:, 1] - self.dfY_train_min) / (self.dfY_train_max - self.dfY_train_min)
-	
-        
 
-      
+
+
+
         self.dfZ_train_min = min(self.data_train[:, 2])
         self.dfZ_train_max = max(self.data_train[:, 2])
         self.data_train[:, 2] = (self.data_train[:, 2] - self.dfZ_train_min) / (self.dfZ_train_max - self.dfZ_train_min)
-	
 
-      
+
+
         self.dtX_train_min = min(self.data_train[:, 3])
         self.dtX_train_max = max(self.data_train[:, 3])
         self.data_train[:, 3] = (self.data_train[:, 3] - self.dtX_train_min) / (self.dtX_train_max - self.dtX_train_min)
-	
 
-      
+
+
         self.dtY_train_min = min(self.data_train[:, 4])
         self.dtY_train_max = max(self.data_train[:, 4])
         self.data_train[:, 4] = (self.data_train[:, 4] - self.dtY_train_min) / (self.dtY_train_max - self.dtY_train_min)
-       
+
         self.dtZ_train_min = min(self.data_train[:, 5])
         self.dtZ_train_max = max(self.data_train[:, 5])
         self.data_train[:, 5] = (self.data_train[:, 5] - self.dtZ_train_min) / (self.dtZ_train_max - self.dtZ_train_min)
-	
 
-	self.dcX_train_min = min(self.data_train[:, 6])
+
+        self.dcX_train_min = min(self.data_train[:, 6])
         self.dcX_train_max = max(self.data_train[:, 6])
         self.data_train[:, 6] = (self.data_train[:, 6] -self.dcX_train_min) / (self.dcX_train_max - self.dcX_train_min)
-	
 
-	self.dcY_train_min = min(self.data_train[:, 7])
+
+        self.dcY_train_min = min(self.data_train[:, 7])
         self.dcY_train_max = max(self.data_train[:, 7])
         self.data_train[:, 7] = (self.data_train[:, 7] -self.dcY_train_min) / (self.dcY_train_max - self.dcY_train_min)
-	
 
-	self.dcZ_train_min = min(self.data_train[:, 8])
+
+        self.dcZ_train_min = min(self.data_train[:, 8])
         self.dcZ_train_max = max(self.data_train[:, 8])
         self.data_train[:, 8] = (self.data_train[:, 8] -self.dcZ_train_min) / (self.dcZ_train_max - self.dcZ_train_min)
-	
-	self.droll_train_min = min(self.data_train[:, 9])
+
+        self.droll_train_min = min(self.data_train[:, 9])
         self.droll_train_max = max(self.data_train[:, 9])
         self.data_train[:, 9] = (self.data_train[:, 9] -self.droll_train_min) / (self.droll_train_max - self.droll_train_min)
-	
 
-	self.dpitch_train_min = min(self.data_train[:, 10])
+
+        self.dpitch_train_min = min(self.data_train[:, 10])
         self.dpitch_train_max = max(self.data_train[:, 10])
         self.data_train[:, 10] = (self.data_train[:, 10] -self.dpitch_train_min) / (self.dpitch_train_max - self.dpitch_train_min)
-	
 
-
-
-	
-	
-	#plt.plot(self.data_train[:, 0])
-	#plt.show()
-	#plt.plot(self.data_train[:, 1])
-	#plt.show()
-	#plt.plot(self.data_train[:, 3])
-	#plt.show()
-	#plt.plot(self.data_train[:, 4])
-	#plt.show()
-	#plt.plot(self.data_train[:, 5])
-	#plt.show()
-	
         if (self.gt_comparison):
             phase2=np.append([phase],[np.zeros_like(np.arange(cX.shape[0]-phase.shape[0]))])
             self.cX = cX[~(phase2==-1)]
             self.cY = cY[~(phase2==-1)]
             self.cZ = cZ[~(phase2==-1)]
 
-	    if self.comp_filtering:
-		    phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
-		    self.accX = accX[~(phase3==-1)]
-		    self.accY = accY[~(phase3==-1)]
-		    self.accZ = accZ[~(phase3==-1)]
-		    phase4=np.append([phase],[np.zeros_like(np.arange(aX.shape[0]-phase.shape[0]))])
-		    self.gX = aX[~(phase4==-1)]
-		    self.gY = aY[~(phase4==-1)]
-	    else:
-		    phase0=np.append([phase],[np.zeros_like(np.arange(roll.shape[0]-phase.shape[0]))])
-		    self.roll = roll[~(phase0==-1)]
-		    self.pitch = pitch[~(phase0==-1)]
+            if self.comp_filtering:
+                phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
+                self.accX = accX[~(phase3==-1)]
+                self.accY = accY[~(phase3==-1)]
+                self.accZ = accZ[~(phase3==-1)]
+                phase4=np.append([phase],[np.zeros_like(np.arange(aX.shape[0]-phase.shape[0]))])
+                self.gX = aX[~(phase4==-1)]
+                self.gY = aY[~(phase4==-1)]
+            else:
+                phase0=np.append([phase],[np.zeros_like(np.arange(roll.shape[0]-phase.shape[0]))])
+                self.roll = roll[~(phase0==-1)]
+                self.pitch = pitch[~(phase0==-1)]
 
             phase5=np.append([phase],[np.zeros_like(np.arange(lfZ.shape[0]-phase.shape[0]))])
             self.lfZ = lfZ[~(phase5==-1)]
-	    self.lfX = lfX[~(phase5==-1)]
-	    self.lfY = lfY[~(phase5==-1)]
+            self.lfX = lfX[~(phase5==-1)]
+            self.lfY = lfY[~(phase5==-1)]
             phase6=np.append([phase],[np.zeros_like(np.arange(rfZ.shape[0]-phase.shape[0]))])
             self.rfZ = rfZ[~(phase6==-1)]
-	    self.rfX = rfX[~(phase6==-1)]
-	    self.rfY = rfY[~(phase6==-1)]
+            self.rfX = rfX[~(phase6==-1)]
+            self.rfY = rfY[~(phase6==-1)]
             phase7=np.append([phase],[np.zeros_like(np.arange(ltZ.shape[0]-phase.shape[0]))])
             self.ltZ = ltZ[~(phase7==-1)]
-	    self.ltX = ltX[~(phase7==-1)]
-	    self.ltY = ltY[~(phase7==-1)]
+            self.ltX = ltX[~(phase7==-1)]
+            self.ltY = ltY[~(phase7==-1)]
             phase8=np.append([phase],[np.zeros_like(np.arange(rtZ.shape[0]-phase.shape[0]))])
             self.rtZ = rtZ[~(phase8==-1)]
-	    self.rtX = rtX[~(phase8==-1)]
-	    self.rtY = rtY[~(phase8==-1)]
+            self.rtX = rtX[~(phase8==-1)]
+            self.rtY = rtY[~(phase8==-1)]
             self.data_train=self.data_train[~(phase==-1)]
             self.phase=phase[~(phase==-1)]
             self.dlen = np.size(self.phase)
@@ -377,18 +361,18 @@ class GeM_tools():
         droll = self.rolldt.diff(roll)
         dpitch = self.pitchdt.diff(pitch)
 
-	lfX += self.blf[0]
-	lfY += self.blf[1]
-	lfZ += self.blf[2]
-	rfX += self.brf[0]
-	rfY += self.brf[1]
-	rfZ += self.brf[2]
-	ltX += self.blt[0]
-	ltY += self.blt[1]
-	ltZ += self.blt[2]
-	rtX += self.brt[0]
-	rtY += self.brt[1]
-	rtZ += self.brt[2]
+        lfX += self.blf[0]
+        lfY += self.blf[1]
+        lfZ += self.blf[2]
+        rfX += self.brf[0]
+        rfY += self.brf[1]
+        rfZ += self.brf[2]
+        ltX += self.blt[0]
+        ltY += self.blt[1]
+        ltZ += self.blt[2]
+        rtX += self.brt[0]
+        rtY += self.brt[1]
+        rtZ += self.brt[2]
 
         dfZ = lfZ - rfZ
         dfX = lfX - rfX
@@ -397,57 +381,57 @@ class GeM_tools():
         dtX = ltX - rtX
         dtY = ltY - rtY
 
-	
-	if(dfX>self.dfX_train_max):
-		dfX=self.dfX_train_max
-	elif(dfX<self.dfX_train_min):
-		dfX=self.dfX_train_min
+
+        if(dfX>self.dfX_train_max):
+            dfX=self.dfX_train_max
+        elif(dfX<self.dfX_train_min):
+            dfX=self.dfX_train_min
 
 
         dfX = (dfX - self.dfX_train_min) / (self.dfX_train_max - self.dfX_train_min)
 
-		
 
 
-	if(dfY>self.dfY_train_max):
-		dfY=self.dfY_train_max
-	elif(dfY<self.dfY_train_min):
-		dfY=self.dfY_train_min
+
+        if(dfY>self.dfY_train_max):
+            dfY=self.dfY_train_max
+        elif(dfY<self.dfY_train_min):
+            dfY=self.dfY_train_min
 
         dfY = (dfY - self.dfY_train_min) / (self.dfY_train_max - self.dfY_train_min)
 
-	
-	if(dfZ>self.dfZ_train_max):
-		dfY=self.dfZ_train_max
-	elif(dfZ<self.dfZ_train_min):
-		dfZ=self.dfZ_train_min
+
+        if(dfZ>self.dfZ_train_max):
+            dfY=self.dfZ_train_max
+        elif(dfZ<self.dfZ_train_min):
+            dfZ=self.dfZ_train_min
 
 
         dfZ = (dfZ - self.dfZ_train_min) / (self.dfZ_train_max - self.dfZ_train_min)
 
 
-	if(dtX>self.dtX_train_max):
-		dtX=self.dtX_train_max
-	elif(dtX<self.dtX_train_min):
-		dtX=self.dtX_train_min
+        if(dtX>self.dtX_train_max):
+            dtX=self.dtX_train_max
+        elif(dtX<self.dtX_train_min):
+            dtX=self.dtX_train_min
 
         dtX = (dtX - self.dtX_train_min) / (self.dtX_train_max - self.dtX_train_min)
 
 
 
-	if(dtY>self.dtY_train_max):
-		dtY=self.dtY_train_max
-	elif(dtY<self.dtY_train_min):
-		dtY=self.dtY_train_min
+        if(dtY>self.dtY_train_max):
+            dtY=self.dtY_train_max
+        elif(dtY<self.dtY_train_min):
+            dtY=self.dtY_train_min
 
         dtY = (dtY - self.dtY_train_min) / (self.dtY_train_max - self.dtY_train_min)
 
 
 
-	if(dtZ>self.dtZ_train_max):
-		dtZ=self.dtZ_train_max
-	elif(dtZ<self.dtZ_train_min):
-		dtZ=self.dtZ_train_min
+        if(dtZ>self.dtZ_train_max):
+            dtZ=self.dtZ_train_max
+        elif(dtZ<self.dtZ_train_min):
+            dtZ=self.dtZ_train_min
 
 
         dtZ = (dtZ - self.dtZ_train_min) / (self.dtZ_train_max - self.dtZ_train_min)
@@ -456,10 +440,10 @@ class GeM_tools():
 
 
 
-	if(dcX>self.dcX_train_max):
-		dcX=self.dcX_train_max
-	elif(dcX<self.dcX_train_min):
-		dcX=self.dcX_train_min
+        if(dcX>self.dcX_train_max):
+            dcX=self.dcX_train_max
+        elif(dcX<self.dcX_train_min):
+            dcX=self.dcX_train_min
 
 
         dcX = (dcX -self.dcX_train_min) / (self.dcX_train_max - self.dcX_train_min)
@@ -467,39 +451,39 @@ class GeM_tools():
 
 
 
-	if(dcY>self.dcY_train_max):
-		dcY=self.dcY_train_max
-	elif(dcY<self.dcY_train_min):
-		dcY=self.dcY_train_min
+        if(dcY>self.dcY_train_max):
+            dcY=self.dcY_train_max
+        elif(dcY<self.dcY_train_min):
+            dcY=self.dcY_train_min
 
         dcY = (dcY - self.dcY_train_min) / (self.dcY_train_max - self.dcY_train_min)
 
 
-	if(dcZ>self.dcZ_train_max):
-		dcZ=self.dcZ_train_max
-	elif(dcZ<self.dcZ_train_min):
-		dcZ=self.dcZ_train_min
+        if(dcZ>self.dcZ_train_max):
+            dcZ=self.dcZ_train_max
+        elif(dcZ<self.dcZ_train_min):
+            dcZ=self.dcZ_train_min
 
         dcZ = (dcZ - self.dcZ_train_min) / (self.dcZ_train_max - self.dcZ_train_min)
 
 
-	if(droll>self.droll_train_max):
-		droll=self.droll_train_max
-	elif(droll<self.droll_train_min):
-		droll=self.droll_train_min
+        if(droll>self.droll_train_max):
+            droll=self.droll_train_max
+        elif(droll<self.droll_train_min):
+            droll=self.droll_train_min
 
         droll = (droll - self.droll_train_min) / (self.droll_train_max - self.droll_train_min)
 
 
 
-	if(dpitch>self.dpitch_train_max):
-		droll=self.dpitch_train_max
-	elif(dpitch<self.dpitch_train_min):
-		dpitch=self.dpitch_train_min
+        if(dpitch>self.dpitch_train_max):
+            droll=self.dpitch_train_max
+        elif(dpitch<self.dpitch_train_min):
+            dpitch=self.dpitch_train_min
 
         dpitch = (dpitch - self.dpitch_train_min) / (self.dpitch_train_max - self.dpitch_train_min)
 
-	
+
 
 
         output_[0] = dfX
@@ -528,18 +512,18 @@ class GeM_tools():
         droll = self.rolldt.diff(roll)
         dpitch = self.pitchdt.diff(pitch)
 
-	lfX += self.blf[0]
-	lfY += self.blf[1]
-	lfZ += self.blf[2]
-	rfX += self.brf[0]
-	rfY += self.brf[1]
-	rfZ += self.brf[2]
-	ltX += self.blt[0]
-	ltY += self.blt[1]
-	ltZ += self.blt[2]
-	rtX += self.brt[0]
-	rtY += self.brt[1]
-	rtZ += self.brt[2]
+        lfX += self.blf[0]
+        lfY += self.blf[1]
+        lfZ += self.blf[2]
+        rfX += self.brf[0]
+        rfY += self.brf[1]
+        rfZ += self.brf[2]
+        ltX += self.blt[0]
+        ltY += self.blt[1]
+        ltZ += self.blt[2]
+        rtX += self.brt[0]
+        rtY += self.brt[1]
+        rtZ += self.brt[2]
 
         dfZ = lfZ - rfZ
         dfX = lfX - rfX
@@ -548,75 +532,75 @@ class GeM_tools():
         dtX = ltX - rtX
         dtY = ltY - rtY
 
-	if g is None:
-		g=self
-	
-
-
-	if(dfX>g.dfX_train_max):
-		dfX=g.dfX_train_max
-	elif(dfX<g.dfX_train_min):
-		dfX=g.dfX_train_min
-
-
-	if(dfY>g.dfY_train_max):
-		dfY=g.dfY_train_max
-	elif(dfY<g.dfY_train_min):
-		dfY=g.dfY_train_min
-
-
-	if(dfZ>g.dfZ_train_max):
-		dfY=g.dfZ_train_max
-	elif(dfZ<g.dfZ_train_min):
-		dfZ=g.dfZ_train_min
-
-	
-	if(dtX>g.dtX_train_max):
-		dtX=g.dtX_train_max
-	elif(dtX<g.dtX_train_min):
-		dtX=g.dtX_train_min
-
-	if(dtY>g.dtY_train_max):
-		dtY=g.dtY_train_max
-	elif(dtY<g.dtY_train_min):
-		dtY=g.dtY_train_min
-
-	if(dtZ>g.dtZ_train_max):
-		dtZ=g.dtZ_train_max
-	elif(dtZ<g.dtZ_train_min):
-		dtZ=g.dtZ_train_min
-
-
-	if(dcX>g.dcX_train_max):
-		dcX=g.dcX_train_max
-	elif(dcX<g.dcX_train_min):
-		dcX=g.dcX_train_min
+        if g is None:
+            g=self
 
 
 
-	if(dcY>g.dcY_train_max):
-		dcY=g.dcY_train_max
-	elif(dcY<g.dcY_train_min):
-		dcY=g.dcY_train_min
+        if(dfX>g.dfX_train_max):
+            dfX=g.dfX_train_max
+        elif(dfX<g.dfX_train_min):
+            dfX=g.dfX_train_min
 
 
-	if(dcZ>g.dcZ_train_max):
-		dcZ=g.dcZ_train_max
-	elif(dcZ<g.dcZ_train_min):
-		dcZ=g.dcZ_train_min
+        if(dfY>g.dfY_train_max):
+            dfY=g.dfY_train_max
+        elif(dfY<g.dfY_train_min):
+            dfY=g.dfY_train_min
 
 
-	if(droll>g.droll_train_max):
-		droll=g.droll_train_max
-	elif(droll<g.droll_train_min):
-		droll=g.droll_train_min
+        if(dfZ>g.dfZ_train_max):
+            dfY=g.dfZ_train_max
+        elif(dfZ<g.dfZ_train_min):
+            dfZ=g.dfZ_train_min
+
+
+        if(dtX>g.dtX_train_max):
+            dtX=g.dtX_train_max
+        elif(dtX<g.dtX_train_min):
+            dtX=g.dtX_train_min
+
+        if(dtY>g.dtY_train_max):
+            dtY=g.dtY_train_max
+        elif(dtY<g.dtY_train_min):
+            dtY=g.dtY_train_min
+
+        if(dtZ>g.dtZ_train_max):
+            dtZ=g.dtZ_train_max
+        elif(dtZ<g.dtZ_train_min):
+            dtZ=g.dtZ_train_min
+
+
+        if(dcX>g.dcX_train_max):
+            dcX=g.dcX_train_max
+        elif(dcX<g.dcX_train_min):
+            dcX=g.dcX_train_min
 
 
 
-	if(dpitch>g.dpitch_train_max):
-		droll=g.dpitch_train_max
-	elif(dpitch<g.dpitch_train_min):
-		dpitch=g.dpitch_train_min
+        if(dcY>g.dcY_train_max):
+            dcY=g.dcY_train_max
+        elif(dcY<g.dcY_train_min):
+            dcY=g.dcY_train_min
+
+
+        if(dcZ>g.dcZ_train_max):
+            dcZ=g.dcZ_train_max
+        elif(dcZ<g.dcZ_train_min):
+            dcZ=g.dcZ_train_min
+
+
+        if(droll>g.droll_train_max):
+            droll=g.droll_train_max
+        elif(droll<g.droll_train_min):
+            droll=g.droll_train_min
+
+
+
+        if(dpitch>g.dpitch_train_max):
+            droll=g.dpitch_train_max
+        elif(dpitch<g.dpitch_train_min):
+            dpitch=g.dpitch_train_min
 
 
         dfX = (dfX - g.dfX_train_min) / (g.dfX_train_max - g.dfX_train_min)
@@ -656,7 +640,7 @@ class GeM_tools():
 
         dpitch = (dpitch - g.dpitch_train_min) / (g.dpitch_train_max - g.dpitch_train_min)
 
-	
+
 
         output_[0] = dfX
         output_[1] = dfY
@@ -676,43 +660,43 @@ class GeM_tools():
 
 
     def genGroundTruthStatistics(self, reduced_data):
-            if(self.gt_comparison):
-                #remove extra zeros elements
+        if(self.gt_comparison):
+            #remove extra zeros elements
 
-                d1 = np.zeros((self.dlen,2))
-                d2 = np.zeros((self.dlen,2))
-                d3 = np.zeros((self.dlen,2))
-                for i in range(self.dlen):
-                    if (self.phase[i]==0):
-                        d1[i,0] = reduced_data[i,0]
-                        d1[i,1] = reduced_data[i,1]
-                    elif (self.phase[i]==1):
-                        d2[i,0] = reduced_data[i,0]
-                        d2[i,1] = reduced_data[i,1]
-                    elif (self.phase[i]==2):
-                        d3[i,0] = reduced_data[i,0]
-                        d3[i,1] = reduced_data[i,1]
+            d1 = np.zeros((self.dlen,2))
+            d2 = np.zeros((self.dlen,2))
+            d3 = np.zeros((self.dlen,2))
+            for i in range(self.dlen):
+                if (self.phase[i]==0):
+                    d1[i,0] = reduced_data[i,0]
+                    d1[i,1] = reduced_data[i,1]
+                elif (self.phase[i]==1):
+                    d2[i,0] = reduced_data[i,0]
+                    d2[i,1] = reduced_data[i,1]
+                elif (self.phase[i]==2):
+                    d3[i,0] = reduced_data[i,0]
+                    d3[i,1] = reduced_data[i,1]
 
-                d1=d1[~(d1==0).all(1)]
-                d2=d2[~(d2==0).all(1)]
-                d3=d3[~(d3==0).all(1)]
+            d1=d1[~(d1==0).all(1)]
+            d2=d2[~(d2==0).all(1)]
+            d3=d3[~(d3==0).all(1)]
 
-                mean=np.zeros((3,2))
-                mean[0,0]=np.mean(d1[:,0])
-                mean[0,1]=np.mean(d1[:,1])
-                mean[1,0]=np.mean(d2[:,0])
+            mean=np.zeros((3,2))
+            mean[0,0]=np.mean(d1[:,0])
+            mean[0,1]=np.mean(d1[:,1])
+            mean[1,0]=np.mean(d2[:,0])
 
-                mean[1,1]=np.mean(d2[:,1])
-                mean[2,0]=np.mean(d3[:,0])
-                mean[2,1]=np.mean(d3[:,1])
+            mean[1,1]=np.mean(d2[:,1])
+            mean[2,0]=np.mean(d3[:,0])
+            mean[2,1]=np.mean(d3[:,1])
 
-                self.mean = mean
-                covariance1=np.cov(d1.T)
-                covariance2=np.cov(d2.T)
-                covariance3=np.cov(d3.T)
-                self.covariance=(covariance1, covariance2, covariance3)
-            else:
-                print('Input data did not have Ground-Truth Information')
+            self.mean = mean
+            covariance1=np.cov(d1.T)
+            covariance2=np.cov(d2.T)
+            covariance3=np.cov(d3.T)
+            self.covariance=(covariance1, covariance2, covariance3)
+        else:
+            print('Input data did not have Ground-Truth Information')
 
 
 
@@ -795,13 +779,13 @@ class GeM_tools():
         cm_linesum=np.sum(cm.round(2),axis=1)
         diff_cm=1-cm_linesum
         add_cm=np.zeros_like(cm)+np.diag(diff_cm)
-        cm=cm+add_cm       
-#        print cm_linesum
+        cm=cm+add_cm
+        #        print cm_linesum
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
             plt.text(j, i, format(cm[i, j], fmt),
                      horizontalalignment="center",
                      color="white" if cm[i, j] > thresh else "black")
-        
+
         plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label')

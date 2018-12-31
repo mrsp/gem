@@ -5,7 +5,7 @@ from gem import GeM
 from gem_tools import GeM_tools
 from sklearn.metrics import confusion_matrix
 import numpy as np
-import cPickle as pickle
+import pickle as pickle
 import matplotlib.pyplot as plt
 import sys
 
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
 	g = GeM()
 	data_train = gt.data_train
-	g.fit(data_train, 'pca', 'gmm')
+	g.fit(data_train, 'autoencoders', 'gmm')
 
 
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 	gt.plot_results(g.reduced_data_train, gt.phase, gt.mean, gt.covariance, 'Ground-Truth Labels')
 
 
-	gt.plot_results(g.reduced_data_train, g.predicted_labels_train, g.kmeans.cluster_centers_, None, 'Clustering with K-means')
+	#gt.plot_results(g.reduced_data_train, g.predicted_labels_train, g.kmeans.cluster_centers_, None, 'Clustering with K-means')
 
 
 	gt.plot_results(g.reduced_data_train, g.predicted_labels_train, g.gmm.means_, g.gmm.covariances_, 'Clustering with Gaussian Mixture Models')

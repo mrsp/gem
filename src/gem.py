@@ -57,11 +57,11 @@ class GeM():
 	
         input_= Input(shape=(11,))
         # "encoded" is the encoded representation of the input
-        encoded = Dense(5, activation='linear')(input_)
-        encoded = Dense(2, activation='linear')(encoded)
+        encoded = Dense(5, activation='selu')(input_)
+        encoded = Dense(2, activation='selu')(encoded)
         ## "decoded" is the lossy reconstruction of the input
-        decoded = Dense(5, activation='linear')(encoded)
-        decoded = Dense(11, activation='linear')(decoded)
+        decoded = Dense(5, activation='selu')(encoded)
+        decoded = Dense(11, activation='selu')(decoded)
         # this model maps an input to its reconstruction
         self.autoencoder = Model(input_, decoded)
         # this model maps an input to its encoded representation
@@ -78,7 +78,7 @@ class GeM():
 	
 
     def fit(self,data_train,red,cl):
-	self.data_train = data_train
+        self.data_train = data_train
         if red == 'pca':
             print("Dimensionality reduction with PCA")
             self.reducePCA(data_train)
@@ -88,7 +88,7 @@ class GeM():
 
 
         else:
-	    self.reduced_data_train = data_train
+            self.reduced_data_train = data_train
             print("Choose a valid dimensionality reduction method")
 
         
