@@ -20,19 +20,7 @@ These instructions will get you a copy of the project up and running on your loc
 * If you are using catkin tools run: catkin build  --cmake-args -DCMAKE_BUILD_TYPE=Release 
 
 ## ROS Examples
-### Valkyrie SRCsim
-* Download the trained module from [valk_train](http://users.ics.forth.gr/~spiperakis/gem.save) and the trained tools from [valk_train_tools](http://users.ics.forth.gr/~spiperakis/gem_tools.save)
-* Create a folder train with the saved files.
-* (SIMULATOR - Valkyrie with Gazebo) launch [srcsim](https://bitbucket.org/osrf/srcsim) or download the bag file [valk_bag](http://users.ics.forth.gr/~spiperakis/gem_valk.bag)
-* roscore 
-* rosbag play gem_valk.bag
-* roslaunch gem gem_ros.launch
-
-
-
-### Train your own module
+### Train the Valkyrie module
 * Download the valkyrie bag file from [valk_bagfile](http://users.ics.forth.gr/~spiperakis/gem_test_valkyrie.zip)
 * Uncompress
 * train: ./train.py "/path_to_gem_test_valkyrie/"
-
-
