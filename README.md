@@ -24,3 +24,11 @@ These instructions will get you a copy of the project up and running on your loc
 * Download the valkyrie bag file from [valk_bagfile](http://users.ics.forth.gr/~spiperakis/gem_test_valkyrie.zip)
 * Uncompress
 * train: ./train.py "/path_to_gem_test_valkyrie/"
+
+### Train your own module
+* Save the corresponding files in a similar form as the valkyrie bag file from [valk_bagfile](http://users.ics.forth.gr/~spiperakis/gem_test_valkyrie.zip)
+* train: ./train.py "/path_to_training_data/"
+
+### Run in real-time to infer the gait-phase:
+* configure appropriately the config yaml file (in config folder) with the corresponding topics 
+* roslaunch gem gem_ros.launch
