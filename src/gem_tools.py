@@ -85,21 +85,21 @@ class GeM_tools():
 
     def input_data(self, setpath,blf,blt,brf,brt):
 
-        cX = np.loadtxt(setpath+'c_encx.txt')
-        cY = np.loadtxt(setpath+'c_ency.txt')
-        cZ = np.loadtxt(setpath+'c_encz.txt')
-        lfZ = np.loadtxt(setpath+'lfZ.txt')
-        rfZ = np.loadtxt(setpath+'rfZ.txt')
-        rfX = np.loadtxt(setpath+'rfX.txt')
-        rfY = np.loadtxt(setpath+'rfY.txt')
-        lfX = np.loadtxt(setpath+'lfX.txt')
-        lfY = np.loadtxt(setpath+'lfY.txt')
-        ltX = np.loadtxt(setpath+'ltX.txt')
-        ltY = np.loadtxt(setpath+'ltY.txt')
-        ltZ = np.loadtxt(setpath+'ltZ.txt')
-        rtX = np.loadtxt(setpath+'rtX.txt')
-        rtY = np.loadtxt(setpath+'rtY.txt')
-        rtZ = np.loadtxt(setpath+'rtZ.txt')
+        cX = np.loadtxt(setpath+'/c_encx.txt')
+        cY = np.loadtxt(setpath+'/c_ency.txt')
+        cZ = np.loadtxt(setpath+'/c_encz.txt')
+        lfZ = np.loadtxt(setpath+'/lfZ.txt')
+        rfZ = np.loadtxt(setpath+'/rfZ.txt')
+        rfX = np.loadtxt(setpath+'/rfX.txt')
+        rfY = np.loadtxt(setpath+'/rfY.txt')
+        lfX = np.loadtxt(setpath+'/lfX.txt')
+        lfY = np.loadtxt(setpath+'/lfY.txt')
+        ltX = np.loadtxt(setpath+'/ltX.txt')
+        ltY = np.loadtxt(setpath+'/ltY.txt')
+        ltZ = np.loadtxt(setpath+'/ltZ.txt')
+        rtX = np.loadtxt(setpath+'/rtX.txt')
+        rtY = np.loadtxt(setpath+'/rtY.txt')
+        rtZ = np.loadtxt(setpath+'/rtZ.txt')
 
 
         #biases removal from F/T
@@ -120,27 +120,27 @@ class GeM_tools():
         self.blt = blt
         self.brt = brt
         if(self.gt_comparison):
-            gt_lfZ  = np.loadtxt(setpath+'gt_lfZ.txt')
-            gt_rfZ  = np.loadtxt(setpath+'gt_rfZ.txt')
-            gt_lfX  = np.loadtxt(setpath+'gt_lfX.txt')
-            gt_rfX  = np.loadtxt(setpath+'gt_rfX.txt')
-            gt_lfY  = np.loadtxt(setpath+'gt_lfY.txt')
-            gt_rfY  = np.loadtxt(setpath+'gt_rfY.txt')
+            gt_lfZ  = np.loadtxt(setpath+'/gt_lfZ.txt')
+            gt_rfZ  = np.loadtxt(setpath+'/gt_rfZ.txt')
+            gt_lfX  = np.loadtxt(setpath+'/gt_lfX.txt')
+            gt_rfX  = np.loadtxt(setpath+'/gt_rfX.txt')
+            gt_lfY  = np.loadtxt(setpath+'/gt_lfY.txt')
+            gt_rfY  = np.loadtxt(setpath+'/gt_rfY.txt')
 
         if(self.comp_filtering):
-            aX = np.loadtxt(setpath+'gX.txt')
-            aY = np.loadtxt(setpath+'gY.txt')
-            accX = np.loadtxt(setpath+'accX.txt')
-            accY = np.loadtxt(setpath+'accY.txt')
-            accZ = np.loadtxt(setpath+'accZ.txt') + 9.81
+            aX = np.loadtxt(setpath+'/gX.txt')
+            aY = np.loadtxt(setpath+'/gY.txt')
+            accX = np.loadtxt(setpath+'/accX.txt')
+            accY = np.loadtxt(setpath+'/accY.txt')
+            accZ = np.loadtxt(setpath+'/accZ.txt') + 9.81
             aX = signal.decimate(aX,2)
             aY = signal.decimate(aY,2)
             accX = signal.decimate(accX,2)
             accY = signal.decimate(accY,2)
             accZ = signal.decimate(accZ,2)
         else:
-            roll_ = np.loadtxt(setpath+'roll.txt')
-            pitch_ = np.loadtxt(setpath + 'pitch.txt')
+            roll_ = np.loadtxt(setpath+'/roll.txt')
+            pitch_ = np.loadtxt(setpath + '/pitch.txt')
             roll_ = signal.decimate(roll_,2)
             pitch_ = signal.decimate(pitch_,2)
 

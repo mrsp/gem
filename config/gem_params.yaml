@@ -2,5 +2,12 @@ gem_left_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/left"
 gem_right_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/right"
 gem_imu_topic: "/pelvisMiddleImu/imu"
 gem_com_topic: "/SERoW/rel_CoM/pose"
-gem_train_path: "/home/master/serow_ws/src/gem/train"
+gem_cf: True
 gem_freq: 500
+gem_imu_freq: 500
+gem_cf_a : 0.995
+gem_plot_results: True
+gem_gt_comparison: True
+gem_dim_reduction: "autoencoders"
+gem_clustering: "gmm"
+gem_train_path: "/home/master/Desktop/GEM_test_valkyrie"
