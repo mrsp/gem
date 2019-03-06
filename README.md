@@ -1,7 +1,13 @@
 # gem
 Gait-phase Estimation Module (GEM) for Humanoid Robot Walking. The code is open-source (BSD License). Please note that this work is an on-going research and thus some parts are not fully developed yet. Furthermore, the code will be subject to changes in the future which could include greater re-factoring.
 
+GEM is an unsupervised learning framework which employs a 2D latent space and Gaussian Mixture Models (GMMs) to facilitate accurate prediction/classification of the gait phase during locomotion. Solely prioproceptive sensing is utilized in the process, namely:
+* joint encoder
+* F/T
+* IMU
 ![Valk_training](img/gem01.png)
+
+GEM can be readily employed in real-time for estimating the gait phase. 
 ![Valk_realtime](img/gem02.png)
 
 
@@ -25,11 +31,11 @@ These instructions will get you a copy of the project up and running on your loc
 ### Train the Valkyrie module
 * Download the valkyrie bag file from [valk_bagfile](http://users.ics.forth.gr/~spiperakis/gem_test_valkyrie.zip)
 * Uncompress
-* train: ./train.py "/path_to_gem_test_valkyrie/"
+* train: python train.py 
 
 ### Train your own module
 * Save the corresponding files in a similar form as the valkyrie bag file from [valk_bagfile](http://users.ics.forth.gr/~spiperakis/gem_test_valkyrie.zip)
-* train: ./train.py "/path_to_training_data/"
+* train: python train.py
 
 ### Run in real-time to infer the gait-phase:
 * configure appropriately the config yaml file (in config folder) with the corresponding topics 
