@@ -38,7 +38,6 @@ from scipy import linalg
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import itertools
-from scipy import signal
 from math import *
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.backends.backend_pdf import PdfPages
@@ -69,8 +68,8 @@ plt.rcParams.update(params)
 
 color_iter = itertools.cycle(my_colors)
 class GeM_tools():
-    def __init__(self, comp_filtering=False, freq=500, a=0.9999, gt_comparison=False, mu=0.0):
-        self.mu = mu
+    def __init__(self, comp_filtering=False, freq=500, a=0.9999, gt_comparison=False):
+
         self.comp_filtering = comp_filtering
         self.gt_comparison = gt_comparison
 
@@ -126,23 +125,17 @@ class GeM_tools():
             gt_rfX  = np.loadtxt(setpath+'/gt_rfX.txt')
             gt_lfY  = np.loadtxt(setpath+'/gt_lfY.txt')
             gt_rfY  = np.loadtxt(setpath+'/gt_rfY.txt')
-
+            mu  = np.loadtxt(setpath+'/mu.txt')
+       	    self.mu = mu
         if(self.comp_filtering):
             aX = np.loadtxt(setpath+'/gX.txt')
             aY = np.loadtxt(setpath+'/gY.txt')
             accX = np.loadtxt(setpath+'/accX.txt')
             accY = np.loadtxt(setpath+'/accY.txt')
-            accZ = np.loadtxt(setpath+'/accZ.txt') + 9.81
-            aX = signal.decimate(aX,2)
-            aY = signal.decimate(aY,2)
-            accX = signal.decimate(accX,2)
-            accY = signal.decimate(accY,2)
-            accZ = signal.decimate(accZ,2)
+            accZ = np.loadtxt(setpath+'/accZ.txt')
         else:
             roll_ = np.loadtxt(setpath+'/roll.txt')
             pitch_ = np.loadtxt(setpath + '/pitch.txt')
-            roll_ = signal.decimate(roll_,2)
-            pitch_ = signal.decimate(pitch_,2)
 
 
 
@@ -200,11 +193,11 @@ class GeM_tools():
             if(self.gt_comparison):
                 lcon = np.sqrt(gt_lfX[i] * gt_lfX[i] + gt_lfY[i] * gt_lfY[i])
                 rcon = np.sqrt(gt_rfX[i] * gt_rfX[i] + gt_rfY[i] * gt_rfY[i])
-                if( ((self.mu*gt_lfZ[i])>lcon) and ((self.mu * gt_rfZ[i])>rcon)):
+                if( ((self.mu[i]*gt_lfZ[i])>lcon) and ((self.mu[i] * gt_rfZ[i])>rcon)):
                     phase[i] = 2
-                elif( (self.mu*gt_lfZ[i])>lcon ):
+                elif( (self.mu[i]*gt_lfZ[i])>lcon ):
                     phase[i] = 1
-                elif( (self.mu*gt_rfZ[i])>rcon ):
+                elif( (self.mu[i]*gt_rfZ[i])>rcon ):
                     phase[i] = 0
                 else:
                     phase[i] = -1

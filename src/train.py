@@ -28,13 +28,12 @@ if __name__ == "__main__":
 	print(config)
 
 	path = config['gem_train_path']
-	gt = GeM_tools(comp_filtering=config['gem_cf'], freq=config['gem_imu_freq'], a=config['gem_cf_a'], gt_comparison=config['gem_gt_comparison'], mu=1.0)
-	brf = np.zeros(3)
-	brt = np.zeros(3)
-	blf = np.zeros(3)
-	blt = np.zeros(3)
-	blf[2] = -19.1734
-	brf[2] = -17.1439
+	gt = GeM_tools(comp_filtering=config['gem_cf'], freq=config['gem_imu_freq'], a=config['gem_cf_a'], gt_comparison=config['gem_gt_comparison'])
+	brf = config['gem_rfoot_force_bias']
+	brt = config['gem_rfoot_torque_bias']
+	blf = config['gem_lfoot_force_bias']
+	blt = config['gem_lfoot_torque_bias']
+
 
 
 	
