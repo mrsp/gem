@@ -12,7 +12,7 @@ Solely prioproceptive sensing is utilized in training, namely:
 
 ![Valk_training](img/gem01.png)
 
-## Real-time Prediction
+## Real-time Gait-Phase Prediction
 GEM can be readily employed in real-time for estimating the gait phase. 
 
 ![Valk_realtime](img/gem02.png)
