@@ -1,6 +1,8 @@
 # gem
 Gait-phase Estimation Module (GEM) for Humanoid Robot Walking. The code is open-source (BSD License). Please note that this work is an on-going research and thus some parts are not fully developed yet. Furthermore, the code will be subject to changes in the future which could include greater re-factoring.
 
+![Valk_training](img/gem01.png)
+![Valk_realtime](img/gem02.png)
 
 
 ## Getting Started
