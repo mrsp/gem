@@ -1,13 +1,18 @@
 # gem
 Gait-phase Estimation Module (GEM) for Humanoid Robot Walking. The code is open-source (BSD License). Please note that this work is an on-going research and thus some parts are not fully developed yet. Furthermore, the code will be subject to changes in the future which could include greater re-factoring.
 
-GEM is an unsupervised learning framework which employs a 2D latent space and Gaussian Mixture Models (GMMs) to facilitate accurate prediction/classification of the gait phase during locomotion. Solely prioproceptive sensing is utilized in the process, namely:
+GEM is an unsupervised learning framework which employs a 2D latent space and Gaussian Mixture Models (GMMs) to facilitate accurate prediction/classification of the gait phase during locomotion.
+
+
+## Solely prioproceptive sensing is utilized in training, namely:
 * joint encoder
 * F/T
 * IMU
+
 ![Valk_training](img/gem01.png)
 
-GEM can be readily employed in real-time for estimating the gait phase. 
+## GEM can be readily employed in real-time for estimating the gait phase. 
+
 ![Valk_realtime](img/gem02.png)
 
 
