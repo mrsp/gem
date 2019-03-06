@@ -18,7 +18,7 @@ Solely prioproceptive sensing is utilized in training, namely:
 GEM can be readily employed in real-time for estimating the gait phase. 
 
 <p align="center">
-  <img width="460" height="300" src="img/gem02.png">
+  <img width="708" height="393" src="img/gem02.png">
 </p>
 
 
