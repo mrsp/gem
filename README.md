@@ -5,7 +5,7 @@ GEM is an unsupervised learning framework which employs a 2D latent space and Ga
 
 
 ## Training
-Solely prioproceptive sensing is utilized in training, namely, joint encoder, F/T, and IMU.
+Solely prioproceptive sensing is utilized in training, namely joint encoder, F/T, and IMU.
 
 
 <p align="center">
