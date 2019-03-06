@@ -9,11 +9,13 @@ Solely prioproceptive sensing is utilized in training, namely:
 * joint encoder
 * F/T
 * IMU
+
 ##
 <p align="center">
   <img width="701" height="693" src="img/gem01.png">
 </p>
 ##
+
 ## Real-time Gait-Phase Prediction
 GEM can be readily employed in real-time for estimating the gait phase. 
 
@@ -21,6 +23,7 @@ GEM can be readily employed in real-time for estimating the gait phase.
   <img width="708" height="393" src="img/gem02.png">
 </p>
 
+##
 
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
