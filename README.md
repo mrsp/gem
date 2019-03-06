@@ -35,8 +35,8 @@ These instructions will get you a copy of the project up and running on your loc
 * pip install sklearn
 * pip install keras
 * git clone https://github.com/mrsp/gem.git
-* catkin_make -DCMAKE_BUILD_TYPE=Release 
-* If you are using catkin tools run: catkin build  --cmake-args -DCMAKE_BUILD_TYPE=Release 
+* catkin_make
+* If you are using catkin tools run: catkin build  
 
 ## ROS Examples
 ### Train the Valkyrie module
