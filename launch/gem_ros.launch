@@ -2,8 +2,4 @@
 <launch>
   <rosparam file="$(find gem)/config/gem_params.yaml" command="load"/> 
   <node pkg="gem" type="gem_ros.py" name="gem" respawn="false" output="screen"/>
-  <node pkg="rolling_median" type="rolling_median_node" name="rolling_median" respawn="false" output="screen" >
- 	<!-- Load configurations from YAML file to parameter server -->
-   	 <rosparam file="$(find rolling_median)/config/estimation_params.yaml" command="load"/> 
-  </node>
 </launch>

@@ -6,7 +6,7 @@ import rospy
 from gem import GeM
 from gem_tools import GeM_tools
 import numpy as np
-import cPickle as pickle
+import pickle
 from std_msgs.msg import Int32 
 from geometry_msgs.msg import WrenchStamped
 from geometry_msgs.msg import PoseStamped
