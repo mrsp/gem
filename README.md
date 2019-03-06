@@ -11,7 +11,7 @@ Solely prioproceptive sensing is utilized in training, namely:
 * IMU
 
 <p align="center">
-  <img width="460" height="300" src="img/gem01.png">
+  <img width="701" height="693" src="img/gem01.png">
 </p>
 
 ## Real-time Gait-Phase Prediction
