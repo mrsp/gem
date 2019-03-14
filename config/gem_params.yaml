@@ -11,7 +11,7 @@ gem_gt_comparison: True
 gem_dim_reduction: "autoencoders"
 gem_clustering: "gmm"
 gem_train_path: "/home/master/Desktop/GEM_test_valkyrie"
-
+use_UL: True
 gem_lfoot_torque_bias: [0, 0, 0]
 gem_lfoot_force_bias: [0,0,-19.1734]
 gem_rfoot_torque_bias: [0, 0, 0]

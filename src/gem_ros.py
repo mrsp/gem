@@ -18,42 +18,35 @@ from sensor_msgs.msg import Imu
 class  gem_ros():
 	def __init__(self):
 		rospy.init_node("gait_phase_estimation_module")
-
 		left_foot_wrench_topic = rospy.get_param('gem_left_foot_wrench_topic')
 		right_foot_wrench_topic = rospy.get_param('gem_right_foot_wrench_topic')
-		imu_topic = rospy.get_param('gem_imu_topic')
-		com_topic = rospy.get_param('gem_com_topic')
-		freq = rospy.get_param('gem_freq')
-		path = rospy.get_param('gem_train_path') 
-	
-
-
 		self.phase_pub = rospy.Publisher('/gem/phase', Int32, queue_size=1000)
 		self.leg_pub = rospy.Publisher('/gem/leg', Int32, queue_size=1000)
-		
 		self.rft_sub  = rospy.Subscriber(right_foot_wrench_topic, WrenchStamped, self.lwrenchcb)
 		self.lft_sub  = rospy.Subscriber(left_foot_wrench_topic, WrenchStamped, self.rwrenchcb)
-		self.com_sub  = rospy.Subscriber(com_topic,PoseStamped,  self.comcb)
-		self.com_sub  = rospy.Subscriber(imu_topic,Imu,  self.imucb)
-
-		self.imu_inc = False
 		self.lwrench_inc = False
 		self.rwrench_inc = False
-		self.com_inc = False
+		freq = rospy.get_param('gem_freq')
 		self.freq = freq
-
-		f = open(path+'/gem.save', 'rb')
-		self.g = pickle.load(f)
-		f.close()
-
-		f = open(path+'/gem_tools.save', 'rb')
-		self.gt = pickle.load(f)
-		f.close()
-	
 		self.phase_msg = Int32()
-
 		self.phase = -1	
+		useUL = rospy.get_param('useUL')
 
+		if(useUL):
+			imu_topic = rospy.get_param('gem_imu_topic')
+			com_topic = rospy.get_param('gem_com_topic')
+			path = rospy.get_param('gem_train_path') 	
+			self.com_sub  = rospy.Subscriber(com_topic,PoseStamped,  self.comcb)
+			self.com_sub  = rospy.Subscriber(imu_topic,Imu,  self.imucb)
+			self.imu_inc = False
+			self.com_inc = False
+			f = open(path+'/gem.save', 'rb')
+			self.g = pickle.load(f)
+			f.close()
+			f = open(path+'/gem_tools.save', 'rb')
+			self.gt = pickle.load(f)
+			f.close()
+		
 		print('GEM Initialized')
 	
 	def lwrenchcb(self,msg):
@@ -63,6 +56,7 @@ class  gem_ros():
 	def rwrenchcb(self,msg):
 		self.rwrench = msg
 		self.rwrench_inc = True
+
 	def comcb(self,msg):
 		self.com = msg
 		self.com_inc = True
@@ -71,7 +65,7 @@ class  gem_ros():
 		self.imu = msg
 		self.imu_inc = True
 
-	def predict(self):
+	def predictUL(self):
 		if(self.imu_inc and self.lwrench_inc and self.rwrench_inc and self.com_inc):
 			self.imu_inc = False
 			self.lwrench_inc = False
@@ -85,8 +79,10 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 	def run(self):
 		r = rospy.Rate(self.freq) # 500hz
 		while not rospy.is_shutdown():
-			self.predict()
-			
+			if(useUL):
+				self.predictUL()
+			else:
+				self.predictFT()
 			self.phase_msg.data = self.phase        	
 			self.phase_pub.publish(self.phase_msg)
 			self.leg_pub.publish(self.phase_msg)
