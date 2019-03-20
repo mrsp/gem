@@ -5,6 +5,12 @@ GEM is an unsupervised learning framework which employs a 2D latent space and Ga
 
 Nevertheless, GEM can be used for real-time gait phase estimation without training based on the contact wrenches and optionally kinematics. The latter functionality facilitates the case where not enough training data can be obtained.
 
+
+Video: https://www.youtube.com/watch?v=w09yb81IXpQ
+
+Papers: 
+* Unsupervised Gait Phase Estimation for Humanoid Robot Walking (to appear at Intl. Conf. on Robotics and Automation (ICRA), 2019)
+
 ## Training
 Solely proprioceptive sensing is utilized in training, namely joint encoder, F/T, and IMU.
 
