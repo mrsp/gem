@@ -5,7 +5,7 @@
 '''
  * GeM - Gait-phase Estimation Module
  *
- * Copyright 2017-2018 Stylianos Piperakis and Stavros Timotheatos, Foundation for Research and Technology Hellas (FORTH)
+ * Copyright 2018-2019 Stylianos Piperakis, Foundation for Research and Technology Hellas (FORTH)
  * License: BSD
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,7 @@ from sklearn.cluster import KMeans
 #import keras
 from keras.layers import Input, Dense
 from keras.models import Model
+from Gaussian import Gaussian
 
 class GeM():
     def __init__(self):
@@ -51,10 +52,9 @@ class GeM():
         self.pca_dim = False
         self.gmm_cl_id = False
         self.kmeans_cl_id = False
+        self.gs = Gaussian()
 
-
-
-	
+        self.firstun = True
         input_= Input(shape=(11,))
         # "encoded" is the encoded representation of the input
         encoded = Dense(5, activation='selu')(input_)
@@ -76,6 +76,9 @@ class GeM():
         self.decoder = Model(encoded_input, deco)
         self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
 	
+    def setFrames(self,lfoot_frame_,rfoot_frame_):
+        self.lfoot_frame = lfoot_frame_
+        self.rfoot_Frame = rfoot_frame_
 
     def fit(self,data_train,red,cl):
         self.data_train = data_train
@@ -107,19 +110,34 @@ class GeM():
 
     def predict(self, data_):
 
+
         if(self.pca_dim):
             reduced_data = self.pca.transform(data_.reshape(1,-1))
         else:
             reduced_data = self.encoder.predict(data_.reshape(1,-1))
-            print('Uncomment')
 
 
         if(self.gmm_cl_id):
-            return self.gmm.predict(reduced_data), reduced_data
+            gait_phase = self.gmm.predict(reduced_data), reduced_data
         elif(self.kmeans_cl_id):
-            return self.kmeans.predict(reduced_data), reduced_data
+            gait_phase = self.kmeans.predict(reduced_data), reduced_data
         else:
-            print('Error')
+            print('Unrecognired Training Module')
+
+        if(self.firstun == False):
+            if(gait_phase == 0):
+                self.support_leg = lfoot_frame
+            elif(gait_phase == 2):
+                self.support_leg = rfoot_frame
+        else:
+            if(data_[2]>0):
+                self.support_leg = lfoot_frame
+            else:
+                self.support_leg = rfoot_frame
+            
+            self.firstun = False
+
+        return gait_phase 
 
     def reducePCA(self,data_train):
         self.pca.fit(data_train)
@@ -150,7 +168,84 @@ class GeM():
         self.predicted_labels_train = self.kmeans.predict(self.reduced_data_train)
 
 
+    def getSupportLeg():
+        return self.support_leg
+
+    def computeForceContactProb(self,  fmin,  sigma,  f):
+        return 1.000 - self.gs.cdf(fmin, f, sigma)
+
+    def computeCOPContactProb(self, max,  min,  sigma,  cop):
+        if (cop != 0):
+            return gs.cdf(max, cop, sigma) - self.gs.cdf(min, cop, sigma)
+        else:
+            return 0
+        
+
+    def computeContactProb(self, lf,  rf,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc):
+
+        plf = self.computeForceContactProb(lfmin, sigmalf, lf)
+        prf = self.computeForceContactProb(rfmin, sigmarf, rf)
+        plc = self.computeCOPContactProb(xmax, xmin, sigmalc, coplx) * self.computeCOPContactProb(ymax, ymin, sigmalc, coply)
+        prc = self.computeCOPContactProb(xmax, xmin, sigmarc, coprx) * self.computeCOPContactProb(ymax, ymin, sigmarc, copry)
+        self.pr = prf * prc
+        self.pl = plf * plc
+        p = self.pl + self.pr
+
+        if (p != 0):
+            self.pl = self.pl / p
+            self.pr = self.pr / p
+        else:
+            self.pl = 0
+            self.pr = 0
+
+    def predictFT(self, lf,  rf,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc):
+
+        self.computeContactProb(lf,  rf,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc)
+
+        if(self.firstrun):
+            if(self.pl > self.pr):
+                self.support_leg = lfoot_frame
+            else:
+                self.support_leg = rfoot_frame
+            self.firstun = False
 
 
 
+        if (self.pl >= 0.5 and self.pr <= 0.5):
+            gait_phase = 0
+            self.support_leg = lfoot_frame
+        elif(self.pr >= 0.5 and self.pl <= 0.5):
+            gait_phase = 1
+            self.support_leg = rfoot_frame
+        elif(self.pr >= 0.5 and self.pl >= 0.5):
+            gait_phase = 2
+        else:
+            gait_phase = -1
 
+        return gait_phase
+
+
+
+    def predictFTKin(self, lf,  rf,  coplx,  coply,  coprx,  copry, vl, vr, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc, velThres):
+
+        self.computeContactProb(lf,  rf,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc)
+        
+        if(self.firstrun):
+            if(self.pl > self.pr):
+                self.support_leg = lfoot_frame
+            else:
+                self.support_leg = rfoot_frame
+            self.firstun = False
+        
+        if ((self.pl >= 0.5 and self.pr <= 0.5) and (np.linalg.norm(vl) <= velThres and np.linalg.norm(vr) >= velThres)):
+            gait_phase = 0
+            self.support_leg = lfoot_frame
+        elif((self.pr >= 0.5 and self.pl <= 0.5) and (np.linalg.norm(vr) <= velThres and np.linalg.norm(vl) >= velThres)):
+            gait_phase = 1
+            self.support_leg = rfoot_frame
+        elif((self.pr >= 0.5 and self.pl >= 0.5) and (np.linalg.norm(vr) <= velThres and np.linalg.norm(vl) <= velThres)):
+            gait_phase = 2
+        else:
+            gait_phase = -1
+
+        return gait_phase

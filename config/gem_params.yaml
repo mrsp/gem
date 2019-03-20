@@ -1,18 +1,37 @@
-gem_left_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/left"
-gem_right_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/right"
-gem_imu_topic: "/pelvisMiddleImu/imu"
-gem_com_topic: "/SERoW/rel_CoM/pose"
-gem_cf: True
-gem_freq: 500
-gem_imu_freq: 500
-gem_cf_a : 0.98
-gem_plot_results: True
-gem_gt_comparison: True
-gem_dim_reduction: "autoencoders"
-gem_clustering: "gmm"
-gem_train_path: "/home/master/Desktop/GEM_test_valkyrie"
-use_UL: True
-gem_lfoot_torque_bias: [0, 0, 0]
-gem_lfoot_force_bias: [0,0,-19.1734]
-gem_rfoot_torque_bias: [0, 0, 0]
+#Common Configuration Parameters
+gem_left_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/left"  #left foot FT
+gem_right_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/right" #right foot FT
+gem_freq: 200    #min freq of all topics
+gem_lfoot_frame: "LFoot"   #left foot frame 
+gem_rfoot_frame: "RFoot"   #right foot frame 
+use_UL: True  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
+
+#Unsupervisead Gait Phase Learning Parameters
+#Only if use_UL is True
+gem_imu_topic: "/pelvisMiddleImu/imu" # base_link (body) IMU
+gem_com_topic: "/SERoW/rel_CoM/pose"  #relative to base_link (body) CoM - computed with kinematics
+gem_cf: True #use complimentary filtering if orientation is not provided in IMU topic
+gem_cf_a : 0.98  #complimentary filter parameter alpha
+gem_plot_results: True #plot the results only works when Dimensionality Reduction is performed
+gem_gt_comparison: True  #compare to ground-truth, to do so user must supply true friction coefficient mu and ground reaction forces and torques.
+gem_save: True  #Save the Training Results to load in real-time
+gem_dim_reduction: "autoencoders" #autoencoders or pca supported at the current time
+gem_clustering: "gmm" #gmm or kmeans supported at the current time
+gem_train_path: "/Users/ownage/Desktop/gem/src/GEM_test_valkyrie" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
+gem_lfoot_torque_bias: [0, 0, 0] #left foot FT bias  
+gem_lfoot_force_bias: [0,0,-19.1734] 
+gem_rfoot_torque_bias: [0, 0, 0] #right foot FT bias 
 gem_rfoot_force_bias: [0,0,-17.1439]
+
+#Custom Gait Phase Estimation Parameters if no learning was performed
+#Only if use_UL is False
+gem_foot_xmax: 0.1          #Foot Polygon xmax
+gem_foot_xmin: -0.1         #Foot Polygon xmin
+gem_foot_ymax: 0.05         #Foot Polygon ymax
+gem_foot_ymin: -0.05        #Foot Polygon ymin
+gem_lfoot_force_thres: 15   #left foot contact thres 
+gem_rfoot_force_thres: 15   #right foot contact thres 
+gem_lforce_std: 2.2734      #left foot force standard deviation
+gem_rforce_std: 5.6421      #right foot force standard deviation
+gem_lcop_std: 0.005         #left foot COP standard deviation
+gem_rcop_std: 0.005         #right foot COP standard deviation

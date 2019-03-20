@@ -5,7 +5,7 @@
 '''
  * GeM - Gait-phase Estimation Module
  *
- * Copyright 2017-2018 Stylianos Piperakis and Stavros Timotheatos, Foundation for Research and Technology Hellas (FORTH)
+ * Copyright 2018-2019 Stylianos Piperakis and Stavros Timotheatos, Foundation for Research and Technology Hellas (FORTH)
  * License: BSD
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
 '''
+
 
 import numpy as np
 from scipy import linalg
