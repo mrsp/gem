@@ -3,6 +3,7 @@ Gait-phase Estimation Module (GEM) for Humanoid Robot Walking. The code is open-
 
 GEM is an unsupervised learning framework which employs a 2D latent space and Gaussian Mixture Models (GMMs) to facilitate accurate prediction/classification of the gait phase during locomotion.
 
+Nevertheless, GEM can be used for real-time gait phase estimation without training based on the contact wrenches and optionally kinematics. The latter functionality facilitates the case where not enough training data can be obtained.
 
 ## Training
 Solely proprioceptive sensing is utilized in training, namely joint encoder, F/T, and IMU.
@@ -14,7 +15,7 @@ Solely proprioceptive sensing is utilized in training, namely joint encoder, F/T
 
 
 ## Real-time Gait-Phase Prediction
-GEM can be readily employed in real-time for estimating the gait phase. 
+GEM can be readily employed in real-time for estimating the gait phase. The latter is accomplished by either loading a trained GEM python module and use it for real-time preditiction or by utilizying GEM for real-time estimation based on the sensed contact wrenches and optionally leg kinematics.
 
 <p align="center">
   <img width="708" height="393" src="img/gem02.png">
@@ -30,6 +31,7 @@ These instructions will get you a copy of the project up and running on your loc
 * ROS indigo and later
 * Sklearn 
 * Keras 
+* tested on python3 (3.6.5) and python (2.7.2)
 
 ## Installing
 * pip install sklearn
