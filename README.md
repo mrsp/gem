@@ -37,11 +37,13 @@ These instructions will get you a copy of the project up and running on your loc
 * ROS indigo and later
 * Sklearn 
 * Keras 
+* tensorflow
 * tested on python3 (3.6.5) and python (2.7.2)
 
 ## Installing
 * pip install sklearn
 * pip install keras
+* pip install tensorflow
 * git clone https://github.com/mrsp/gem.git
 * catkin_make
 * If you are using catkin tools run: catkin build  

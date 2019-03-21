@@ -4,7 +4,7 @@ gem_right_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/right"
 gem_freq: 200    #min freq of all topics
 gem_lfoot_frame: "LFoot"   #left foot frame 
 gem_rfoot_frame: "RFoot"   #right foot frame 
-use_UL: True  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
+useUL: True  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
 
 #Unsupervisead Gait Phase Learning Parameters
 #Only if use_UL is True
@@ -17,7 +17,7 @@ gem_gt_comparison: True  #compare to ground-truth, to do so user must supply tru
 gem_save: True  #Save the Training Results to load in real-time
 gem_dim_reduction: "autoencoders" #autoencoders or pca supported at the current time
 gem_clustering: "gmm" #gmm or kmeans supported at the current time
-gem_train_path: "/Users/ownage/Desktop/gem/src/GEM_test_valkyrie" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
+gem_train_path: "/home/master/gem_ws/src/gem/src/GEM_test_valkyrie" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
 gem_lfoot_torque_bias: [0, 0, 0] #left foot FT bias  
 gem_lfoot_force_bias: [0,0,-19.1734] 
 gem_rfoot_torque_bias: [0, 0, 0] #right foot FT bias 

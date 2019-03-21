@@ -63,10 +63,10 @@ class  gem_ros():
 		self.phase_msg = Int32()
 		self.phase = -1	
 		self.support_msg = String()
+		self.support_leg = "None"
+		self.useUL = rospy.get_param('useUL')
 
-		useUL = rospy.get_param('useUL')
-
-		if(useUL):
+		if(self.useUL):
 			imu_topic = rospy.get_param('gem_imu_topic')
 			com_topic = rospy.get_param('gem_com_topic')
 			path = rospy.get_param('gem_train_path') 	
@@ -74,15 +74,15 @@ class  gem_ros():
 			self.com_sub  = rospy.Subscriber(imu_topic,Imu,  self.imucb)
 			self.imu_inc = False
 			self.com_inc = False
-			f = open(path+'/gem.save', 'rb')
+			f = open(path+'/gem_train.save', 'rb')
 			self.g = pickle.load(f)
 			f.close()
-			f = open(path+'/gem_tools.save', 'rb')
+			f = open(path+'/gem_train_tools.save', 'rb')
 			self.gt = pickle.load(f)
 			f.close()
 		else:
 			self.g = GeM()
-			g.setFrames(rospy.get_param('gem_lfoot_frame'), rospy.get_param('gem_rfoot_frame'))
+			self.g.setFrames(rospy.get_param('gem_lfoot_frame'), rospy.get_param('gem_rfoot_frame'))
 			self.xmax = rospy.get_param('gem_foot_xmax')
 			self.xmin = rospy.get_param('gem_foot_xmin')
 			self.ymax = rospy.get_param('gem_foot_ymax')
@@ -149,7 +149,7 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 				coprx = 0
 				copry = 0
 
-			self.phase = self.predictFT(lfz,  rfz,  coplx,  coply,  coprx,  copry, self.xmax,
+			self.phase = self.g.predictFT(lfz,  rfz,  coplx,  coply,  coprx,  copry, self.xmax,
 			self.xmin, self.ymax, self.ymin, self.lfmin, self.rfmin, self.sigmalf, self.sigmarf, self.sigmalc, self.sigmarc)
 			self.support_leg = self.g.getSupportLeg()
 
@@ -157,7 +157,7 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 	def run(self):
 		r = rospy.Rate(self.freq) 
 		while not rospy.is_shutdown():
-			if(useUL):
+			if(self.useUL):
 				self.predictUL()
 			else:
 				self.predictFT()
@@ -169,7 +169,7 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
    		
 if __name__ == "__main__":
 	gr = gem_ros()
-    try:
+	try:
 		gr.run()
-    except rospy.ROSInterruptException:
+	except rospy.ROSInterruptException:
 		pass

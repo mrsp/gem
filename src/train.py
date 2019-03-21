@@ -93,8 +93,8 @@ if __name__ == "__main__":
 
 
 	if(config['gem_save']):
-		pickle.dump(g, open('gem_train.save','wb'))
-		pickle.dump(gt, open('gem_train_tools.save','wb'))
+		pickle.dump(g, open(path+'/gem_train.save','wb'))
+		pickle.dump(gt, open(path+'/gem_train_tools.save','wb'))
 
 
 	print('Training Finished')

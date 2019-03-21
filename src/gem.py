@@ -54,7 +54,7 @@ class GeM():
         self.kmeans_cl_id = False
         self.gs = Gaussian()
 
-        self.firstun = True
+        self.firstrun = True
         input_= Input(shape=(11,))
         # "encoded" is the encoded representation of the input
         encoded = Dense(5, activation='selu')(input_)
@@ -78,7 +78,7 @@ class GeM():
 	
     def setFrames(self,lfoot_frame_,rfoot_frame_):
         self.lfoot_frame = lfoot_frame_
-        self.rfoot_Frame = rfoot_frame_
+        self.rfoot_frame = rfoot_frame_
 
     def fit(self,data_train,red,cl):
         self.data_train = data_train
@@ -124,18 +124,18 @@ class GeM():
         else:
             print('Unrecognired Training Module')
 
-        if(self.firstun == False):
+        if(self.firstrun == False):
             if(gait_phase == 0):
-                self.support_leg = lfoot_frame
-            elif(gait_phase == 2):
-                self.support_leg = rfoot_frame
+                self.support_leg = self.lfoot_frame
+            elif(gait_phase == 1):
+                self.support_leg = self.rfoot_frame
         else:
             if(data_[2]>0):
-                self.support_leg = lfoot_frame
+                self.support_leg = self.lfoot_frame
             else:
-                self.support_leg = rfoot_frame
+                self.support_leg = self.rfoot_frame
             
-            self.firstun = False
+            self.firstrun = False
 
         return gait_phase 
 
@@ -168,7 +168,7 @@ class GeM():
         self.predicted_labels_train = self.kmeans.predict(self.reduced_data_train)
 
 
-    def getSupportLeg():
+    def getSupportLeg(self):
         return self.support_leg
 
     def computeForceContactProb(self,  fmin,  sigma,  f):
@@ -176,7 +176,7 @@ class GeM():
 
     def computeCOPContactProb(self, max,  min,  sigma,  cop):
         if (cop != 0):
-            return gs.cdf(max, cop, sigma) - self.gs.cdf(min, cop, sigma)
+            return self.gs.cdf(max, cop, sigma) - self.gs.cdf(min, cop, sigma)
         else:
             return 0
         
@@ -204,19 +204,19 @@ class GeM():
 
         if(self.firstrun):
             if(self.pl > self.pr):
-                self.support_leg = lfoot_frame
+                self.support_leg = self.lfoot_frame
             else:
-                self.support_leg = rfoot_frame
-            self.firstun = False
+                self.support_leg = self.rfoot_frame
+            self.firstrun = False
 
 
 
         if (self.pl >= 0.5 and self.pr <= 0.5):
             gait_phase = 0
-            self.support_leg = lfoot_frame
+            self.support_leg = self.lfoot_frame
         elif(self.pr >= 0.5 and self.pl <= 0.5):
             gait_phase = 1
-            self.support_leg = rfoot_frame
+            self.support_leg = self.rfoot_frame
         elif(self.pr >= 0.5 and self.pl >= 0.5):
             gait_phase = 2
         else:
@@ -232,17 +232,17 @@ class GeM():
         
         if(self.firstrun):
             if(self.pl > self.pr):
-                self.support_leg = lfoot_frame
+                self.support_leg = self.lfoot_frame
             else:
-                self.support_leg = rfoot_frame
-            self.firstun = False
+                self.support_leg = self.rfoot_frame
+            self.firstrun = False
         
         if ((self.pl >= 0.5 and self.pr <= 0.5) and (np.linalg.norm(vl) <= velThres and np.linalg.norm(vr) >= velThres)):
             gait_phase = 0
-            self.support_leg = lfoot_frame
+            self.support_leg = self.lfoot_frame
         elif((self.pr >= 0.5 and self.pl <= 0.5) and (np.linalg.norm(vr) <= velThres and np.linalg.norm(vl) >= velThres)):
             gait_phase = 1
-            self.support_leg = rfoot_frame
+            self.support_leg = self.rfoot_frame
         elif((self.pr >= 0.5 and self.pl >= 0.5) and (np.linalg.norm(vr) <= velThres and np.linalg.norm(vl) <= velThres)):
             gait_phase = 2
         else:
