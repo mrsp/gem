@@ -251,7 +251,7 @@ class GeM():
             self.computeContactProb(coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalc, sigmarc)
 
         if(useKin):
-            self.computeVelProb(lv, rv, lvelTresh, rvelTresh, sigmalv, sigmarv):
+            self.computeVelProb(lv, rv, lvelTresh, rvelTresh, sigmalv, sigmarv)
 
         p = self.pl + self.pr
 

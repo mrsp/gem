@@ -6,7 +6,7 @@ gem_lfoot_frame: "LFoot"   #left foot frame
 gem_rfoot_frame: "RFoot"   #right foot frame 
 
 #Unsupervisead Gait Phase Learning Parameters
-useUL: True  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
+useUL: False  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
 #Only if use_UL is True
 gem_imu_topic: "/pelvisMiddleImu/imu" # base_link (body) IMU
 gem_com_topic: "/SERoW/rel_CoM/pose"  #relative to base_link (body) CoM - computed with kinematics

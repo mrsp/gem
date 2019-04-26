@@ -43,6 +43,8 @@ from std_msgs.msg import Int32
 from std_msgs.msg import String 
 from geometry_msgs.msg import WrenchStamped
 from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import TwistStamped
+
 from sensor_msgs.msg import Imu
 from gem import Gaussian 
 
@@ -99,11 +101,11 @@ class  gem_ros():
 			self.sigmarv = rospy.get_param('gem_rfoot_vel_std',0.1)
 			self.lvTresh = rospy.get_param('gem_lfoot_vel_thres',0.1)
 			self.rvTresh = rospy.get_param('gem_rfoot_vel_thres',0.1)
-			if(useKin):
+			if(self.useKin):
 				lvel_topic = rospy.get_param('gem_lfoot_vel_topic',"/RFtwist")
 				rvel_topic = rospy.get_param('gem_rfoot_vel_topic',"/LFtwist")
-				self.lvel_sub  = rospy.Subscriber(lvel_topic, Twist,  self.lfvelcb)
-				self.rvel_sub  = rospy.Subscriber(rvel_topic, Twist,  self.rfvelcb)
+				self.lvel_sub  = rospy.Subscriber(lvel_topic, TwistStamped,  self.lfvelcb)
+				self.rvel_sub  = rospy.Subscriber(rvel_topic, TwistStamped,  self.rfvelcb)
 
 		print('Gait-Phase Estimation Module Initialized Successfully')
 	
@@ -185,10 +187,8 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 			lty = self.lwrench.wrench.torque.y
 			rtx = self.rwrench.wrench.torque.x
 			rty = self.rwrench.wrench.torque.y
-
-		    lv = np.array(self.lfvel.linear.x,self.lfvel.linear.y, self.lfvel.linear.z)
-		    rv = np.array(self.rfvel.linear.x,self.rfvel.linear.y, self.rfvel.linear.z)
-
+			lv = np.array([self.lfvel.twist.linear.x,self.lfvel.twist.linear.y, self.lfvel.twist.linear.z])
+			rv = np.array([self.rfvel.twist.linear.x,self.rfvel.twist.linear.y, self.rfvel.twist.linear.z])
 			if(lfz>0):
 				coplx = -lty/lfz
 				coply = ltx/lfz
