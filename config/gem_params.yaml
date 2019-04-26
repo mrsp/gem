@@ -4,9 +4,9 @@ gem_right_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/right"
 gem_freq: 200    #min freq of all topics
 gem_lfoot_frame: "LFoot"   #left foot frame 
 gem_rfoot_frame: "RFoot"   #right foot frame 
-useUL: True  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
 
 #Unsupervisead Gait Phase Learning Parameters
+useUL: True  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
 #Only if use_UL is True
 gem_imu_topic: "/pelvisMiddleImu/imu" # base_link (body) IMU
 gem_com_topic: "/SERoW/rel_CoM/pose"  #relative to base_link (body) CoM - computed with kinematics
@@ -25,13 +25,21 @@ gem_rfoot_force_bias: [0,0,-17.1439]
 
 #Custom Gait Phase Estimation Parameters if no learning was performed
 #Only if use_UL is False
-gem_foot_xmax: 0.1          #Foot Polygon xmax
-gem_foot_xmin: -0.1         #Foot Polygon xmin
-gem_foot_ymax: 0.05         #Foot Polygon ymax
-gem_foot_ymin: -0.05        #Foot Polygon ymin
-gem_lfoot_force_thres: 15   #left foot contact thres 
-gem_rfoot_force_thres: 15   #right foot contact thres 
+useCOP: True  #Use the full contact wrench in the detection process
+gem_foot_xmax: 0.1136       #Foot Polygon xmax
+gem_foot_xmin: -0.1564      #Foot Polygon xmin
+gem_foot_ymax: 0.135        #Foot Polygon ymax
+gem_foot_ymin: -0.135       #Foot Polygon ymin
+gem_lfoot_force_thres: 25   #left foot contact thres 
+gem_rfoot_force_thres: 25   #right foot contact thres 
 gem_lforce_std: 2.2734      #left foot force standard deviation
 gem_rforce_std: 5.6421      #right foot force standard deviation
 gem_lcop_std: 0.005         #left foot COP standard deviation
 gem_rcop_std: 0.005         #right foot COP standard deviation
+useKin: False #Use differential kinematic information in the detection process
+gem_lfoot_vel_topic: "/SERoW/LLeg/vel"
+gem_rfoot_vel_topic: "/SERoW/RLeg/vel"
+gem_lfoot_vel_std: 0.05
+gem_rfoot_vel_std: 0.05
+gem_lfoot_vel_thres: 0.1
+gem_rfoot_vel_thres: 0.1

@@ -179,28 +179,46 @@ class GeM():
             return self.gs.cdf(max, cop, sigma) - self.gs.cdf(min, cop, sigma)
         else:
             return 0
-        
 
-    def computeContactProb(self, lf,  rf,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc):
+    def computeKinContactProb(self,  vmin,  sigma,  v):
+        return 1.000 - self.gs.cdf(vmin, v, sigma)
 
+    def computeForceProb(self,lf,  rf, sigmalf, sigmarf):
         plf = self.computeForceContactProb(lfmin, sigmalf, lf)
         prf = self.computeForceContactProb(rfmin, sigmarf, rf)
+        self.pr = prf 
+        self.pl = plf 
+
+    def computeContactProb(self,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalc, sigmarc):
+
+       
         plc = self.computeCOPContactProb(xmax, xmin, sigmalc, coplx) * self.computeCOPContactProb(ymax, ymin, sigmalc, coply)
         prc = self.computeCOPContactProb(xmax, xmin, sigmarc, coprx) * self.computeCOPContactProb(ymax, ymin, sigmarc, copry)
-        self.pr = prf * prc
-        self.pl = plf * plc
+        self.pr = self.pr * prc
+        self.pl = self.pl * plc
+
+    def computeVelProb(self, lv, rv, lvelTresh, rvelTresh, sigmalv, sigmarv):
+        plv =  self.computeKinContactProb(lvelTresh,  sigmalv,  np.linalg.norm(lv))
+        prv =  self.computeKinContactProb(rvelTresh,  sigmarv,  np.linalg.norm(rv))
+
+        self.pr = self.pr * prv
+        self.pl = self.pl * plv
+
+    def predictFT(self, lf,  rf, lfmin, rfmin, sigmalf, sigmarf, useCOP, coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin,  sigmalc, sigmarc):
+
+        self.computeForceProb(lf,  rf, sigmalf, sigmarf)
+
+        if(useCOP):
+            self.computeContactProb(coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalc, sigmarc)
+
         p = self.pl + self.pr
 
         if (p != 0):
-            self.pl = self.pl / p
-            self.pr = self.pr / p
+            self.pl = self.pl / p + 0.5
+            self.pr = self.pr / p + 0.5
         else:
             self.pl = 0
             self.pr = 0
-
-    def predictFT(self, lf,  rf,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc):
-
-        self.computeContactProb(lf,  rf,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc)
 
         if(self.firstrun):
             if(self.pl > self.pr):
@@ -211,13 +229,13 @@ class GeM():
 
 
 
-        if (self.pl >= 0.5 and self.pr <= 0.5):
+        if (self.pl > 0.5 and self.pr <= 0.5):
             gait_phase = 0
             self.support_leg = self.lfoot_frame
-        elif(self.pr >= 0.5 and self.pl <= 0.5):
+        elif(self.pr > 0.5 and self.pl <= 0.5):
             gait_phase = 1
             self.support_leg = self.rfoot_frame
-        elif(self.pr >= 0.5 and self.pl >= 0.5):
+        elif(self.pr > 0.5 and self.pl > 0.5):
             gait_phase = 2
         else:
             gait_phase = -1
@@ -226,10 +244,24 @@ class GeM():
 
 
 
-    def predictFTKin(self, lf,  rf,  coplx,  coply,  coprx,  copry, vl, vr, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc, velThres):
+    def predictFTKin(self, lf,  rf, lfmin, rfmin, sigmalf, sigmarf, useCOP, coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin,  sigmalc, sigmarc, useKin, lv, rv, lvelTresh, rvelTresh, sigmalv, sigmarv):
+        self.computeForceProb(lf,  rf, sigmalf, sigmarf)
 
-        self.computeContactProb(lf,  rf,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalf, sigmarf, sigmalc, sigmarc)
-        
+        if(useCOP):
+            self.computeContactProb(coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalc, sigmarc)
+
+        if(useKin):
+            self.computeVelProb(lv, rv, lvelTresh, rvelTresh, sigmalv, sigmarv):
+
+        p = self.pl + self.pr
+
+        if (p != 0):
+            self.pl = self.pl / p + 0.5
+            self.pr = self.pr / p + 0.5
+        else:
+            self.pl = 0
+            self.pr = 0
+            
         if(self.firstrun):
             if(self.pl > self.pr):
                 self.support_leg = self.lfoot_frame
@@ -237,13 +269,14 @@ class GeM():
                 self.support_leg = self.rfoot_frame
             self.firstrun = False
         
-        if ((self.pl >= 0.5 and self.pr <= 0.5) and (np.linalg.norm(vl) <= velThres and np.linalg.norm(vr) >= velThres)):
+ 
+        if (self.pl > 0.5 and self.pr <= 0.5):
             gait_phase = 0
             self.support_leg = self.lfoot_frame
-        elif((self.pr >= 0.5 and self.pl <= 0.5) and (np.linalg.norm(vr) <= velThres and np.linalg.norm(vl) >= velThres)):
+        elif(self.pr > 0.5 and self.pl <= 0.5):
             gait_phase = 1
             self.support_leg = self.rfoot_frame
-        elif((self.pr >= 0.5 and self.pl >= 0.5) and (np.linalg.norm(vr) <= velThres and np.linalg.norm(vl) <= velThres)):
+        elif(self.pr > 0.5 and self.pl > 0.5):
             gait_phase = 2
         else:
             gait_phase = -1
