@@ -3,7 +3,7 @@ Gait-phase Estimation Module (GEM) for Humanoid Robot Walking. The code is open-
 
 GEM is an unsupervised learning framework which employs a 2D latent space and Gaussian Mixture Models (GMMs) to facilitate accurate prediction/classification of the gait phase during locomotion.
 
-Nevertheless, GEM can be used for real-time gait phase estimation without training based on the contact wrenches and optionally kinematics. The latter functionality facilitates the case where not enough training data can be obtained.
+Nevertheless, GEM can be used for real-time gait phase estimation without training based on the contact wrenches and optionally kinematics. The latter functionality facilitates the case where not enough training data can be obtained. A C++ implementation is available as part of the State Estimation for RObot Walking (SEROW) framework at https://github.com/mrsp/serow 
 
 
 Video: https://www.youtube.com/watch?v=w09yb81IXpQ
