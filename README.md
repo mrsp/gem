@@ -9,7 +9,7 @@ Nevertheless, GEM can be used for real-time gait phase estimation without traini
 Video: https://www.youtube.com/watch?v=w09yb81IXpQ
 
 Papers: 
-* Unsupervised Gait Phase Estimation for Humanoid Robot Walking (to appear at Intl. Conf. on Robotics and Automation (ICRA), 2019)
+* Unsupervised Gait Phase Estimation for Humanoid Robot Walking (Intl. Conf. on Robotics and Automation (ICRA), 2019)
 
 ## Training
 Solely proprioceptive sensing is utilized in training, namely joint encoder, F/T, and IMU.
