@@ -1,12 +1,12 @@
 %%
 %Set the required paths and topics
-saveData = 0;
-pathTorosbag = '~/Desktop/cogimon_gem.bag';
+saveData = 1;
+pathTorosbag = '~/Desktop/cogimon_standstill_gem.bag';
 imu_topic = '/xbotcore/cogimon/imu/imu_link';
 lft_topic = '/xbotcore/cogimon/ft/l_leg_ft';
 rft_topic = '/xbotcore/cogimon/ft/r_leg_ft';
 com_topic = '/SERoW/rel_CoM/pose';
-save_dir = 'GEM_test_cogimon';
+save_dir = 'GEM_test_cogimon_standstill_gem';
 mkdir(save_dir);
 %%
 %Import the bagfile
