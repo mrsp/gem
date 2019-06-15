@@ -55,7 +55,7 @@ def load_config(config_file):
 
 if __name__ == "__main__":
 
-	config = load_config('../config/gem_params.yaml')
+	config = load_config(sys.argv[1])
 	path = config['gem_train_path']
 	gt = GeM_tools(comp_filtering=config['gem_cf'], freq=config['gem_freq'], a=config['gem_cf_a'], gt_comparison=config['gem_gt_comparison'])
 	brf = config['gem_rfoot_force_bias']

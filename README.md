@@ -52,7 +52,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Train the Valkyrie module
 * Download the valkyrie bag file from [valk_bagfile](http://users.ics.forth.gr/~spiperakis/gem_test_valkyrie.zip)
 * Uncompress
-* train: python train.py 
+* train: python train.py '../config/gem_params.yaml'
 
 ### Train your own module
 * Save the corresponding files in a similar form as the valkyrie bag file from [valk_bagfile](http://users.ics.forth.gr/~spiperakis/gem_test_valkyrie.zip)

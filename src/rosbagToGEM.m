@@ -1,16 +1,16 @@
 %%
 %Set the required paths and topics
 saveData = 0;
-pathTorosbag = '~/Desktop/centauro_walk.bag';
-imu_topic = '/xbotcore/imu/imu_link';
-lft_topic = ' ';
-rft_topic = ' ';
-com_topic = ' ';
-dir = 'GEM_test_cogimon';
-mkdir(dir);
+pathTorosbag = '~/Desktop/cogimon_gem.bag';
+imu_topic = '/xbotcore/cogimon/imu/imu_link';
+lft_topic = '/xbotcore/cogimon/ft/l_leg_ft';
+rft_topic = '/xbotcore/cogimon/ft/r_leg_ft';
+com_topic = '/SERoW/rel_CoM/pose';
+save_dir = 'GEM_test_cogimon';
+mkdir(save_dir);
 %%
 %Import the bagfile
-bag=rosbag(path);
+bag=rosbag(pathTorosbag);
 
 %Base IMU
 bagSelection = select(bag,'Topic',imu_topic);
@@ -65,15 +65,16 @@ rtZ = test.Data;
 
 
 %CoM 
-test = timeseries(bagSelection,'Point.X');
+bagSelection = select(bag,'Topic',com_topic);
+test = timeseries(bagSelection,'Pose.Position.X');
 c_encx = test.Data;
-test = timeseries(bagSelection,'Point.Y');
+test = timeseries(bagSelection,'Pose.Position.Y');
 c_ency = test.Data;
-test = timeseries(bagSelection,'Point.Z');
+test = timeseries(bagSelection,'Pose.Position.Z');
 c_encz = test.Data;
 
 if(saveData == 1)
-    cd dir
+    cd(save_dir)
     dlmwrite('gX.txt',gX)
     dlmwrite('gY.txt',gY)
     dlmwrite('gZ.txt',gZ)
@@ -95,6 +96,7 @@ if(saveData == 1)
     dlmwrite('rtX.txt',rtX)
     dlmwrite('rtY.txt',rtY)
     dlmwrite('rtZ.txt',rtZ)
+    cd ..
 end
 
 
