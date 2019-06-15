@@ -151,8 +151,8 @@ class GeM():
     def reduceAE(self,data_train):
         
         self.autoencoder.fit(data_train, data_train,
-                             epochs=5,
-                             batch_size=14,
+                             epochs=20,
+                             batch_size=7,
                              shuffle=True,
                              validation_data=(data_train, data_train))
         self.reduced_data_train =  self.encoder.predict(data_train)

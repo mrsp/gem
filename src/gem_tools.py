@@ -52,6 +52,7 @@ my_colors = [(0.5,0,0.5),(0,0.5,0.5),(0.8,0.36,0.36)]
 cmap_name = 'my_list'
 my_cmap = LinearSegmentedColormap.from_list(
     cmap_name, my_colors, N=10000)
+color_iter = itertools.cycle(my_colors)
 
 params = {
     'axes.labelsize': 15,
@@ -67,7 +68,6 @@ params = {
 }
 plt.rcParams.update(params)
 
-color_iter = itertools.cycle(my_colors)
 class GeM_tools():
     def __init__(self, comp_filtering=False, freq=500, a=0.9999, gt_comparison=False):
 
