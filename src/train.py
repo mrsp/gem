@@ -67,6 +67,7 @@ if __name__ == "__main__":
 
 	g = GeM()
 	g.setFrames(config['gem_lfoot_frame'], config['gem_rfoot_frame'])
+	g.setDimReduction(config['gem_dim'])
 	data_train = gt.data_train
 	g.fit(data_train, config['gem_dim_reduction'], config['gem_clustering'])
 

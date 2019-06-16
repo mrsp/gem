@@ -46,7 +46,6 @@ from Gaussian import Gaussian
 
 class GeM():
     def __init__(self):
-        self.pca = PCA(n_components=2)
         self.gmm = mixture.GaussianMixture(n_components=3, covariance_type='full', max_iter=100, tol=7e-3, init_params = 'kmeans', n_init=30,warm_start=False,verbose=1)
         self.kmeans = KMeans(init='k-means++',n_clusters=3, n_init=500,tol=6.5e-2)
         self.pca_dim = False
@@ -76,6 +75,11 @@ class GeM():
         self.decoder = Model(encoded_input, deco)
         self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
 	
+    def setDimReduction(self, dim_):
+        self.red_dim = dim_
+        self.pca = PCA(n_components=self.red_dim)
+
+
     def setFrames(self,lfoot_frame_,rfoot_frame_):
         self.lfoot_frame = lfoot_frame_
         self.rfoot_frame = rfoot_frame_
