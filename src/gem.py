@@ -54,31 +54,111 @@ class GeM():
         self.gs = Gaussian()
 
         self.firstrun = True
-        input_= Input(shape=(11,))
-        # "encoded" is the encoded representation of the input
-        encoded = Dense(5, activation='selu')(input_)
-        encoded = Dense(2, activation='selu')(encoded)
-        ## "decoded" is the lossy reconstruction of the input
-        decoded = Dense(5, activation='selu')(encoded)
-        decoded = Dense(11, activation='selu')(decoded)
-        # this model maps an input to its reconstruction
-        self.autoencoder = Model(input_, decoded)
-        # this model maps an input to its encoded representation
-        self.encoder = Model(input_, encoded)
-        # create a placeholder for an encoded (32-dimensional) input
-        encoded_input = Input(shape=(2,))
-        # retrieve the last layer of the autoencoder model
-        deco = self.autoencoder.layers[-2](encoded_input)
-        #deco = self.autoencoder.layers[-2](deco)
-        deco = self.autoencoder.layers[-1](deco)
-        # create the decoder model
-        self.decoder = Model(encoded_input, deco)
-        self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
+
 	
     def setDimReduction(self, dim_):
         self.red_dim = dim_
         self.pca = PCA(n_components=self.red_dim)
-
+        input_= Input(shape=(11,))
+        
+        if(dim_ == 2):
+            # "encoded" is the encoded representation of the input
+            encoded = Dense(5, activation='selu')(input_)
+            encoded = Dense(2, activation='selu')(encoded)
+            ## "decoded" is the lossy reconstruction of the input
+            decoded = Dense(5, activation='selu')(encoded)
+            decoded = Dense(11, activation='selu')(decoded)
+            # this model maps an input to its reconstruction
+            self.autoencoder = Model(input_, decoded)
+            # this model maps an input to its encoded representation
+            self.encoder = Model(input_, encoded)
+            # create a placeholder for an encoded (32-dimensional) input
+            encoded_input = Input(shape=(2,))
+            # retrieve the last layer of the autoencoder model
+            deco = self.autoencoder.layers[-2](encoded_input)
+            #deco = self.autoencoder.layers[-2](deco)
+            deco = self.autoencoder.layers[-1](deco)
+            # create the decoder model
+            self.decoder = Model(encoded_input, deco)
+            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
+        elif(dim_ == 3):
+              # "encoded" is the encoded representation of the input
+            encoded = Dense(6, activation='selu')(input_)
+            encoded = Dense(3, activation='selu')(encoded)
+            ## "decoded" is the lossy reconstruction of the input
+            decoded = Dense(6, activation='selu')(encoded)
+            decoded = Dense(11, activation='selu')(decoded)
+            # this model maps an input to its reconstruction
+            self.autoencoder = Model(input_, decoded)
+            # this model maps an input to its encoded representation
+            self.encoder = Model(input_, encoded)
+            # create a placeholder for an encoded (32-dimensional) input
+            encoded_input = Input(shape=(3,))
+            # retrieve the last layer of the autoencoder model
+            deco = self.autoencoder.layers[-2](encoded_input)
+            #deco = self.autoencoder.layers[-2](deco)
+            deco = self.autoencoder.layers[-1](deco)
+            # create the decoder model
+            self.decoder = Model(encoded_input, deco)
+            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
+        elif(dim_ == 4):
+              # "encoded" is the encoded representation of the input
+            encoded = Dense(8, activation='selu')(input_)
+            encoded = Dense(4, activation='selu')(encoded)
+            ## "decoded" is the lossy reconstruction of the input
+            decoded = Dense(8, activation='selu')(encoded)
+            decoded = Dense(11, activation='selu')(decoded)
+            # this model maps an input to its reconstruction
+            self.autoencoder = Model(input_, decoded)
+            # this model maps an input to its encoded representation
+            self.encoder = Model(input_, encoded)
+            # create a placeholder for an encoded (32-dimensional) input
+            encoded_input = Input(shape=(4,))
+            # retrieve the last layer of the autoencoder model
+            deco = self.autoencoder.layers[-2](encoded_input)
+            #deco = self.autoencoder.layers[-2](deco)
+            deco = self.autoencoder.layers[-1](deco)
+            # create the decoder model
+            self.decoder = Model(encoded_input, deco)
+            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
+        elif(dim_ == 5):
+              # "encoded" is the encoded representation of the input
+            encoded = Dense(8, activation='selu')(input_)
+            encoded = Dense(5, activation='selu')(encoded)
+            ## "decoded" is the lossy reconstruction of the input
+            decoded = Dense(8, activation='selu')(encoded)
+            decoded = Dense(11, activation='selu')(decoded)
+            # this model maps an input to its reconstruction
+            self.autoencoder = Model(input_, decoded)
+            # this model maps an input to its encoded representation
+            self.encoder = Model(input_, encoded)
+            # create a placeholder for an encoded (32-dimensional) input
+            encoded_input = Input(shape=(5,))
+            # retrieve the last layer of the autoencoder model
+            deco = self.autoencoder.layers[-2](encoded_input)
+            #deco = self.autoencoder.layers[-2](deco)
+            deco = self.autoencoder.layers[-1](deco)
+            # create the decoder model
+            self.decoder = Model(encoded_input, deco)
+            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
+        elif(dim_ == 6):
+              # "encoded" is the encoded representation of the input
+            encoded = Dense(6, activation='selu')(input_)
+            ## "decoded" is the lossy reconstruction of the input
+            decoded = Dense(11, activation='selu')(encoded)
+            # this model maps an input to its reconstruction
+            self.autoencoder = Model(input_, decoded)
+            # this model maps an input to its encoded representation
+            self.encoder = Model(input_, encoded)
+            # create a placeholder for an encoded (32-dimensional) input
+            encoded_input = Input(shape=(6,))
+            # retrieve the last layer of the autoencoder model
+            #deco = self.autoencoder.layers[-2](encoded_input)
+            #deco = self.autoencoder.layers[-2](deco)
+            deco = self.autoencoder.layers[-1](encoded_input)
+            # create the decoder model
+            self.decoder = Model(encoded_input, deco)
+            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
 
     def setFrames(self,lfoot_frame_,rfoot_frame_):
         self.lfoot_frame = lfoot_frame_
@@ -155,8 +235,8 @@ class GeM():
     def reduceAE(self,data_train):
         
         self.autoencoder.fit(data_train, data_train,
-                             epochs=20,
-                             batch_size=7,
+                             epochs=30,
+                             batch_size=14,
                              shuffle=True,
                              validation_data=(data_train, data_train))
         self.reduced_data_train =  self.encoder.predict(data_train)
