@@ -165,6 +165,7 @@ class GeM():
         self.rfoot_frame = rfoot_frame_
 
     def fit(self,data_train,red,cl):
+        print("Data Size ",data_train.size)
         self.data_train = data_train
         if red == 'pca':
             print("Dimensionality reduction with PCA")
@@ -235,8 +236,8 @@ class GeM():
     def reduceAE(self,data_train):
         
         self.autoencoder.fit(data_train, data_train,
-                             epochs=30,
-                             batch_size=14,
+                             epochs=100,
+                             batch_size=7,
                              shuffle=True,
                              validation_data=(data_train, data_train))
         self.reduced_data_train =  self.encoder.predict(data_train)

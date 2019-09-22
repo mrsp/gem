@@ -13,12 +13,12 @@ gem_com_topic: "/SERoW/rel_CoM/pose"  #relative to base_link (body) CoM - comput
 gem_cf: True #use complimentary filtering if orientation is not provided in IMU topic
 gem_cf_a : 0.999  #complimentary filter parameter alpha
 gem_plot_results: True #plot the results only works when Dimensionality Reduction is performed
-gem_dim: 3
+gem_dim: 2
 gem_gt_comparison: False  #compare to ground-truth, to do so user must supply true friction coefficient mu and ground reaction forces and torques.
 gem_save: True  #Save the Training Results to load in real-time
 gem_dim_reduction: "autoencoders" #autoencoders or pca supported at the current time
 gem_clustering: "gmm" #gmm or kmeans supported at the current time
-gem_train_path: "/Users/ownage/Desktop/gem/src/GEM_test_cogimon_exp2018_gem" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
+gem_train_path: "/Users/ownage/Desktop/gem/src/GEM_test_cogimon_gem" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
 gem_lfoot_torque_bias: [0, 0, 0] #left foot FT bias  
 gem_lfoot_force_bias: [0,0, 0] 
 gem_rfoot_torque_bias: [0, 0, 0] #right foot FT bias 
