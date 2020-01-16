@@ -236,86 +236,92 @@ class GeM_tools():
 
         self.dfX_train_min = min(self.data_train[:, 0])
         self.dfX_train_max = max(self.data_train[:, 0])
-        if((self.dfX_train_max - self.dfX_train_min) != 0):
-            self.data_train[:, 0] = (self.data_train[:, 0] -self.dfX_train_min) / (self.dfX_train_max - self.dfX_train_min)
-        else:
-            self.data_train[:, 0] = 0.0
+        self.dfX_train_mean = np.mean(self.data_train[:, 0])
+        self.dfX_train_std = np.std(self.data_train[:, 0])
+
 
         self.dfY_train_min = min(self.data_train[:, 1])
         self.dfY_train_max = max(self.data_train[:, 1])
-        if((self.dfY_train_max - self.dfY_train_min) != 0):
-            self.data_train[:, 1] = (self.data_train[:, 1] - self.dfY_train_min) / (self.dfY_train_max - self.dfY_train_min)
-        else:
-            self.data_train[:, 1] = 0.0
-
-
+        self.dfY_train_mean = np.mean(self.data_train[:, 1])
+        self.dfY_train_std = np.std(self.data_train[:, 1])
 
         self.dfZ_train_min = min(self.data_train[:, 2])
         self.dfZ_train_max = max(self.data_train[:, 2])
-        self.data_train[:, 2] = (self.data_train[:, 2] - self.dfZ_train_min) / (self.dfZ_train_max - self.dfZ_train_min)
-        if((self.dfZ_train_max - self.dfZ_train_min) != 0):
-            self.data_train[:, 2] = (self.data_train[:, 2] - self.dfZ_train_min) / (self.dfZ_train_max - self.dfZ_train_min)
-        else:
-            self.data_train[:, 2] = 0.0
-
-
+        self.dfZ_train_mean = np.mean(self.data_train[:, 2])
+        self.dfZ_train_std = np.std(self.data_train[:, 2])
 
         self.dtX_train_min = min(self.data_train[:, 3])
         self.dtX_train_max = max(self.data_train[:, 3])
-        if((self.dtX_train_max - self.dtX_train_min) != 0):
-            self.data_train[:, 3] = (self.data_train[:, 3] - self.dtX_train_min) / (self.dtX_train_max - self.dtX_train_min)
-        else:
-            self.data_train[:, 3] = 0.0
-
+        self.dtX_train_mean = np.mean(self.data_train[:, 3])
+        self.dtX_train_std = np.std(self.data_train[:, 3])
 
         self.dtY_train_min = min(self.data_train[:, 4])
         self.dtY_train_max = max(self.data_train[:, 4])
-        if((self.dtY_train_max - self.dtY_train_min) != 0):
-            self.data_train[:, 4] = (self.data_train[:, 4] - self.dtY_train_min) / (self.dtY_train_max - self.dtY_train_min)
-        else:
-            self.data_train[:, 4] = 0.0
+        self.dtY_train_mean = np.mean(self.data_train[:, 4])
+        self.dtY_train_std = np.std(self.data_train[:, 4])
 
         self.dtZ_train_min = min(self.data_train[:, 5])
         self.dtZ_train_max = max(self.data_train[:, 5])
-        if((self.dtZ_train_max - self.dtZ_train_min) != 0):
-            self.data_train[:, 5] = (self.data_train[:, 5] - self.dtZ_train_min) / (self.dtZ_train_max - self.dtZ_train_min)
-        else:
-            self.data_train[:, 5] = 0.0
+        self.dtZ_train_mean = np.mean(self.data_train[:, 5])
+        self.dtZ_train_std = np.std(self.data_train[:, 5])
+
 
         self.dcX_train_min = min(self.data_train[:, 6])
         self.dcX_train_max = max(self.data_train[:, 6])
-        if((self.dcX_train_max - self.dcX_train_min) != 0):
-            self.data_train[:, 6] = (self.data_train[:, 6] -self.dcX_train_min) / (self.dcX_train_max - self.dcX_train_min)
-        else:
-            self.data_train[:, 6] = 0.0
+        self.dcX_train_mean = np.mean(self.data_train[:, 6])
+        self.dcX_train_std = np.std(self.data_train[:, 6])
+
 
         self.dcY_train_min = min(self.data_train[:, 7])
         self.dcY_train_max = max(self.data_train[:, 7])
-        if((self.dcY_train_max - self.dcY_train_min) != 0):
-            self.data_train[:, 7] = (self.data_train[:, 7] -self.dcY_train_min) / (self.dcY_train_max - self.dcY_train_min)
-        else:
-            self.data_train[:, 7] = 0.0
+        self.dcY_train_mean = np.mean(self.data_train[:, 7])
+        self.dcY_train_std = np.std(self.data_train[:, 7])
+
 
         self.dcZ_train_min = min(self.data_train[:, 8])
         self.dcZ_train_max = max(self.data_train[:, 8])
-        if((self.dcZ_train_max - self.dcZ_train_min) != 0):
-            self.data_train[:, 8] = (self.data_train[:, 8] -self.dcZ_train_min) / (self.dcZ_train_max - self.dcZ_train_min)
-        else:
-            self.data_train[:, 8] = 0.0
+        self.dcZ_train_mean = np.mean(self.data_train[:, 8])
+        self.dcZ_train_std = np.std(self.data_train[:, 8])
+
 
         self.droll_train_min = min(self.data_train[:, 9])
         self.droll_train_max = max(self.data_train[:, 9])
-        if((self.droll_train_max - self.droll_train_min) != 0):
-            self.data_train[:, 9] = (self.data_train[:, 9] -self.droll_train_min) / (self.droll_train_max - self.droll_train_min)
-        else:
-            self.data_train[:, 9] = 0.0
+        self.droll_train_mean = np.mean(self.data_train[:, 9])
+        self.droll_train_std = np.std(self.data_train[:, 9])
 
         self.dpitch_train_min = min(self.data_train[:, 10])
         self.dpitch_train_max = max(self.data_train[:, 10])
-        if((self.dpitch_train_max - self.dpitch_train_min) != 0):
-            self.data_train[:, 10] = (self.data_train[:, 10] -self.dpitch_train_min) / (self.dpitch_train_max - self.dpitch_train_min)
-        else:
-            self.data_train[:, 10] = 0.0
+        self.dpitch_train_mean = np.mean(self.data_train[:, 10])
+        self.dpitch_train_std = np.std(self.data_train[:, 10])
+
+
+
+        '''
+        self.data_train[:, 0] = self.normalize_data(self.data_train[:, 0],self.dfX_train_max, self.dfX_train_min)   
+        self.data_train[:, 1] = self.normalize_data(self.data_train[:, 1],self.dfY_train_max, self.dfY_train_min)   
+        self.data_train[:, 2] = self.normalize_data(self.data_train[:, 2],self.dfZ_train_max, self.dfZ_train_min)   
+        self.data_train[:, 3] = self.normalize_data(self.data_train[:, 3],self.dtX_train_max, self.dtX_train_min)   
+        self.data_train[:, 4] = self.normalize_data(self.data_train[:, 4],self.dtY_train_max, self.dtY_train_min)   
+        self.data_train[:, 5] = self.normalize_data(self.data_train[:, 5],self.dtZ_train_max, self.dtZ_train_min)   
+        self.data_train[:, 6] = self.normalize_data(self.data_train[:, 6],self.dcX_train_max, self.dcX_train_min)   
+        self.data_train[:, 7] = self.normalize_data(self.data_train[:, 7],self.dcY_train_max, self.dcY_train_min)   
+        self.data_train[:, 8] = self.normalize_data(self.data_train[:, 8],self.dcZ_train_max, self.dcZ_train_min)   
+        self.data_train[:, 9] = self.normalize_data(self.data_train[:, 9],self.droll_train_max, self.droll_train_min)   
+        self.data_train[:, 10] = self.normalize_data(self.data_train[:, 10],self.dpitch_train_max, self.dpitch_train_min)   
+        
+        '''
+        self.data_train[:, 0] = self.standarize_data(self.data_train[:, 0],self.dfX_train_mean, self.dfX_train_std)   
+        self.data_train[:, 1] = self.standarize_data(self.data_train[:, 1],self.dfY_train_mean, self.dfY_train_std)   
+        self.data_train[:, 2] = self.standarize_data(self.data_train[:, 2],self.dfZ_train_mean, self.dfZ_train_std)   
+        self.data_train[:, 3] = self.standarize_data(self.data_train[:, 3],self.dtX_train_mean, self.dtX_train_std)   
+        self.data_train[:, 4] = self.standarize_data(self.data_train[:, 4],self.dtY_train_mean, self.dtY_train_std)   
+        self.data_train[:, 5] = self.standarize_data(self.data_train[:, 5],self.dtZ_train_mean, self.dtZ_train_std)   
+        self.data_train[:, 6] = self.standarize_data(self.data_train[:, 6],self.dcX_train_mean, self.dcX_train_std)   
+        self.data_train[:, 7] = self.standarize_data(self.data_train[:, 7],self.dcY_train_mean, self.dcY_train_std)   
+        self.data_train[:, 8] = self.standarize_data(self.data_train[:, 8],self.dcZ_train_mean, self.dcZ_train_std)   
+        self.data_train[:, 9] = self.standarize_data(self.data_train[:, 9],self.droll_train_mean, self.droll_train_std)   
+        self.data_train[:, 10] = self.standarize_data(self.data_train[:, 10],self.dpitch_train_mean, self.dpitch_train_std)   
+      
 
 
         if (self.gt_comparison):
@@ -543,6 +549,24 @@ class GeM_tools():
         output_[10] = dpitch
 
         return output_
+
+
+    def normalize_data(self,din, dmax, dmin):    
+        if(dmax-dmin != 0):
+            dout = (din - dmin)/(dmax-dmin)
+        else:
+            dout =  np.zeros((np.size(din)))
+
+        return dout
+
+    def standarize_data(self,din,dmean,dstd):
+        print(dmean,dstd)
+        if(dstd != 0):
+            dout = (din - dmean)/dstd
+        else:
+            dout =  np.zeros((np.size(din)))
+
+        return dout
 
 
     def genInputCF(self,cX,cY,cZ,accX,accY, accZ, gX, gY, lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ, gt=None):
