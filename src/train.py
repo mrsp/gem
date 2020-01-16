@@ -76,7 +76,11 @@ if __name__ == "__main__":
 		if(config['gem_gt_comparison']):
 			gt.genGroundTruthStatistics(g.reduced_data_train)
 			gt.plot_results(g.reduced_data_train, gt.phase, gt.mean, gt.covariance, 'Ground-Truth Labels')
-
+			gt.plot_latent_space(g)
+			cnf_matrix = confusion_matrix(gt.phase,  g.predicted_labels_train)
+			np.set_printoptions(precision=2)
+			class_names = ['DS','LSS','RSS']
+			gt.plot_confusion_matrix(cnf_matrix, class_names, 'Confusion matrix')
 
 		if(config['gem_clustering'] == "kmeans"):
 			gt.plot_results(g.reduced_data_train, g.predicted_labels_train, g.kmeans.cluster_centers_, None, 'Clustering with K-means')
@@ -86,11 +90,7 @@ if __name__ == "__main__":
 			print("Unsupported Result Plotting")
 
 
-		gt.plot_latent_space(g)
-		cnf_matrix = confusion_matrix(gt.phase,  g.predicted_labels_train)
-		np.set_printoptions(precision=2)
-		class_names = ['DS','LSS','RSS']
-		gt.plot_confusion_matrix(cnf_matrix, class_names, 'Confusion matrix')
+
 
 
 	if(config['gem_save']):

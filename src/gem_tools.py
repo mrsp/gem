@@ -374,28 +374,30 @@ class GeM_tools():
 
 
 
-    def genInput(self,cX,cY,cZ,roll,pitch,lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ):
+    def genInput(self,cX,cY,cZ,roll,pitch,lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ ,gt=None):
 
+        if gt is None:
+            gt=self
 
         output_ = np.zeros(11)
-        dcX = self.cXdt.diff(cX)
-        dcY = self.cYdt.diff(cY)
-        dcZ = self.cZdt.diff(cZ)
-        droll = self.rolldt.diff(roll)
-        dpitch = self.pitchdt.diff(pitch)
+        dcX = gt.cXdt.diff(cX)
+        dcY = gt.cYdt.diff(cY)
+        dcZ = gt.cZdt.diff(cZ)
+        droll = gt.rolldt.diff(roll)
+        dpitch = gt.pitchdt.diff(pitch)
 
-        lfX += self.blf[0]
-        lfY += self.blf[1]
-        lfZ += self.blf[2]
-        rfX += self.brf[0]
-        rfY += self.brf[1]
-        rfZ += self.brf[2]
-        ltX += self.blt[0]
-        ltY += self.blt[1]
-        ltZ += self.blt[2]
-        rtX += self.brt[0]
-        rtY += self.brt[1]
-        rtZ += self.brt[2]
+        lfX += gt.blf[0]
+        lfY += gt.blf[1]
+        lfZ += gt.blf[2]
+        rfX += gt.brf[0]
+        rfY += gt.brf[1]
+        rfZ += gt.brf[2]
+        ltX += gt.blt[0]
+        ltY += gt.blt[1]
+        ltZ += gt.blt[2]
+        rtX += gt.brt[0]
+        rtY += gt.brt[1]
+        rtZ += gt.brt[2]
 
         dfZ = lfZ - rfZ
         dfX = lfX - rfX
@@ -405,107 +407,126 @@ class GeM_tools():
         dtY = ltY - rtY
 
 
-        if(dfX>self.dfX_train_max):
-            dfX=self.dfX_train_max
-        elif(dfX<self.dfX_train_min):
-            dfX=self.dfX_train_min
+        if(dfX>gt.dfX_train_max):
+            dfX=gt.dfX_train_max
+        elif(dfX<gt.dfX_train_min):
+            dfX=gt.dfX_train_min
 
-
-        dfX = (dfX - self.dfX_train_min) / (self.dfX_train_max - self.dfX_train_min)
-
-
-
-
-        if(dfY>self.dfY_train_max):
-            dfY=self.dfY_train_max
-        elif(dfY<self.dfY_train_min):
-            dfY=self.dfY_train_min
-
-        dfY = (dfY - self.dfY_train_min) / (self.dfY_train_max - self.dfY_train_min)
-
-
-        if(dfZ>self.dfZ_train_max):
-            dfY=self.dfZ_train_max
-        elif(dfZ<self.dfZ_train_min):
-            dfZ=self.dfZ_train_min
-
-
-        dfZ = (dfZ - self.dfZ_train_min) / (self.dfZ_train_max - self.dfZ_train_min)
-
-
-        if(dtX>self.dtX_train_max):
-            dtX=self.dtX_train_max
-        elif(dtX<self.dtX_train_min):
-            dtX=self.dtX_train_min
-
-        dtX = (dtX - self.dtX_train_min) / (self.dtX_train_max - self.dtX_train_min)
-
-
-
-        if(dtY>self.dtY_train_max):
-            dtY=self.dtY_train_max
-        elif(dtY<self.dtY_train_min):
-            dtY=self.dtY_train_min
-
-        dtY = (dtY - self.dtY_train_min) / (self.dtY_train_max - self.dtY_train_min)
-
-
-
-        if(dtZ>self.dtZ_train_max):
-            dtZ=self.dtZ_train_max
-        elif(dtZ<self.dtZ_train_min):
-            dtZ=self.dtZ_train_min
-
-
-        dtZ = (dtZ - self.dtZ_train_min) / (self.dtZ_train_max - self.dtZ_train_min)
+        if(gt.dfX_train_max - gt.dfX_train_min != 0):
+            dfX = (dfX - gt.dfX_train_min) / (gt.dfX_train_max - gt.dfX_train_min)
+        else:
+            dfX = 0.0
 
 
 
 
+        if(dfY>gt.dfY_train_max):
+            dfY=gt.dfY_train_max
+        elif(dfY<gt.dfY_train_min):
+            dfY=gt.dfY_train_min
 
-        if(dcX>self.dcX_train_max):
-            dcX=self.dcX_train_max
-        elif(dcX<self.dcX_train_min):
-            dcX=self.dcX_train_min
+        if(gt.dfY_train_max - gt.dfY_train_min != 0):
+            dfY = (dfY - gt.dfY_train_min) / (gt.dfY_train_max - gt.dfY_train_min)
+        else:
+            dfY = 0.0
 
+        if(dfZ>gt.dfZ_train_max):
+            dfY=gt.dfZ_train_max
+        elif(dfZ<gt.dfZ_train_min):
+            dfZ=gt.dfZ_train_min
 
-        dcX = (dcX -self.dcX_train_min) / (self.dcX_train_max - self.dcX_train_min)
+        if(gt.dfZ_train_max - gt.dfZ_train_min):
+            dfZ = (dfZ - gt.dfZ_train_min) / (gt.dfZ_train_max - gt.dfZ_train_min)
+        else:
+            dfZ = 0.0
 
+        if(dtX>gt.dtX_train_max):
+            dtX=gt.dtX_train_max
+        elif(dtX<gt.dtX_train_min):
+            dtX=gt.dtX_train_min
 
-
-
-        if(dcY>self.dcY_train_max):
-            dcY=self.dcY_train_max
-        elif(dcY<self.dcY_train_min):
-            dcY=self.dcY_train_min
-
-        dcY = (dcY - self.dcY_train_min) / (self.dcY_train_max - self.dcY_train_min)
-
-
-        if(dcZ>self.dcZ_train_max):
-            dcZ=self.dcZ_train_max
-        elif(dcZ<self.dcZ_train_min):
-            dcZ=self.dcZ_train_min
-
-        dcZ = (dcZ - self.dcZ_train_min) / (self.dcZ_train_max - self.dcZ_train_min)
-
-
-        if(droll>self.droll_train_max):
-            droll=self.droll_train_max
-        elif(droll<self.droll_train_min):
-            droll=self.droll_train_min
-
-        droll = (droll - self.droll_train_min) / (self.droll_train_max - self.droll_train_min)
+        if(gt.dtX_train_max - gt.dtX_train_min):
+            dtX = (dtX - gt.dtX_train_min) / (gt.dtX_train_max - gt.dtX_train_min)
+        else:
+            dtX = 0.0
 
 
+        if(dtY>gt.dtY_train_max):
+            dtY=gt.dtY_train_max
+        elif(dtY<gt.dtY_train_min):
+            dtY=gt.dtY_train_min
 
-        if(dpitch>self.dpitch_train_max):
-            droll=self.dpitch_train_max
-        elif(dpitch<self.dpitch_train_min):
-            dpitch=self.dpitch_train_min
+        if(gt.dtY_train_max - gt.dtY_train_min):
+            dtY = (dtY - gt.dtY_train_min) / (gt.dtY_train_max - gt.dtY_train_min)
+        else:
+            dtY = 0.0
 
-        dpitch = (dpitch - self.dpitch_train_min) / (self.dpitch_train_max - self.dpitch_train_min)
 
+        if(dtZ>gt.dtZ_train_max):
+            dtZ=gt.dtZ_train_max
+        elif(dtZ<gt.dtZ_train_min):
+            dtZ=gt.dtZ_train_min
+
+        if(gt.dtZ_train_max - gt.dtZ_train_min):
+            dtZ = (dtZ - gt.dtZ_train_min) / (gt.dtZ_train_max - gt.dtZ_train_min)
+        else:
+            dtZ = 0.0
+
+
+
+
+        if(dcX>gt.dcX_train_max):
+            dcX=gt.dcX_train_max
+        elif(dcX<gt.dcX_train_min):
+            dcX=gt.dcX_train_min
+
+        if(gt.dcX_train_max - gt.dcX_train_min):
+            dcX = (dcX -gt.dcX_train_min) / (gt.dcX_train_max - gt.dcX_train_min)
+        else:
+            dcX = 0.0
+
+
+
+        if(dcY>gt.dcY_train_max):
+            dcY=gt.dcY_train_max
+        elif(dcY<gt.dcY_train_min):
+            dcY=gt.dcY_train_min
+
+        if(gt.dcY_train_max - gt.dcY_train_min):
+            dcY = (dcY - gt.dcY_train_min) / (gt.dcY_train_max - gt.dcY_train_min)
+        else:
+            dcY = 0.0
+
+        if(dcZ>gt.dcZ_train_max):
+            dcZ=gt.dcZ_train_max
+        elif(dcZ<gt.dcZ_train_min):
+            dcZ=gt.dcZ_train_min
+
+        if(gt.dcZ_train_max - gt.dcZ_train_min):
+            dcZ = (dcZ - gt.dcZ_train_min) / (gt.dcZ_train_max - gt.dcZ_train_min)
+        else:
+            dcZ = 0.0
+
+        if(droll>gt.droll_train_max):
+            droll=gt.droll_train_max
+        elif(droll<gt.droll_train_min):
+            droll=gt.droll_train_min
+
+        if(gt.droll_train_max - gt.droll_train_min):
+            droll = (droll - gt.droll_train_min) / (gt.droll_train_max - gt.droll_train_min)
+        else:
+            droll = 0.0
+
+
+        if(dpitch>gt.dpitch_train_max):
+            droll=gt.dpitch_train_max
+        elif(dpitch<gt.dpitch_train_min):
+            dpitch=gt.dpitch_train_min
+
+        if(gt.dpitch_train_max - gt.dpitch_train_min):
+            dpitch = (dpitch - gt.dpitch_train_min) / (gt.dpitch_train_max - gt.dpitch_train_min)
+        else:
+            dpitch = 0.0
 
 
 
@@ -524,29 +545,33 @@ class GeM_tools():
         return output_
 
 
-    def genInputCF(self,cX,cY,cZ,accX,accY, accZ, gX, gY, lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ, g=None):
+    def genInputCF(self,cX,cY,cZ,accX,accY, accZ, gX, gY, lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ, gt=None):
 
-        roll, pitch = self.compf.update(accX, accY, accZ, gX, gY)
+
+        if gt is None:
+            gt=self
+
+        roll, pitch = gt.compf.update(accX, accY, accZ, gX, gY)
 
         output_ = np.zeros(11)
-        dcX = self.cXdt.diff(cX)
-        dcY = self.cYdt.diff(cY)
-        dcZ = self.cZdt.diff(cZ)
-        droll = self.rolldt.diff(roll)
-        dpitch = self.pitchdt.diff(pitch)
+        dcX = gt.cXdt.diff(cX)
+        dcY = gt.cYdt.diff(cY)
+        dcZ = gt.cZdt.diff(cZ)
+        droll = gt.rolldt.diff(roll)
+        dpitch = gt.pitchdt.diff(pitch)
 
-        lfX += self.blf[0]
-        lfY += self.blf[1]
-        lfZ += self.blf[2]
-        rfX += self.brf[0]
-        rfY += self.brf[1]
-        rfZ += self.brf[2]
-        ltX += self.blt[0]
-        ltY += self.blt[1]
-        ltZ += self.blt[2]
-        rtX += self.brt[0]
-        rtY += self.brt[1]
-        rtZ += self.brt[2]
+        lfX += gt.blf[0]
+        lfY += gt.blf[1]
+        lfZ += gt.blf[2]
+        rfX += gt.brf[0]
+        rfY += gt.brf[1]
+        rfZ += gt.brf[2]
+        ltX += gt.blt[0]
+        ltY += gt.blt[1]
+        ltZ += gt.blt[2]
+        rtX += gt.brt[0]
+        rtY += gt.brt[1]
+        rtZ += gt.brt[2]
 
         dfZ = lfZ - rfZ
         dfX = lfX - rfX
@@ -555,113 +580,130 @@ class GeM_tools():
         dtX = ltX - rtX
         dtY = ltY - rtY
 
-        if g is None:
-            g=self
 
 
 
-        if(dfX>g.dfX_train_max):
-            dfX=g.dfX_train_max
-        elif(dfX<g.dfX_train_min):
-            dfX=g.dfX_train_min
+        if(dfX>gt.dfX_train_max):
+            dfX=gt.dfX_train_max
+        elif(dfX<gt.dfX_train_min):
+            dfX=gt.dfX_train_min
 
-
-        if(dfY>g.dfY_train_max):
-            dfY=g.dfY_train_max
-        elif(dfY<g.dfY_train_min):
-            dfY=g.dfY_train_min
-
-
-        if(dfZ>g.dfZ_train_max):
-            dfY=g.dfZ_train_max
-        elif(dfZ<g.dfZ_train_min):
-            dfZ=g.dfZ_train_min
-
-
-        if(dtX>g.dtX_train_max):
-            dtX=g.dtX_train_max
-        elif(dtX<g.dtX_train_min):
-            dtX=g.dtX_train_min
-
-        if(dtY>g.dtY_train_max):
-            dtY=g.dtY_train_max
-        elif(dtY<g.dtY_train_min):
-            dtY=g.dtY_train_min
-
-        if(dtZ>g.dtZ_train_max):
-            dtZ=g.dtZ_train_max
-        elif(dtZ<g.dtZ_train_min):
-            dtZ=g.dtZ_train_min
-
-
-        if(dcX>g.dcX_train_max):
-            dcX=g.dcX_train_max
-        elif(dcX<g.dcX_train_min):
-            dcX=g.dcX_train_min
-
-
-
-        if(dcY>g.dcY_train_max):
-            dcY=g.dcY_train_max
-        elif(dcY<g.dcY_train_min):
-            dcY=g.dcY_train_min
-
-
-        if(dcZ>g.dcZ_train_max):
-            dcZ=g.dcZ_train_max
-        elif(dcZ<g.dcZ_train_min):
-            dcZ=g.dcZ_train_min
-
-
-        if(droll>g.droll_train_max):
-            droll=g.droll_train_max
-        elif(droll<g.droll_train_min):
-            droll=g.droll_train_min
-
-
-
-        if(dpitch>g.dpitch_train_max):
-            droll=g.dpitch_train_max
-        elif(dpitch<g.dpitch_train_min):
-            dpitch=g.dpitch_train_min
-
-
-        dfX = (dfX - g.dfX_train_min) / (g.dfX_train_max - g.dfX_train_min)
-
-
-
-        dfY = (dfY - g.dfY_train_min) / (g.dfY_train_max - g.dfY_train_min)
-
-
-
-        dfZ = (dfZ - g.dfZ_train_min) / (g.dfZ_train_max - g.dfZ_train_min)
-
-
-
-        dtX = (dtX - g.dtX_train_min) / (g.dtX_train_max - g.dtX_train_min)
+        if(gt.dfX_train_max - gt.dfX_train_min != 0):
+            dfX = (dfX - gt.dfX_train_min) / (gt.dfX_train_max - gt.dfX_train_min)
+        else:
+            dfX = 0.0
 
 
 
 
-        dtY = (dtY - g.dtY_train_min) / (g.dtY_train_max - g.dtY_train_min)
+        if(dfY>gt.dfY_train_max):
+            dfY=gt.dfY_train_max
+        elif(dfY<gt.dfY_train_min):
+            dfY=gt.dfY_train_min
+
+        if(gt.dfY_train_max - gt.dfY_train_min != 0):
+            dfY = (dfY - gt.dfY_train_min) / (gt.dfY_train_max - gt.dfY_train_min)
+        else:
+            dfY = 0.0
+
+        if(dfZ>gt.dfZ_train_max):
+            dfY=gt.dfZ_train_max
+        elif(dfZ<gt.dfZ_train_min):
+            dfZ=gt.dfZ_train_min
+
+        if(gt.dfZ_train_max - gt.dfZ_train_min):
+            dfZ = (dfZ - gt.dfZ_train_min) / (gt.dfZ_train_max - gt.dfZ_train_min)
+        else:
+            dfZ = 0.0
+
+        if(dtX>gt.dtX_train_max):
+            dtX=gt.dtX_train_max
+        elif(dtX<gt.dtX_train_min):
+            dtX=gt.dtX_train_min
+
+        if(gt.dtX_train_max - gt.dtX_train_min):
+            dtX = (dtX - gt.dtX_train_min) / (gt.dtX_train_max - gt.dtX_train_min)
+        else:
+            dtX = 0.0
+
+
+        if(dtY>gt.dtY_train_max):
+            dtY=gt.dtY_train_max
+        elif(dtY<gt.dtY_train_min):
+            dtY=gt.dtY_train_min
+
+        if(gt.dtY_train_max - gt.dtY_train_min):
+            dtY = (dtY - gt.dtY_train_min) / (gt.dtY_train_max - gt.dtY_train_min)
+        else:
+            dtY = 0.0
+
+
+        if(dtZ>gt.dtZ_train_max):
+            dtZ=gt.dtZ_train_max
+        elif(dtZ<gt.dtZ_train_min):
+            dtZ=gt.dtZ_train_min
+
+        if(gt.dtZ_train_max - gt.dtZ_train_min):
+            dtZ = (dtZ - gt.dtZ_train_min) / (gt.dtZ_train_max - gt.dtZ_train_min)
+        else:
+            dtZ = 0.0
 
 
 
 
-        dtZ = (dtZ - g.dtZ_train_min) / (g.dtZ_train_max - g.dtZ_train_min)
+        if(dcX>gt.dcX_train_max):
+            dcX=gt.dcX_train_max
+        elif(dcX<gt.dcX_train_min):
+            dcX=gt.dcX_train_min
+
+        if(gt.dcX_train_max - gt.dcX_train_min):
+            dcX = (dcX -gt.dcX_train_min) / (gt.dcX_train_max - gt.dcX_train_min)
+        else:
+            dcX = 0.0
 
 
-        dcX = (dcX -g.dcX_train_min) / (g.dcX_train_max - g.dcX_train_min)
+
+        if(dcY>gt.dcY_train_max):
+            dcY=gt.dcY_train_max
+        elif(dcY<gt.dcY_train_min):
+            dcY=gt.dcY_train_min
+
+        if(gt.dcY_train_max - gt.dcY_train_min):
+            dcY = (dcY - gt.dcY_train_min) / (gt.dcY_train_max - gt.dcY_train_min)
+        else:
+            dcY = 0.0
+
+        if(dcZ>gt.dcZ_train_max):
+            dcZ=gt.dcZ_train_max
+        elif(dcZ<gt.dcZ_train_min):
+            dcZ=gt.dcZ_train_min
+
+        if(gt.dcZ_train_max - gt.dcZ_train_min):
+            dcZ = (dcZ - gt.dcZ_train_min) / (gt.dcZ_train_max - gt.dcZ_train_min)
+        else:
+            dcZ = 0.0
+
+        if(droll>gt.droll_train_max):
+            droll=gt.droll_train_max
+        elif(droll<gt.droll_train_min):
+            droll=gt.droll_train_min
+
+        if(gt.droll_train_max - gt.droll_train_min):
+            droll = (droll - gt.droll_train_min) / (gt.droll_train_max - gt.droll_train_min)
+        else:
+            droll = 0.0
 
 
+        if(dpitch>gt.dpitch_train_max):
+            droll=gt.dpitch_train_max
+        elif(dpitch<gt.dpitch_train_min):
+            dpitch=gt.dpitch_train_min
 
-        dcY = (dcY - g.dcY_train_min) / (g.dcY_train_max - g.dcY_train_min)
+        if(gt.dpitch_train_max - gt.dpitch_train_min):
+            dpitch = (dpitch - gt.dpitch_train_min) / (gt.dpitch_train_max - gt.dpitch_train_min)
+        else:
+            dpitch = 0.0
 
-        dcZ = (dcZ - g.dcZ_train_min) / (g.dcZ_train_max - g.dcZ_train_min)
-
-        droll = (droll - g.droll_train_min) / (g.droll_train_max - g.droll_train_min)
-
-        dpitch = (dpitch - g.dpitch_train_min) / (g.dpitch_train_max - g.dpitch_train_min)
 
 
 

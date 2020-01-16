@@ -69,6 +69,7 @@ class  gem_ros():
 		self.useUL = rospy.get_param('useUL',False)
 
 		if(self.useUL):
+			print('Using Unsupervised Deep Learning')
 			imu_topic = rospy.get_param('gem_imu_topic')
 			com_topic = rospy.get_param('gem_com_topic')
 			path = rospy.get_param('gem_train_path') 	
@@ -139,11 +140,15 @@ class  gem_ros():
 			self.lwrench_inc = False
 			self.rwrench_inc = False
 			self.com_inc = False
+
 			self.phase, self.reduced_data = self.g.predict(self.gt.genInputCF(self.com.pose.position.x,self.com.pose.position.y,self.com.pose.position.z,
 self.imu.linear_acceleration.x,self.imu.linear_acceleration.y, self.imu.linear_acceleration.z, self.imu.angular_velocity.x, self.imu.angular_velocity.y, self.lwrench.wrench.force.x,self.lwrench.wrench.force.y,self.lwrench.wrench.force.z,self.rwrench.wrench.force.x,self.rwrench.wrench.force.y,self.rwrench.wrench.force.z, 
-self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.torque.z,self.rwrench.wrench.torque.x,self.rwrench.wrench.torque.y,self.rwrench.wrench.torque.z))
+self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.torque.z,self.rwrench.wrench.torque.x,self.rwrench.wrench.torque.y,self.rwrench.wrench.torque.z,self.gt))
 			self.support_leg = self.g.getSupportLeg()
-
+			self.phase_msg.data = self.phase        	
+			self.phase_pub.publish(self.phase_msg)
+			self.support_msg.data = self.support_leg        	
+			self.leg_pub.publish(self.support_msg)
 
 	def predictFT(self):
 		if(self.lwrench_inc and self.rwrench_inc):
@@ -173,6 +178,10 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 
 			self.phase = self.g.predictFT(self, lfz,  rfz,  self.lfmin, self.rfmin, self.sigmalf, self.sigmarf, self.useCOP,  coplx,  coply,  coprx,  copry, self.xmax, self.xmin, self.ymax, self.ymin,  self.sigmalc, self.sigmarc)
 			self.support_leg = self.g.getSupportLeg()
+			self.phase_msg.data = self.phase        	
+			self.phase_pub.publish(self.phase_msg)
+			self.support_msg.data = self.support_leg        	
+			self.leg_pub.publish(self.support_msg)
 
 	def predictFTKin(self):
 		if(self.lwrench_inc and self.rwrench_inc and self.rfvel_inc and self.lfvel_inc):
@@ -205,7 +214,10 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 
 			self.phase = self.g.predictFTKin(self, lfz,  rfz,  self.lfmin, self.rfmin, self.sigmalf, self.sigmarf, self.useCOP,  coplx,  coply,  coprx,  copry, self.xmax, self.xmin, self.ymax, self.ymin,  self.sigmalc, self.sigmarc, self.useKin, lv, rv, self.lvTresh, self.rvTresh, self.sigmalv, self.sigmarv)	
 			self.support_leg = self.g.getSupportLeg()
-
+			self.phase_msg.data = self.phase        	
+			self.phase_pub.publish(self.phase_msg)
+			self.support_msg.data = self.support_leg        	
+			self.leg_pub.publish(self.support_msg)
 
 	def run(self):
 		r = rospy.Rate(self.freq) 
@@ -218,10 +230,6 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 				self.predictFTKin()
 			else:
 				print("Choose a valid GEM configuration.. ")
-			self.phase_msg.data = self.phase        	
-			self.phase_pub.publish(self.phase_msg)
-			self.support_msg.data = self.support_leg        	
-			self.leg_pub.publish(self.support_msg)
 			r.sleep()
    		
 if __name__ == "__main__":

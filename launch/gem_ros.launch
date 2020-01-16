@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-  <rosparam file="$(find gem)/config/gem_params.yaml" command="load"/> 
+  <rosparam file="$(find gem)/config/gem_params_nao.yaml" command="load"/> 
   <node pkg="gem" type="gem_ros.py" name="gem" respawn="false" output="screen"/>
 </launch>
