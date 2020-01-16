@@ -5,7 +5,7 @@
 '''
  * GeM - Gait-phase Estimation Module
  *
- * Copyright 2018-2019 Stylianos Piperakis, Foundation for Research and Technology Hellas (FORTH)
+ * Copyright 2019-2020 Stylianos Piperakis, Foundation for Research and Technology Hellas (FORTH)
  * License: BSD
  *
  * Redistribution and use in source and binary forms, with or without

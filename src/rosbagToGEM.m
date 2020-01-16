@@ -1,13 +1,15 @@
 %%
-%Set the required paths and topics
+%Set the required paths
 saveData = 1;
-pathTorosbag = '~/Desktop/cogimon_standstill_gem.bag';
-imu_topic = '/xbotcore/cogimon/imu/imu_link';
-lft_topic = '/xbotcore/cogimon/ft/l_leg_ft';
-rft_topic = '/xbotcore/cogimon/ft/r_leg_ft';
-com_topic = '/SERoW/rel_CoM/pose';
-save_dir = 'GEM_test_cogimon_standstill_gem';
+pathTorosbag = '~/Desktop/icraWS1GEM.bag';
+save_dir = 'GEM_test_nao_WS1';
 mkdir(save_dir);
+
+%Set the required topics
+imu_topic = '/nao_robot/imu';
+lft_topic = '/nao_robot/LLeg/force_torque_states';
+rft_topic = '/nao_robot/RLeg/force_torque_states';
+com_topic = '/SERoW/rel_CoM/pose';
 %%
 %Import the bagfile
 bag=rosbag(pathTorosbag);

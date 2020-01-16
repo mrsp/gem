@@ -5,7 +5,7 @@
 '''
  * GeM - Gait-phase Estimation Module
  *
- * Copyright 2018-2019 Stylianos Piperakis and Stavros Timotheatos, Foundation for Research and Technology Hellas (FORTH)
+ * Copyright 2019-2020 Stylianos Piperakis and Stavros Timotheatos, Foundation for Research and Technology Hellas (FORTH)
  * License: BSD
  *
  * Redistribution and use in source and binary forms, with or without
@@ -236,58 +236,87 @@ class GeM_tools():
 
         self.dfX_train_min = min(self.data_train[:, 0])
         self.dfX_train_max = max(self.data_train[:, 0])
-        self.data_train[:, 0] = (self.data_train[:, 0] -self.dfX_train_min) / (self.dfX_train_max - self.dfX_train_min)
+        if((self.dfX_train_max - self.dfX_train_min) != 0):
+            self.data_train[:, 0] = (self.data_train[:, 0] -self.dfX_train_min) / (self.dfX_train_max - self.dfX_train_min)
+        else:
+            self.data_train[:, 0] = 0.0
 
         self.dfY_train_min = min(self.data_train[:, 1])
         self.dfY_train_max = max(self.data_train[:, 1])
-        self.data_train[:, 1] = (self.data_train[:, 1] - self.dfY_train_min) / (self.dfY_train_max - self.dfY_train_min)
-
+        if((self.dfY_train_max - self.dfY_train_min) != 0):
+            self.data_train[:, 1] = (self.data_train[:, 1] - self.dfY_train_min) / (self.dfY_train_max - self.dfY_train_min)
+        else:
+            self.data_train[:, 1] = 0.0
 
 
 
         self.dfZ_train_min = min(self.data_train[:, 2])
         self.dfZ_train_max = max(self.data_train[:, 2])
         self.data_train[:, 2] = (self.data_train[:, 2] - self.dfZ_train_min) / (self.dfZ_train_max - self.dfZ_train_min)
+        if((self.dfZ_train_max - self.dfZ_train_min) != 0):
+            self.data_train[:, 2] = (self.data_train[:, 2] - self.dfZ_train_min) / (self.dfZ_train_max - self.dfZ_train_min)
+        else:
+            self.data_train[:, 2] = 0.0
 
 
 
         self.dtX_train_min = min(self.data_train[:, 3])
         self.dtX_train_max = max(self.data_train[:, 3])
-        self.data_train[:, 3] = (self.data_train[:, 3] - self.dtX_train_min) / (self.dtX_train_max - self.dtX_train_min)
-
+        if((self.dtX_train_max - self.dtX_train_min) != 0):
+            self.data_train[:, 3] = (self.data_train[:, 3] - self.dtX_train_min) / (self.dtX_train_max - self.dtX_train_min)
+        else:
+            self.data_train[:, 3] = 0.0
 
 
         self.dtY_train_min = min(self.data_train[:, 4])
         self.dtY_train_max = max(self.data_train[:, 4])
-        self.data_train[:, 4] = (self.data_train[:, 4] - self.dtY_train_min) / (self.dtY_train_max - self.dtY_train_min)
+        if((self.dtY_train_max - self.dtY_train_min) != 0):
+            self.data_train[:, 4] = (self.data_train[:, 4] - self.dtY_train_min) / (self.dtY_train_max - self.dtY_train_min)
+        else:
+            self.data_train[:, 4] = 0.0
 
         self.dtZ_train_min = min(self.data_train[:, 5])
         self.dtZ_train_max = max(self.data_train[:, 5])
-        self.data_train[:, 5] = (self.data_train[:, 5] - self.dtZ_train_min) / (self.dtZ_train_max - self.dtZ_train_min)
-
+        if((self.dtZ_train_max - self.dtZ_train_min) != 0):
+            self.data_train[:, 5] = (self.data_train[:, 5] - self.dtZ_train_min) / (self.dtZ_train_max - self.dtZ_train_min)
+        else:
+            self.data_train[:, 5] = 0.0
 
         self.dcX_train_min = min(self.data_train[:, 6])
         self.dcX_train_max = max(self.data_train[:, 6])
-        self.data_train[:, 6] = (self.data_train[:, 6] -self.dcX_train_min) / (self.dcX_train_max - self.dcX_train_min)
-
+        if((self.dcX_train_max - self.dcX_train_min) != 0):
+            self.data_train[:, 6] = (self.data_train[:, 6] -self.dcX_train_min) / (self.dcX_train_max - self.dcX_train_min)
+        else:
+            self.data_train[:, 6] = 0.0
 
         self.dcY_train_min = min(self.data_train[:, 7])
         self.dcY_train_max = max(self.data_train[:, 7])
-        self.data_train[:, 7] = (self.data_train[:, 7] -self.dcY_train_min) / (self.dcY_train_max - self.dcY_train_min)
-
+        if((self.dcY_train_max - self.dcY_train_min) != 0):
+            self.data_train[:, 7] = (self.data_train[:, 7] -self.dcY_train_min) / (self.dcY_train_max - self.dcY_train_min)
+        else:
+            self.data_train[:, 7] = 0.0
 
         self.dcZ_train_min = min(self.data_train[:, 8])
         self.dcZ_train_max = max(self.data_train[:, 8])
-        self.data_train[:, 8] = (self.data_train[:, 8] -self.dcZ_train_min) / (self.dcZ_train_max - self.dcZ_train_min)
+        if((self.dcZ_train_max - self.dcZ_train_min) != 0):
+            self.data_train[:, 8] = (self.data_train[:, 8] -self.dcZ_train_min) / (self.dcZ_train_max - self.dcZ_train_min)
+        else:
+            self.data_train[:, 8] = 0.0
 
         self.droll_train_min = min(self.data_train[:, 9])
         self.droll_train_max = max(self.data_train[:, 9])
-        self.data_train[:, 9] = (self.data_train[:, 9] -self.droll_train_min) / (self.droll_train_max - self.droll_train_min)
-
+        if((self.droll_train_max - self.droll_train_min) != 0):
+            self.data_train[:, 9] = (self.data_train[:, 9] -self.droll_train_min) / (self.droll_train_max - self.droll_train_min)
+        else:
+            self.data_train[:, 9] = 0.0
 
         self.dpitch_train_min = min(self.data_train[:, 10])
         self.dpitch_train_max = max(self.data_train[:, 10])
-        self.data_train[:, 10] = (self.data_train[:, 10] -self.dpitch_train_min) / (self.dpitch_train_max - self.dpitch_train_min)
+        if((self.dpitch_train_max - self.dpitch_train_min) != 0):
+            self.data_train[:, 10] = (self.data_train[:, 10] -self.dpitch_train_min) / (self.dpitch_train_max - self.dpitch_train_min)
+        else:
+            self.data_train[:, 10] = 0.0
+
 
         if (self.gt_comparison):
             phase2=np.append([phase],[np.zeros_like(np.arange(cX.shape[0]-phase.shape[0]))])
@@ -497,7 +526,7 @@ class GeM_tools():
 
     def genInputCF(self,cX,cY,cZ,accX,accY, accZ, gX, gY, lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ, g=None):
 
-        roll, pitch = self.compf.update(accX, accY, accZ+9.81, gX, gY)
+        roll, pitch = self.compf.update(accX, accY, accZ, gX, gY)
 
         output_ = np.zeros(11)
         dcX = self.cXdt.diff(cX)
