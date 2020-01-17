@@ -40,6 +40,7 @@ from gem_tools import GeM_tools
 import numpy as np
 import pickle
 from std_msgs.msg import Int32 
+from std_msgs.msg import Float32 
 from std_msgs.msg import String 
 from geometry_msgs.msg import WrenchStamped
 from geometry_msgs.msg import PoseStamped
@@ -56,6 +57,8 @@ class  gem_ros():
 		right_foot_wrench_topic = rospy.get_param('gem_right_foot_wrench_topic')
 		self.phase_pub = rospy.Publisher('/gem/phase', Int32, queue_size=1000)
 		self.leg_pub = rospy.Publisher('/gem/leg', String, queue_size=1000)
+		self.RLeg_pub = rospy.Publisher('/gem/RLegContactProbability', Float32, queue_size=1000)
+		self.LLeg_pub = rospy.Publisher('/gem/LLegContactProbability', Float32, queue_size=1000)
 		self.rft_sub  = rospy.Subscriber(right_foot_wrench_topic, WrenchStamped, self.lwrenchcb)
 		self.lft_sub  = rospy.Subscriber(left_foot_wrench_topic, WrenchStamped, self.rwrenchcb)
 		self.lwrench_inc = False
@@ -65,6 +68,8 @@ class  gem_ros():
 		self.phase_msg = Int32()
 		self.phase = -1	
 		self.support_msg = String()
+		self.LLeg_msg = Float32()
+		self.RLeg_msg = Float32()
 		self.support_leg = "None"
 		self.useUL = rospy.get_param('useUL',False)
 
@@ -179,12 +184,16 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 				coprx = 0
 				copry = 0
 
-			self.phase = self.g.predictFT(self, lfz,  rfz,  self.lfmin, self.rfmin, self.sigmalf, self.sigmarf, self.useCOP,  coplx,  coply,  coprx,  copry, self.xmax, self.xmin, self.ymax, self.ymin,  self.sigmalc, self.sigmarc)
+			self.phase = self.g.predictFT(lfz,  rfz,  self.lfmin, self.rfmin, self.sigmalf, self.sigmarf, self.useCOP,  coplx,  coply,  coprx,  copry, self.xmax, self.xmin, self.ymax, self.ymin,  self.sigmalc, self.sigmarc)
 			self.support_leg = self.g.getSupportLeg()
 			self.phase_msg.data = self.phase        	
 			self.phase_pub.publish(self.phase_msg)
 			self.support_msg.data = self.support_leg        	
 			self.leg_pub.publish(self.support_msg)
+			self.LLeg_msg.data = self.g.getLLegProb()        	
+			self.LLeg_pub.publish(self.LLeg_msg)
+			self.RLeg_msg.data = self.g.getRLegProb()        	
+			self.RLeg_pub.publish(self.RLeg_msg)
 
 	def predictFTKin(self):
 		if(self.lwrench_inc and self.rwrench_inc and self.rfvel_inc and self.lfvel_inc):
@@ -215,15 +224,19 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 				coprx = 0
 				copry = 0
 
-			self.phase = self.g.predictFTKin(self, lfz,  rfz,  self.lfmin, self.rfmin, self.sigmalf, self.sigmarf, self.useCOP,  coplx,  coply,  coprx,  copry, self.xmax, self.xmin, self.ymax, self.ymin,  self.sigmalc, self.sigmarc, self.useKin, lv, rv, self.lvTresh, self.rvTresh, self.sigmalv, self.sigmarv)	
+			self.phase = self.g.predictFTKin(lfz,  rfz,  self.lfmin, self.rfmin, self.sigmalf, self.sigmarf, self.useCOP,  coplx,  coply,  coprx,  copry, self.xmax, self.xmin, self.ymax, self.ymin,  self.sigmalc, self.sigmarc, self.useKin, lv, rv, self.lvTresh, self.rvTresh, self.sigmalv, self.sigmarv)	
 			self.support_leg = self.g.getSupportLeg()
 			self.phase_msg.data = self.phase        	
 			self.phase_pub.publish(self.phase_msg)
 			self.support_msg.data = self.support_leg        	
 			self.leg_pub.publish(self.support_msg)
+			self.LLeg_msg.data = self.g.getLLegProb()        	
+			self.LLeg_pub.publish(self.LLeg_msg)
+			self.RLeg_msg.data = self.g.getRLegProb()        	
+			self.RLeg_pub.publish(self.RLeg_msg)
 
 	def predictGRF(self):
-		if(self.lwrench_inc and self.rwrench_inc and self.rfvel_inc and self.lfvel_inc):
+		if(self.lwrench_inc and self.rwrench_inc):
 			self.lwrench_inc = False
 			self.rwrench_inc = False
 			
@@ -248,20 +261,23 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 				coprx = 0
 				copry = 0
 
-			self.phase = self.g.predictGRF(self, lfz,  rfz, self.mass, self.gravity, self.useCOP,  coplx,  coply,  coprx,  copry, self.xmax, self.xmin, self.ymax, self.ymin,  self.sigmalc, self.sigmarc)
+			self.phase = self.g.predictGRF(lfz,  rfz, self.mass, self.gravity, self.useCOP,  coplx,  coply,  coprx,  copry, self.xmax, self.xmin, self.ymax, self.ymin,  self.sigmalc, self.sigmarc)
 			self.support_leg = self.g.getSupportLeg()
 			self.phase_msg.data = self.phase        	
 			self.phase_pub.publish(self.phase_msg)
 			self.support_msg.data = self.support_leg        	
 			self.leg_pub.publish(self.support_msg)
-
+			self.LLeg_msg.data = self.g.getLLegProb()        	
+			self.LLeg_pub.publish(self.LLeg_msg)
+			self.RLeg_msg.data = self.g.getRLegProb()        	
+			self.RLeg_pub.publish(self.RLeg_msg)
 
 	def run(self):
 		r = rospy.Rate(self.freq) 
 		while not rospy.is_shutdown():
 			if(self.useUL):
 				self.predictUL()
-			elif(self.useGRF)
+			elif(self.useGRF):
 				self.predictGRF()
 			elif(not self.useKin):
 				self.predictFT()

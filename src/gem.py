@@ -256,6 +256,13 @@ class GeM():
     def getSupportLeg(self):
         return self.support_leg
 
+
+    def getLLegProb(self):
+        return self.pl
+
+    def getRLegProb(self):
+        return self.pr
+
     def computeForceContactProb(self,  fmin,  sigma,  f):
         return 1.000 - self.gs.cdf(fmin, f, sigma)
 
@@ -275,8 +282,8 @@ class GeM():
         self.pl = plf 
     
     def computeGRFProb(self,lf,rf,mass,g):
-        lf = cropGRF(lf,mass,g)
-        rf = cropGRF(rf,mass,g)
+        lf = self.cropGRF(lf,mass,g)
+        rf = self.cropGRF(rf,mass,g)
         p = lf + rf + 2.0 * self.ef
         plf = 0
         prf = 0
@@ -296,14 +303,14 @@ class GeM():
         if(prf > 1.0):
             prf = 1.0
 
-        self.plf = plf
-        self.prf = prf
+        self.pl = plf
+        self.pr = prf
 
     def cropGRF(self,f_, mass_, g_):
         return max(0.0, min(f_, mass_ * g_))
 
         
-    def computeContactProb(self,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, , sigmalc, sigmarc):
+    def computeContactProb(self,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin,  sigmalc, sigmarc):
 
        
         plc = self.computeCOPContactProb(xmax, xmin, sigmalc, coplx) * self.computeCOPContactProb(ymax, ymin, sigmalc, coply)
@@ -327,8 +334,8 @@ class GeM():
         p = self.pl + self.pr
 
         if (p != 0):
-            self.pl = self.pl / p + 0.5
-            self.pr = self.pr / p + 0.5
+            self.pl = self.pl / p 
+            self.pr = self.pr / p 
         else:
             self.pl = 0
             self.pr = 0
@@ -342,13 +349,13 @@ class GeM():
 
 
 
-        if (self.pl > 0.5 and self.pr <= 0.5):
+        if (self.pl > 0.35 and self.pr <= 0.35):
             gait_phase = 0
             self.support_leg = self.lfoot_frame
-        elif(self.pr > 0.5 and self.pl <= 0.5):
+        elif(self.pr > 0.35 and self.pl <= 0.35):
             gait_phase = 1
             self.support_leg = self.rfoot_frame
-        elif(self.pr > 0.5 and self.pl > 0.5):
+        elif(self.pr > 0.35 and self.pl > 0.35):
             gait_phase = 2
         else:
             gait_phase = -1
@@ -367,8 +374,8 @@ class GeM():
         p = self.pl + self.pr
 
         if (p != 0):
-            self.pl = self.pl / p + 0.5
-            self.pr = self.pr / p + 0.5
+            self.pl = self.pl / p 
+            self.pr = self.pr / p 
         else:
             self.pl = 0
             self.pr = 0
@@ -381,13 +388,13 @@ class GeM():
             self.firstrun = False
         
  
-        if (self.pl > 0.5 and self.pr <= 0.5):
+        if (self.pl > 0.35 and self.pr <= 0.35):
             gait_phase = 0
             self.support_leg = self.lfoot_frame
-        elif(self.pr > 0.5 and self.pl <= 0.5):
+        elif(self.pr > 0.35 and self.pl <= 0.35):
             gait_phase = 1
             self.support_leg = self.rfoot_frame
-        elif(self.pr > 0.5 and self.pl > 0.5):
+        elif(self.pr >= 0.35 and self.pl >= 0.35):
             gait_phase = 2
         else:
             gait_phase = -1
