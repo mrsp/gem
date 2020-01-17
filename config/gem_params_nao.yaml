@@ -4,7 +4,8 @@ gem_right_foot_wrench_topic: "/nao_robot/RLeg/force_torque_states" #right foot F
 gem_freq: 100    #min freq of all topics
 gem_lfoot_frame: "l_ankle"   #left foot frame 
 gem_rfoot_frame: "r_ankle"   #right foot frame 
-
+gem_mass: 5.14
+gem_gravity: 9.81
 #Unsupervisead Gait Phase Learning Parameters
 useUL: True  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
 #Only if use_UL is True
@@ -26,7 +27,8 @@ gem_rfoot_force_bias: [0, 0, 0]
 
 #Custom Gait Phase Estimation Parameters if no learning was performed
 #Only if use_UL is False
-useCOP: True  #Use the full contact wrench in the detection process
+useGRF: True
+useCOP: False  #Use the full contact wrench in the detection process
 gem_foot_xmax: 0.1136       #Foot Polygon xmax
 gem_foot_xmin: -0.1564      #Foot Polygon xmin
 gem_foot_ymax: 0.135        #Foot Polygon ymax

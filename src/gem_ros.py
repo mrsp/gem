@@ -98,10 +98,13 @@ class  gem_ros():
 			self.sigmalc = rospy.get_param('gem_lcop_std',0)
 			self.sigmarc = rospy.get_param('gem_rcop_std',0)
 			self.useKin = rospy.get_param('useKin',False)
+			self.useGRF = rospy.get_param('useGRF',False)
 			self.sigmalv = rospy.get_param('gem_lfoot_vel_std',0.1)
 			self.sigmarv = rospy.get_param('gem_rfoot_vel_std',0.1)
 			self.lvTresh = rospy.get_param('gem_lfoot_vel_thres',0.1)
 			self.rvTresh = rospy.get_param('gem_rfoot_vel_thres',0.1)
+			self.mass = rospy.get_param('gem_mass',5.14)
+			self.gravity = rospy.get_param('gem_gravity',9.80665)
 			if(self.useKin):
 				lvel_topic = rospy.get_param('gem_lfoot_vel_topic',"/RFtwist")
 				rvel_topic = rospy.get_param('gem_rfoot_vel_topic',"/LFtwist")
@@ -219,11 +222,47 @@ self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.to
 			self.support_msg.data = self.support_leg        	
 			self.leg_pub.publish(self.support_msg)
 
+	def predictGRF(self):
+		if(self.lwrench_inc and self.rwrench_inc and self.rfvel_inc and self.lfvel_inc):
+			self.lwrench_inc = False
+			self.rwrench_inc = False
+			
+			lfz = self.lwrench.wrench.force.z
+			rfz = self.rwrench.wrench.force.z
+			ltx = self.lwrench.wrench.torque.x
+			lty = self.lwrench.wrench.torque.y
+			rtx = self.rwrench.wrench.torque.x
+			rty = self.rwrench.wrench.torque.y
+			
+			if(lfz>0):
+				coplx = -lty/lfz
+				coply = ltx/lfz
+			else:
+				coplx = 0
+				coply = 0
+
+			if(rfz>0):
+				coprx = -rty/rfz
+				copry = rtx/rfz
+			else:
+				coprx = 0
+				copry = 0
+
+			self.phase = self.g.predictGRF(self, lfz,  rfz, self.mass, self.gravity, self.useCOP,  coplx,  coply,  coprx,  copry, self.xmax, self.xmin, self.ymax, self.ymin,  self.sigmalc, self.sigmarc)
+			self.support_leg = self.g.getSupportLeg()
+			self.phase_msg.data = self.phase        	
+			self.phase_pub.publish(self.phase_msg)
+			self.support_msg.data = self.support_leg        	
+			self.leg_pub.publish(self.support_msg)
+
+
 	def run(self):
 		r = rospy.Rate(self.freq) 
 		while not rospy.is_shutdown():
 			if(self.useUL):
 				self.predictUL()
+			elif(self.useGRF)
+				self.predictGRF()
 			elif(not self.useKin):
 				self.predictFT()
 			elif(self.useKin):

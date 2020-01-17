@@ -52,7 +52,7 @@ class GeM():
         self.gmm_cl_id = False
         self.kmeans_cl_id = False
         self.gs = Gaussian()
-
+        self.ef = 0.1
         self.firstrun = True
 
 	
@@ -268,13 +268,42 @@ class GeM():
     def computeKinContactProb(self,  vmin,  sigma,  v):
         return 1.000 - self.gs.cdf(vmin, v, sigma)
 
-    def computeForceProb(self,lf,  rf, sigmalf, sigmarf):
+    def computeForceProb(self,lf,  rf, lfmin, rfmin, sigmalf, sigmarf):
         plf = self.computeForceContactProb(lfmin, sigmalf, lf)
         prf = self.computeForceContactProb(rfmin, sigmarf, rf)
         self.pr = prf 
         self.pl = plf 
+    
+    def computeGRFProb(self,lf,rf,mass,g):
+        lf = cropGRF(lf,mass,g)
+        rf = cropGRF(rf,mass,g)
+        p = lf + rf + 2.0 * self.ef
+        plf = 0
+        prf = 0
+        if (p > 0):
+            plf = (lf+self.ef) / p
+            prf = (rf+self.ef) / p
+        
+        if(plf < 0):
+            plf = 0
+        
+        if(plf > 1.0):
+            plf = 1.0
 
-    def computeContactProb(self,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalc, sigmarc):
+        if(prf < 0):
+            prf = 0
+
+        if(prf > 1.0):
+            prf = 1.0
+
+        self.plf = plf
+        self.prf = prf
+
+    def cropGRF(self,f_, mass_, g_):
+        return max(0.0, min(f_, mass_ * g_))
+
+        
+    def computeContactProb(self,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, , sigmalc, sigmarc):
 
        
         plc = self.computeCOPContactProb(xmax, xmin, sigmalc, coplx) * self.computeCOPContactProb(ymax, ymin, sigmalc, coply)
@@ -289,12 +318,11 @@ class GeM():
         self.pr = self.pr * prv
         self.pl = self.pl * plv
 
-    def predictFT(self, lf,  rf, lfmin, rfmin, sigmalf, sigmarf, useCOP, coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin,  sigmalc, sigmarc):
-
-        self.computeForceProb(lf,  rf, sigmalf, sigmarf)
+    def predictFT(self, lf,  rf, lfmin, rfmin, sigmalf, sigmarf, useCOP=False, coplx=0,  coply=0,  coprx=0,  copry=0, xmax=0, xmin=0, ymax=0, ymin=0,  sigmalc=0, sigmarc=0):
+        self.computeForceProb(lf,  rf, lfmin, rfmin, sigmalf, sigmarf)
 
         if(useCOP):
-            self.computeContactProb(coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalc, sigmarc)
+            self.computeContactProb(coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin,  sigmalc, sigmarc)
 
         p = self.pl + self.pr
 
@@ -329,15 +357,13 @@ class GeM():
 
 
 
-    def predictFTKin(self, lf,  rf, lfmin, rfmin, sigmalf, sigmarf, useCOP, coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin,  sigmalc, sigmarc, useKin, lv, rv, lvelTresh, rvelTresh, sigmalv, sigmarv):
-        self.computeForceProb(lf,  rf, sigmalf, sigmarf)
+    def predictGRF(self, lf,  rf, mass, g, useCOP=False, coplx=0,  coply=0,  coprx=0,  copry=0, xmax=0, xmin=0, ymax=0, ymin=0,  sigmalc=0, sigmarc=0):
+        self.computeGRFProb(lf,  rf, mass, g)
 
         if(useCOP):
-            self.computeContactProb(coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, lfmin, rfmin, sigmalc, sigmarc)
+            self.computeContactProb(coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin, sigmalc, sigmarc)
 
-        if(useKin):
-            self.computeVelProb(lv, rv, lvelTresh, rvelTresh, sigmalv, sigmarv)
-
+       
         p = self.pl + self.pr
 
         if (p != 0):
