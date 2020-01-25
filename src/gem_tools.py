@@ -296,7 +296,7 @@ class GeM_tools():
 
 
 
-        '''
+        
         self.data_train[:, 0] = self.normalize_data(self.data_train[:, 0],self.dfX_train_max, self.dfX_train_min)   
         self.data_train[:, 1] = self.normalize_data(self.data_train[:, 1],self.dfY_train_max, self.dfY_train_min)   
         self.data_train[:, 2] = self.normalize_data(self.data_train[:, 2],self.dfZ_train_max, self.dfZ_train_min)   
@@ -321,7 +321,7 @@ class GeM_tools():
         self.data_train[:, 8] = self.standarize_data(self.data_train[:, 8],self.dcZ_train_mean, self.dcZ_train_std)   
         self.data_train[:, 9] = self.standarize_data(self.data_train[:, 9],self.droll_train_mean, self.droll_train_std)   
         self.data_train[:, 10] = self.standarize_data(self.data_train[:, 10],self.dpitch_train_mean, self.dpitch_train_std)   
-      
+        '''
 
 
         if (self.gt_comparison):
