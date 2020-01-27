@@ -7,7 +7,7 @@ gem_rfoot_frame: "r_ankle"   #right foot frame
 gem_mass: 5.14
 gem_gravity: 9.81
 #Unsupervisead Gait Phase Learning Parameters
-useUL: True  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
+useUL: False  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
 #Only if use_UL is True
 gem_imu_topic: "/nao_robot/imu" # base_link (body) IMU
 gem_com_topic: "/SERoW/rel_CoM/pose"  #relative to base_link (body) CoM - computed with kinematics

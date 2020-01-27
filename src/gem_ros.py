@@ -59,8 +59,8 @@ class  gem_ros():
 		self.leg_pub = rospy.Publisher('/gem/leg', String, queue_size=1000)
 		self.RLeg_pub = rospy.Publisher('/gem/RLegContactProbability', Float32, queue_size=1000)
 		self.LLeg_pub = rospy.Publisher('/gem/LLegContactProbability', Float32, queue_size=1000)
-		self.rft_sub  = rospy.Subscriber(right_foot_wrench_topic, WrenchStamped, self.lwrenchcb)
-		self.lft_sub  = rospy.Subscriber(left_foot_wrench_topic, WrenchStamped, self.rwrenchcb)
+		self.rft_sub  = rospy.Subscriber(right_foot_wrench_topic, WrenchStamped, self.rwrenchcb)
+		self.lft_sub  = rospy.Subscriber(left_foot_wrench_topic, WrenchStamped, self.lwrenchcb)
 		self.lwrench_inc = False
 		self.rwrench_inc = False
 		freq = rospy.get_param('gem_freq',200)
