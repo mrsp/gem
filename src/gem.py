@@ -59,7 +59,7 @@ class GeM():
     def setDimReduction(self, dim_):
         self.red_dim = dim_
         self.pca = PCA(n_components=self.red_dim)
-        input_= Input(shape=(11,))
+        input_= Input(shape=(14,))
         
         if(dim_ == 2):
             # "encoded" is the encoded representation of the input
@@ -67,7 +67,7 @@ class GeM():
             encoded = Dense(2, activation='selu')(encoded)
             ## "decoded" is the lossy reconstruction of the input
             decoded = Dense(5, activation='selu')(encoded)
-            decoded = Dense(11, activation='selu')(decoded)
+            decoded = Dense(14, activation='selu')(decoded)
             # this model maps an input to its reconstruction
             self.autoencoder = Model(input_, decoded)
             # this model maps an input to its encoded representation
@@ -87,7 +87,7 @@ class GeM():
             encoded = Dense(3, activation='selu')(encoded)
             ## "decoded" is the lossy reconstruction of the input
             decoded = Dense(6, activation='selu')(encoded)
-            decoded = Dense(11, activation='selu')(decoded)
+            decoded = Dense(14, activation='selu')(decoded)
             # this model maps an input to its reconstruction
             self.autoencoder = Model(input_, decoded)
             # this model maps an input to its encoded representation
@@ -107,7 +107,7 @@ class GeM():
             encoded = Dense(4, activation='selu')(encoded)
             ## "decoded" is the lossy reconstruction of the input
             decoded = Dense(8, activation='selu')(encoded)
-            decoded = Dense(11, activation='selu')(decoded)
+            decoded = Dense(14, activation='selu')(decoded)
             # this model maps an input to its reconstruction
             self.autoencoder = Model(input_, decoded)
             # this model maps an input to its encoded representation
@@ -127,7 +127,7 @@ class GeM():
             encoded = Dense(5, activation='selu')(encoded)
             ## "decoded" is the lossy reconstruction of the input
             decoded = Dense(8, activation='selu')(encoded)
-            decoded = Dense(11, activation='selu')(decoded)
+            decoded = Dense(14, activation='selu')(decoded)
             # this model maps an input to its reconstruction
             self.autoencoder = Model(input_, decoded)
             # this model maps an input to its encoded representation
@@ -145,7 +145,7 @@ class GeM():
               # "encoded" is the encoded representation of the input
             encoded = Dense(6, activation='selu')(input_)
             ## "decoded" is the lossy reconstruction of the input
-            decoded = Dense(11, activation='selu')(encoded)
+            decoded = Dense(14, activation='selu')(encoded)
             # this model maps an input to its reconstruction
             self.autoencoder = Model(input_, decoded)
             # this model maps an input to its encoded representation
