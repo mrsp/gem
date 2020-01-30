@@ -42,6 +42,7 @@ import itertools
 from math import *
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.backends.backend_pdf import PdfPages
+from sklearn.preprocessing import RobustScaler as RobustScaler
 
 
 #color_iter = itertools.cycle(['navy', 'c', 'cornflowerblue', 'gold',
@@ -71,17 +72,14 @@ plt.rcParams.update(params)
 class GeM_tools():
     def __init__(self, comp_filtering=False, freq=500, a=0.9999, gt_comparison=False):
 
-        self.comp_filtering = comp_filtering
         self.gt_comparison = gt_comparison
 
-        if(comp_filtering):
-            self.compf = cf(freq, a)
+
 
         self.cXdt = diff_tool()
         self.cYdt = diff_tool()
         self.cZdt = diff_tool()
-        self.rolldt = diff_tool()
-        self.pitchdt = diff_tool()
+
 
     def input_data(self, setpath,blf,blt,brf,brt):
 
@@ -100,6 +98,11 @@ class GeM_tools():
         rtX = np.loadtxt(setpath+'/rtX.txt')
         rtY = np.loadtxt(setpath+'/rtY.txt')
         rtZ = np.loadtxt(setpath+'/rtZ.txt')
+        aX = np.loadtxt(setpath+'/gX.txt')
+        aY = np.loadtxt(setpath+'/gY.txt')
+        accX = np.loadtxt(setpath+'/accX.txt')
+        accY = np.loadtxt(setpath+'/accY.txt')
+        accZ = np.loadtxt(setpath+'/accZ.txt')
 
 
         #biases removal from F/T
@@ -128,66 +131,45 @@ class GeM_tools():
             gt_rfY  = np.loadtxt(setpath+'/gt_rfY.txt')
             mu  = np.loadtxt(setpath+'/mu.txt')
        	    self.mu = mu
-        if(self.comp_filtering):
-            aX = np.loadtxt(setpath+'/gX.txt')
-            aY = np.loadtxt(setpath+'/gY.txt')
-            accX = np.loadtxt(setpath+'/accX.txt')
-            accY = np.loadtxt(setpath+'/accY.txt')
-            accZ = np.loadtxt(setpath+'/accZ.txt')
-        else:
-            roll_ = np.loadtxt(setpath+'/roll.txt')
-            pitch_ = np.loadtxt(setpath + '/pitch.txt')
+       
 
 
 
         dlen0 = np.size(cX)
         dlen1 = np.size(cY)
         dlen2 = np.size(lfZ)
+        dlen3 = np.size(accZ)
+        dlen7 = np.size(aY)
         dlen6 = np.size(rfZ)
-        if(self.comp_filtering):
-            dlen3 = np.size(accZ)
-        else:
-            dlen3 = np.size(roll_)
-
+       
         if(self.gt_comparison):
             dlen4 = np.size(gt_lfZ)
             dlen5 = np.size(gt_rfX)
-            dlen = min(dlen0, dlen1, dlen2, dlen3, dlen4, dlen5,dlen6)
+            dlen = min(dlen0, dlen1, dlen2, dlen3, dlen4, dlen5,dlen6,dlen7)
         else:
-            dlen = min(dlen0, dlen1, dlen2, dlen3,dlen6)
+            dlen = min(dlen0, dlen1, dlen2, dlen3,dlen6,dlen7)
 
 
 
 
 
-        if(self.comp_filtering):
-            roll = np.zeros((dlen))
-            pitch = np.zeros((dlen))
-
+   
 
         dcX = np.zeros((dlen))
         dcY = np.zeros((dlen))
         dcZ= np.zeros((dlen))
-        droll = np.zeros((dlen))
-        dpitch = np.zeros((dlen))
+      
 
         if(self.gt_comparison):
             phase = np.zeros((dlen))
 
 
 
-
         for i in range(dlen):
-
-            #if(self.comp_filtering):
-            #    roll[i], pitch[i] = self.compf.update(accX[i],accY[i],accZ[i],aX[i],aY[i])
-
-
             dcX[i]=self.cXdt.diff(cX[i])
             dcY[i]=self.cYdt.diff(cY[i])
             dcZ[i]=self.cZdt.diff(cZ[i])
-            #droll[i]=self.rolldt.diff(roll[i])
-            #dpitch[i]=self.pitchdt.diff(pitch[i])
+
 
 
 
@@ -225,19 +207,66 @@ class GeM_tools():
         self.data_train[:, 12] = aX[0:dlen]      
         self.data_train[:, 13] = aY[0:dlen]      
 
-        #self.data_train[1:dlen, 9] = droll[1:dlen]
-        #self.data_train[1:dlen, 10] = dpitch[1:dlen]
+
         self.data_train[0, 6] = dcX[1]
         self.data_train[0, 7] = dcY[1]
         self.data_train[0, 8] = dcZ[1]
-        #self.data_train[0, 9] = droll[1]
-        #self.data_train[0, 10] = dpitch[1]
 
 
 
 
 
 
+
+
+
+
+       
+        self.transformer_dfX = RobustScaler().fit(self.data_train[:, 0].reshape(-1,1),y=None)
+        self.data_train[:, 0] = self.transformer_dfX.transform(self.data_train[:, 0].reshape(-1,1)).reshape(1,-1)
+        self.transformer_dfY = RobustScaler().fit(self.data_train[:, 1].reshape(-1,1),y=None)
+        self.data_train[:, 1] = self.transformer_dfY.transform(self.data_train[:, 1].reshape(-1,1)).reshape(1,-1)
+
+        self.transformer_dfZ = RobustScaler().fit(self.data_train[:, 2].reshape(-1,1),y=None)
+        self.data_train[:, 2] = self.transformer_dfZ.transform(self.data_train[:, 2].reshape(-1,1)).reshape(1,-1)
+
+
+        self.transformer_dtX = RobustScaler().fit(self.data_train[:, 3].reshape(-1,1),y=None)
+        self.data_train[:, 3] = self.transformer_dtX.transform(self.data_train[:, 3].reshape(-1,1)).reshape(1,-1)
+
+
+        self.transformer_dtY = RobustScaler().fit(self.data_train[:, 4].reshape(-1,1),y=None)
+        self.data_train[:, 4] = self.transformer_dtY.transform(self.data_train[:, 4].reshape(-1,1)).reshape(1,-1)
+
+
+        self.transformer_dtZ = RobustScaler().fit(self.data_train[:, 5].reshape(-1,1),y=None)
+        self.data_train[:, 5] = self.transformer_dtZ.transform(self.data_train[:, 5].reshape(-1,1)).reshape(1,-1)
+        
+        self.transformer_dcX = RobustScaler().fit(self.data_train[:, 6].reshape(-1,1),y=None)
+        self.data_train[:, 6] = self.transformer_dcX.transform(self.data_train[:, 5].reshape(-1,1)).reshape(1,-1)
+
+
+        self.transformer_dcY = RobustScaler().fit(self.data_train[:, 7].reshape(-1,1),y=None)
+        self.data_train[:, 7] = self.transformer_dcY.transform(self.data_train[:, 7].reshape(-1,1)).reshape(1,-1)
+
+
+        self.transformer_dcZ = RobustScaler().fit(self.data_train[:, 8].reshape(-1,1),y=None)
+        self.data_train[:, 8] = self.transformer_dcZ.transform(self.data_train[:, 8].reshape(-1,1)).reshape(1,-1)
+
+        self.transformer_accX = RobustScaler().fit(self.data_train[:, 9].reshape(-1,1),y=None)
+        self.data_train[:, 9] = self.transformer_accX.transform(self.data_train[:, 9].reshape(-1,1)).reshape(1,-1)
+        
+        self.transformer_accY = RobustScaler().fit(self.data_train[:, 10].reshape(-1,1),y=None)
+        self.data_train[:, 10] = self.transformer_accY.transform(self.data_train[:, 10].reshape(-1,1)).reshape(1,-1)
+
+        self.transformer_accZ = RobustScaler().fit(self.data_train[:, 11].reshape(-1,1),y=None)
+        self.data_train[:, 11] = self.transformer_accZ.transform(self.data_train[:, 11].reshape(-1,1)).reshape(1,-1)
+
+        self.transformer_gX = RobustScaler().fit(self.data_train[:, 12].reshape(-1,1),y=None)
+        self.data_train[:, 12] = self.transformer_gX.transform(self.data_train[:, 12].reshape(-1,1)).reshape(1,-1)
+        self.transformer_gY = RobustScaler().fit(self.data_train[:, 13].reshape(-1,1),y=None)
+        self.data_train[:, 13] = self.transformer_gY.transform(self.data_train[:, 13].reshape(-1,1)).reshape(1,-1)
+        
 
 
         self.dfX_train_min = min(self.data_train[:, 0])
@@ -290,16 +319,6 @@ class GeM_tools():
         self.dcZ_train_std = np.std(self.data_train[:, 8])
 
 
-        #self.droll_train_min = min(self.data_train[:, 9])
-        #self.droll_train_max = max(self.data_train[:, 9])
-        #self.droll_train_mean = np.mean(self.data_train[:, 9])
-        #self.droll_train_std = np.std(self.data_train[:, 9])
-
-        #self.dpitch_train_min = min(self.data_train[:, 10])
-        #self.dpitch_train_max = max(self.data_train[:, 10])
-        #self.dpitch_train_mean = np.mean(self.data_train[:, 10])
-        #self.dpitch_train_std = np.std(self.data_train[:, 10])
-
         self.accX_train_min = min(self.data_train[:, 9])
         self.accX_train_max = max(self.data_train[:, 9])
         self.accX_train_mean = np.mean(self.data_train[:, 9])
@@ -325,6 +344,7 @@ class GeM_tools():
         self.aY_train_mean = np.mean(self.data_train[:, 13])
         self.aY_train_std = np.std(self.data_train[:, 13])    
 
+        
         self.data_train[:, 0] = self.normalize_data(self.data_train[:, 0],self.dfX_train_max, self.dfX_train_min)   
         self.data_train[:, 1] = self.normalize_data(self.data_train[:, 1],self.dfY_train_max, self.dfY_train_min)   
         self.data_train[:, 2] = self.normalize_data(self.data_train[:, 2],self.dfZ_train_max, self.dfZ_train_min)   
@@ -334,13 +354,13 @@ class GeM_tools():
         self.data_train[:, 6] = self.normalize_data(self.data_train[:, 6],self.dcX_train_max, self.dcX_train_min)   
         self.data_train[:, 7] = self.normalize_data(self.data_train[:, 7],self.dcY_train_max, self.dcY_train_min)   
         self.data_train[:, 8] = self.normalize_data(self.data_train[:, 8],self.dcZ_train_max, self.dcZ_train_min)   
-        #self.data_train[:, 9] = self.normalize_data(self.data_train[:, 9],self.droll_train_max, self.droll_train_min)   
-        #self.data_train[:, 10] = self.normalize_data(self.data_train[:, 10],self.dpitch_train_max, self.dpitch_train_min)   
         self.data_train[:, 9] = self.normalize_data(self.data_train[:, 9],self.accX_train_max, self.accX_train_min)   
         self.data_train[:, 10] = self.normalize_data(self.data_train[:, 10],self.accY_train_max, self.accY_train_min)   
         self.data_train[:, 11] = self.normalize_data(self.data_train[:, 11],self.accZ_train_max, self.accZ_train_min)   
         self.data_train[:, 12] = self.normalize_data(self.data_train[:, 12],self.aX_train_max, self.aX_train_min)   
         self.data_train[:, 13] = self.normalize_data(self.data_train[:, 13],self.aY_train_max, self.aY_train_min)   
+        
+
         '''
         self.data_train[:, 0] = self.standarize_data(self.data_train[:, 0],self.dfX_train_mean, self.dfX_train_std)   
         self.data_train[:, 1] = self.standarize_data(self.data_train[:, 1],self.dfY_train_mean, self.dfY_train_std)   
@@ -351,29 +371,26 @@ class GeM_tools():
         self.data_train[:, 6] = self.standarize_data(self.data_train[:, 6],self.dcX_train_mean, self.dcX_train_std)   
         self.data_train[:, 7] = self.standarize_data(self.data_train[:, 7],self.dcY_train_mean, self.dcY_train_std)   
         self.data_train[:, 8] = self.standarize_data(self.data_train[:, 8],self.dcZ_train_mean, self.dcZ_train_std)   
-        self.data_train[:, 9] = self.standarize_data(self.data_train[:, 9],self.droll_train_mean, self.droll_train_std)   
-        self.data_train[:, 10] = self.standarize_data(self.data_train[:, 10],self.dpitch_train_mean, self.dpitch_train_std)   
+        self.data_train[:, 9] = self.normalize_data(self.data_train[:, 9],self.accX_train_mean, self.accX_train_std)   
+        self.data_train[:, 10] = self.normalize_data(self.data_train[:, 10],self.accY_train_mean, self.accY_train_std)   
+        self.data_train[:, 11] = self.normalize_data(self.data_train[:, 11],self.accZ_train_mean, self.accZ_train_std)   
+        self.data_train[:, 12] = self.normalize_data(self.data_train[:, 12],self.aX_train_mean, self.aX_train_std)   
+        self.data_train[:, 13] = self.normalize_data(self.data_train[:, 13],self.aY_train_mean, self.aY_train_std)   
         '''
-
-
         if (self.gt_comparison):
             phase2=np.append([phase],[np.zeros_like(np.arange(cX.shape[0]-phase.shape[0]))])
             self.cX = cX[~(phase2==-1)]
             self.cY = cY[~(phase2==-1)]
             self.cZ = cZ[~(phase2==-1)]
 
-            if self.comp_filtering:
-                phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
-                self.accX = accX[~(phase3==-1)]
-                self.accY = accY[~(phase3==-1)]
-                self.accZ = accZ[~(phase3==-1)]
-                phase4=np.append([phase],[np.zeros_like(np.arange(aX.shape[0]-phase.shape[0]))])
-                self.gX = aX[~(phase4==-1)]
-                self.gY = aY[~(phase4==-1)]
-            else:
-                phase0=np.append([phase],[np.zeros_like(np.arange(roll.shape[0]-phase.shape[0]))])
-                self.roll = roll[~(phase0==-1)]
-                self.pitch = pitch[~(phase0==-1)]
+            phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
+            self.accX = accX[~(phase3==-1)]
+            self.accY = accY[~(phase3==-1)]
+            self.accZ = accZ[~(phase3==-1)]
+            phase4=np.append([phase],[np.zeros_like(np.arange(aX.shape[0]-phase.shape[0]))])
+            self.gX = aX[~(phase4==-1)]
+            self.gY = aY[~(phase4==-1)]
+          
 
             phase5=np.append([phase],[np.zeros_like(np.arange(lfZ.shape[0]-phase.shape[0]))])
             self.lfZ = lfZ[~(phase5==-1)]
@@ -403,10 +420,7 @@ class GeM_tools():
         self.cXdt.reset()
         self.cYdt.reset()
         self.cZdt.reset()
-        #self.rolldt.reset()
-        #self.pitchdt.reset()
-        #if self.comp_filtering:
-        #    self.compf.reset()
+
 
 
 
@@ -930,35 +944,3 @@ class diff_tool():
     def reset(self):
         self.dx = None
         self.x = None
-
-
-class cf:
-    def __init__(self,freq_ = 100.0, alpha_ = 0.98):
-        self.alpha = alpha_
-        self.freq = freq_
-        self.roll = 0.0
-        self.pitch = 0.0
-        self.firstrun = True
-
-
-    def computeAccAngle(self,accX,accY,accZ):
-        roll = atan2(accY,sqrt(accX*accX+accZ*accZ))
-        pitch = atan2(accX,sqrt(accZ*accZ+accY*accY))
-        return roll,pitch
-
-    def update(self,accX,accY,accZ,gX,gY):
-        roll_, pitch_ = self.computeAccAngle(accX,accY,accZ)
-        if(self.firstrun):
-            self.roll =  roll_
-            self.pitch = pitch_
-            self.firstrun = False
-        else:
-            self.roll = self.alpha * (self.roll + gX * 1.0/self.freq) +  (1.0 - self.alpha)*roll_
-            self.pitch = self.alpha * (self.pitch + gY * 1.0/self.freq) +  (1.0 - self.alpha)*pitch_
-        return self.roll, self.pitch
-
-
-    def reset(self):
-        self.roll = 0.0
-        self.pitch = 0.0
-        self.firstrun = True

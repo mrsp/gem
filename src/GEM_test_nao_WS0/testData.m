@@ -1,28 +1,63 @@
 clear all
 close all
 clc
-c_encz = load('accX.txt');
+c_encz = load('c_ency.txt');
 load('lfZ.txt')
 load('rfZ.txt')
 
 deltaF = lfZ - rfZ;
+deltaF = c_encz;
+fc = 1.0; % Cut off frequency
+fs = 100; % Sampling rate
+start = 1;
+
+[b,a] = butter(2,fc/(fs/2),'high'); % Butterworth filter of order 6
+deltaFF = filter(b,a,deltaF); % Will be the filtered signal
+
+
 %d_encz = [0;diff(c_encz)];
-d_encz = c_encz;
+d_encz = deltaFF;
 %deltaF = [0;diff(deltaF)];
 %Standarize
-c_std = (c_encz - mean(c_encz))/std(c_encz);
-dF_std = (deltaF - mean(deltaF))/std(deltaF);
-d_std = (d_encz - mean(d_encz))/std(d_encz);
+c_std = (c_encz(start:end) - mean(c_encz(start:end)))/std(c_encz(start:end));
+dF_std = (deltaF(start:end) - mean(deltaF(start:end)))/std(deltaF(start:end));
+d_std = (d_encz(start:end) - mean(d_encz(start:end)))/std(d_encz(start:end));
 
 %Normalize 
-c_norm  = (c_encz - min(c_encz)) / (max(c_encz) - min(c_encz));
-d_norm  = (d_encz - min(d_encz)) / (max(d_encz) - min(d_encz));
-dF_norm  = (deltaF - min(deltaF)) / (max(deltaF) - min(deltaF));
+c_norm  = (c_encz(start:end) - min(c_encz(start:end))) / (max(c_encz(start:end)) - min(c_encz(start:end)));
+d_norm  = (d_encz(start:end) - min(d_encz(start:end))) / (max(d_encz(start:end)) - min(d_encz(start:end)));
+dF_norm  = (deltaF(start:end) - min(deltaF(start:end))) / (max(deltaF(start:end)) - min(deltaF(start:end)));
 
 dlen = min(length(deltaF),length(c_encz));
-start = 1000;
 
 X=[dF_norm,d_norm];
+
+
+
+
+
+plot(deltaF(1:2500),'black')
+hold on
+plot(deltaFF(1:2500),'--')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+return 
+
+
+
 
 [idx,C] = kmeans(X,3);
 x1 = min(X(:,1)):0.01:max(X(:,1));
@@ -53,7 +88,6 @@ legend('Cluster 1','Cluster 2','Centroids',...
        'Location','NW')
 title 'Cluster Assignments and Centroids'
 hold off
-return 
 figure
 plot(c_std(start:dlen),dF_std(start:dlen))
 figure
