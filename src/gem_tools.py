@@ -44,7 +44,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.backends.backend_pdf import PdfPages
 from sklearn.preprocessing import RobustScaler as RobustScaler
 
-
+import pinocchio as pin
 #color_iter = itertools.cycle(['navy', 'c', 'cornflowerblue', 'gold',
 #'darkorange'])
 
@@ -82,10 +82,47 @@ class GeM_tools():
 
 
     def input_data(self, setpath,blf,blt,brf,brt):
+        joints = np.array([])
+        ndof = 2
+        for i in range(ndof):
+            tmp =  np.loadtxt(setpath+'/joint'+str(i)+'.txt')
+            print(np.size(tmp))
+            joints = np.append(joints, tmp)
 
+        joints.resize(np.size(tmp),ndof)
+
+        urdf_filename = '/home/master/dp_ws/src/serow/share/urdf/valkyrie_sim.urdf'
+        model    = pin.buildModelFromUrdf(urdf_filename)
+        print(model)
+        print('model name: ' + model.name)
+
+        # Create data required by the algorithms
+        data     = model.createData()
+
+        # Sample a random configuration
+        q        = pin.randomConfiguration(model)
+        print('q: %s' % q.T)
+
+        # Perform the forward kinematics over the kinematic tree
+        pin.forwardKinematics(model,data,q)
+
+        joint_name = "leftAnklePitch"
+        joint_id = model.getJointId(joint_name)
+        (dv_dq,dv_dv) = pin.getJointVelocityDerivatives(model,data,joint_id,pin.ReferenceFrame.LOCAL)
+        print(dv_dq)
+        print("----")
+        # Print out the placement of each joint of the kinematic tree
+        print("\nJoint placements:")
+        for name, oMi in zip(model.names, data.oMi):
+            print(("{:<24} : {: .2f} {: .2f} {: .2f}"
+                .format( name, *oMi.translation.T.flat )))
+
+        print(data.oMi[joint_id])
+        print("----")
         cX = np.loadtxt(setpath+'/c_encx.txt')
         cY = np.loadtxt(setpath+'/c_ency.txt')
         cZ = np.loadtxt(setpath+'/c_encz.txt')
+
         lfZ = np.loadtxt(setpath+'/lfZ.txt')
         rfZ = np.loadtxt(setpath+'/rfZ.txt')
         rfX = np.loadtxt(setpath+'/rfX.txt')
