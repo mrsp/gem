@@ -103,6 +103,8 @@ class GeM_tools():
         q        = pin.randomConfiguration(model)
         print('q: %s' % q.T)
 
+
+
         # Perform the forward kinematics over the kinematic tree
         pin.forwardKinematics(model,data,q)
 
