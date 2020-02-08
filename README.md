@@ -34,16 +34,16 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Prerequisites
 * Ubuntu 14.04 and later
-* ROS indigo and later
+* ROS kinetic and later
 * Sklearn 
-* Keras 
-* tensorflow
-* tested on python3 (3.6.5) and python (2.7.2)
+* Keras 2.2.4
+* tensorflow 
+* tested on python3 (3.6.9) and python (2.7.17)
 
 ## Installing
-* pip install sklearn
-* pip install keras
 * pip install tensorflow
+* pip install --no-dependencies keras==2.2.4
+* pip install sklearn
 * git clone https://github.com/mrsp/gem.git
 * catkin_make
 * If you are using catkin tools run: catkin build  
