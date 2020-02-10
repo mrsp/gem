@@ -18,7 +18,7 @@ gem_dim: 2
 gem_save: True  #Save the Training Results to load in real-time
 gem_dim_reduction: "pca" #autoencoders or pca supported at the current time
 gem_clustering: "gmm" #gmm or kmeans supported at the current time
-gem_train_path: "/home/master/Desktop/gem_devel_ws/src/gem/src/GEM_test_valkyrie" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
+gem_train_path: "/home/master/ros_ws/src/gem/src/GEM_test_valkyrie" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
 gem_lfoot_torque_bias: [0, 0, 0] #left foot FT bias  
 gem_lfoot_force_bias: [0,0,-19.1734] 
 gem_rfoot_torque_bias: [0, 0, 0] #right foot FT bias 

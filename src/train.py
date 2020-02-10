@@ -32,7 +32,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
 '''
-
+import pinocchio as pin
 from gem import GeM
 from gem_tools import GeM_tools
 from sklearn.metrics import confusion_matrix
