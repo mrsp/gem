@@ -43,7 +43,8 @@ from sklearn.cluster import KMeans
 from keras.layers import Input, Dense
 from keras.models import Model
 from Gaussian import Gaussian
-
+from variationalAutoencoder import variationalAutoencoder
+from autoencoder import autoencoder
 class GeM():
     def __init__(self):
         self.gmm = mixture.GaussianMixture(n_components=3, covariance_type='full', max_iter=100, tol=7e-3, init_params = 'kmeans', n_init=30,warm_start=False,verbose=1)
@@ -57,114 +58,23 @@ class GeM():
 
 	
     def setDimReduction(self, dim_):
-        self.red_dim = dim_
-        self.pca = PCA(n_components=self.red_dim)
-        input_= Input(shape=(11,))
-        
-        if(dim_ == 2):
-            # "encoded" is the encoded representation of the input
-            encoded = Dense(5, activation='selu')(input_)
-            encoded = Dense(2, activation='selu')(encoded)
-            ## "decoded" is the lossy reconstruction of the input
-            decoded = Dense(5, activation='selu')(encoded)
-            decoded = Dense(11, activation='selu')(decoded)
-            # this model maps an input to its reconstruction
-            self.autoencoder = Model(input_, decoded)
-            # this model maps an input to its encoded representation
-            self.encoder = Model(input_, encoded)
-            # create a placeholder for an encoded (32-dimensional) input
-            encoded_input = Input(shape=(2,))
-            # retrieve the last layer of the autoencoder model
-            deco = self.autoencoder.layers[-2](encoded_input)
-            #deco = self.autoencoder.layers[-2](deco)
-            deco = self.autoencoder.layers[-1](deco)
-            # create the decoder model
-            self.decoder = Model(encoded_input, deco)
-            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
-        elif(dim_ == 3):
-              # "encoded" is the encoded representation of the input
-            encoded = Dense(6, activation='selu')(input_)
-            encoded = Dense(3, activation='selu')(encoded)
-            ## "decoded" is the lossy reconstruction of the input
-            decoded = Dense(6, activation='selu')(encoded)
-            decoded = Dense(11, activation='selu')(decoded)
-            # this model maps an input to its reconstruction
-            self.autoencoder = Model(input_, decoded)
-            # this model maps an input to its encoded representation
-            self.encoder = Model(input_, encoded)
-            # create a placeholder for an encoded (32-dimensional) input
-            encoded_input = Input(shape=(3,))
-            # retrieve the last layer of the autoencoder model
-            deco = self.autoencoder.layers[-2](encoded_input)
-            #deco = self.autoencoder.layers[-2](deco)
-            deco = self.autoencoder.layers[-1](deco)
-            # create the decoder model
-            self.decoder = Model(encoded_input, deco)
-            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
-        elif(dim_ == 4):
-              # "encoded" is the encoded representation of the input
-            encoded = Dense(8, activation='selu')(input_)
-            encoded = Dense(4, activation='selu')(encoded)
-            ## "decoded" is the lossy reconstruction of the input
-            decoded = Dense(8, activation='selu')(encoded)
-            decoded = Dense(11, activation='selu')(decoded)
-            # this model maps an input to its reconstruction
-            self.autoencoder = Model(input_, decoded)
-            # this model maps an input to its encoded representation
-            self.encoder = Model(input_, encoded)
-            # create a placeholder for an encoded (32-dimensional) input
-            encoded_input = Input(shape=(4,))
-            # retrieve the last layer of the autoencoder model
-            deco = self.autoencoder.layers[-2](encoded_input)
-            #deco = self.autoencoder.layers[-2](deco)
-            deco = self.autoencoder.layers[-1](deco)
-            # create the decoder model
-            self.decoder = Model(encoded_input, deco)
-            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
-        elif(dim_ == 5):
-              # "encoded" is the encoded representation of the input
-            encoded = Dense(8, activation='selu')(input_)
-            encoded = Dense(5, activation='selu')(encoded)
-            ## "decoded" is the lossy reconstruction of the input
-            decoded = Dense(8, activation='selu')(encoded)
-            decoded = Dense(11, activation='selu')(decoded)
-            # this model maps an input to its reconstruction
-            self.autoencoder = Model(input_, decoded)
-            # this model maps an input to its encoded representation
-            self.encoder = Model(input_, encoded)
-            # create a placeholder for an encoded (32-dimensional) input
-            encoded_input = Input(shape=(5,))
-            # retrieve the last layer of the autoencoder model
-            deco = self.autoencoder.layers[-2](encoded_input)
-            #deco = self.autoencoder.layers[-2](deco)
-            deco = self.autoencoder.layers[-1](deco)
-            # create the decoder model
-            self.decoder = Model(encoded_input, deco)
-            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
-        elif(dim_ == 6):
-              # "encoded" is the encoded representation of the input
-            encoded = Dense(6, activation='selu')(input_)
-            ## "decoded" is the lossy reconstruction of the input
-            decoded = Dense(11, activation='selu')(encoded)
-            # this model maps an input to its reconstruction
-            self.autoencoder = Model(input_, decoded)
-            # this model maps an input to its encoded representation
-            self.encoder = Model(input_, encoded)
-            # create a placeholder for an encoded (32-dimensional) input
-            encoded_input = Input(shape=(6,))
-            # retrieve the last layer of the autoencoder model
-            #deco = self.autoencoder.layers[-2](encoded_input)
-            #deco = self.autoencoder.layers[-2](deco)
-            deco = self.autoencoder.layers[-1](encoded_input)
-            # create the decoder model
-            self.decoder = Model(encoded_input, deco)
-            self.autoencoder.compile(optimizer='adam', loss='mean_squared_error')
+        self.latent_dim = dim_
+        self.input_dim = 21
+        self.intermidiate_dim = 10
+        self.pca = PCA(n_components=self.latent_dim)
+        self.ae = autoencoder()
+        self.ae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim)
+        self.vae = variationalAutoencoder()
+        self.vae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim)
+
+
 
     def setFrames(self,lfoot_frame_,rfoot_frame_):
         self.lfoot_frame = lfoot_frame_
         self.rfoot_frame = rfoot_frame_
 
     def fit(self,data_train,red,cl):
+        self.red = red
         print("Data Size ",data_train.size)
         self.data_train = data_train
         if red == 'pca':
@@ -173,8 +83,9 @@ class GeM():
         elif red == 'autoencoders':
             print("Dimensionality reduction with autoencoders")
             self.reduceAE(data_train)
-
-
+        elif red == "variationalAutoencoders":
+            print("Dimensionality reduction with variational autoencoders")
+            self.reduceVAE(data_train)
         else:
             self.reduced_data_train = data_train
             print("Choose a valid dimensionality reduction method")
@@ -191,16 +102,19 @@ class GeM():
         else:
             print("Choose a valid clustering method")
 
+        self.firstrun = False
+
 
 
     def predict(self, data_):
-
-
-        if(self.pca_dim):
+        if(self.red == 'pca'):
             reduced_data = self.pca.transform(data_.reshape(1,-1))
+        elif(self.red == 'autoencoders'):
+            reduced_data = self.ae.encoder.predict(data_.reshape(1,-1))
+        elif(self.red == 'variationalAutoencoders'):
+            reduced_data = self.vae.encoder.predict(data_.reshape(1,-1))[0]
         else:
-            reduced_data = self.encoder.predict(data_.reshape(1,-1))
-
+            reduced_data = data_
 
         if(self.gmm_cl_id):
             gait_phase = self.gmm.predict(reduced_data), reduced_data
@@ -233,16 +147,19 @@ class GeM():
         print("Reprojection Error")
         print(mean_squared_error(data_train, self.pca.inverse_transform(self.reduced_data_train)))
 
+
+
+        
     def reduceAE(self,data_train):
-        
-        self.autoencoder.fit(data_train, data_train,
-                             epochs=100,
-                             batch_size=7,
-                             shuffle=True,
-                             validation_data=(data_train, data_train))
-        self.reduced_data_train =  self.encoder.predict(data_train)
-        
+        self.ae.fit(data_train, 20, 32)
+        self.reduced_data_train =  self.ae.encoder.predict(data_train)
         self.pca_dim = False
+
+    def reduceVAE(self,data_train):
+        self.vae.fit(data_train,20,32)
+        self.reduced_data_train =  self.vae.encoder.predict(data_train)[0]
+        self.pca_dim = False
+
 
     def clusterGMM(self):
         self.gmm.fit(self.reduced_data_train)

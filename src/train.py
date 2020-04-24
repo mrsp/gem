@@ -5,7 +5,7 @@
 '''
  * GeM - Gait-phase Estimation Module
  *
- * Copyright 2018-2019 Stylianos Piperakis, Foundation for Research and Technology Hellas (FORTH)
+ * Copyright 2018-2020 Stylianos Piperakis, Foundation for Research and Technology Hellas (FORTH)
  * License: BSD
  *
  * Redistribution and use in source and binary forms, with or without
@@ -17,7 +17,7 @@
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Foundation for Research and Technology Hellas (FORTH) 
- *	 nor the names of its contributors may be used to endorse or promote products derived from
+ *	     nor the names of its contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -57,13 +57,9 @@ if __name__ == "__main__":
 
 	config = load_config(sys.argv[1])
 	path = config['gem_train_path']
-	gt = GeM_tools(comp_filtering=config['gem_cf'], freq=config['gem_freq'], a=config['gem_cf_a'], gt_comparison=config['gem_gt_comparison'])
-	brf = config['gem_rfoot_force_bias']
-	brt = config['gem_rfoot_torque_bias']
-	blf = config['gem_lfoot_force_bias']
-	blt = config['gem_lfoot_torque_bias']
-	
-	gt.input_data(path,blf,blt,brf,brt)
+	gt = GeM_tools(gt_comparison=config['gem_gt_comparison'])
+
+	gt.input_data(path)
 
 	g = GeM()
 	g.setFrames(config['gem_lfoot_frame'], config['gem_rfoot_frame'])

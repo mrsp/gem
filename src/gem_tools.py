@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 '''
  * GeM - Gait-phase Estimation Module
  *
@@ -69,56 +68,59 @@ params = {
 plt.rcParams.update(params)
 
 class GeM_tools():
-    def __init__(self, comp_filtering=False, freq=500, a=0.9999, gt_comparison=False):
-
-        self.comp_filtering = comp_filtering
+    def __init__(self, gt_comparison=False):
         self.gt_comparison = gt_comparison
-
-        if(comp_filtering):
-            self.compf = cf(freq, a)
-
         self.cXdt = diff_tool()
         self.cYdt = diff_tool()
         self.cZdt = diff_tool()
-        self.rolldt = diff_tool()
-        self.pitchdt = diff_tool()
 
-    def input_data(self, setpath,blf,blt,brf,brt):
+
+    def input_data(self, setpath):
 
         cX = np.loadtxt(setpath+'/c_encx.txt')
         cY = np.loadtxt(setpath+'/c_ency.txt')
         cZ = np.loadtxt(setpath+'/c_encz.txt')
-        lfZ = np.loadtxt(setpath+'/lfZ.txt')
-        rfZ = np.loadtxt(setpath+'/rfZ.txt')
+
         rfX = np.loadtxt(setpath+'/rfX.txt')
         rfY = np.loadtxt(setpath+'/rfY.txt')
-        lfX = np.loadtxt(setpath+'/lfX.txt')
-        lfY = np.loadtxt(setpath+'/lfY.txt')
-        ltX = np.loadtxt(setpath+'/ltX.txt')
-        ltY = np.loadtxt(setpath+'/ltY.txt')
-        ltZ = np.loadtxt(setpath+'/ltZ.txt')
+        rfZ = np.loadtxt(setpath+'/rfZ.txt')
         rtX = np.loadtxt(setpath+'/rtX.txt')
         rtY = np.loadtxt(setpath+'/rtY.txt')
         rtZ = np.loadtxt(setpath+'/rtZ.txt')
 
 
-        #biases removal from F/T
-        lfX += blf[0]
-        lfY += blf[1]
-        lfZ += blf[2]
-        rfX += brf[0]
-        rfY += brf[1]
-        rfZ += brf[2]
-        ltX += blt[0]
-        ltY += blt[1]
-        ltZ += blt[2]
-        rtX += brt[0]
-        rtY += brt[1]
-        rtZ += brt[2]
-        self.blf = blf
-        self.brf = brf
-        self.blt = blt
-        self.brt = brt
+        lfX = np.loadtxt(setpath+'/lfX.txt')
+        lfY = np.loadtxt(setpath+'/lfY.txt')
+        lfZ = np.loadtxt(setpath+'/lfZ.txt')
+        ltX = np.loadtxt(setpath+'/ltX.txt')
+        ltY = np.loadtxt(setpath+'/ltY.txt')
+        ltZ = np.loadtxt(setpath+'/ltZ.txt')
+        
+
+        
+        lvX = np.loadtxt(setpath+'/accX.txt')
+        lvY = np.loadtxt(setpath+'/accX.txt')
+        lvZ = np.loadtxt(setpath+'/accX.txt')
+        lwX = np.loadtxt(setpath+'/accX.txt')
+        lwY = np.loadtxt(setpath+'/accX.txt')
+        lwZ = np.loadtxt(setpath+'/accX.txt')
+        
+        rvX = np.loadtxt(setpath+'/gX.txt')
+        rvY = np.loadtxt(setpath+'/gX.txt')
+        rvZ = np.loadtxt(setpath+'/gX.txt')
+        rwX = np.loadtxt(setpath+'/gX.txt')
+        rwY = np.loadtxt(setpath+'/gX.txt')
+        rwZ = np.loadtxt(setpath+'/gX.txt')
+
+
+        gX = np.loadtxt(setpath+'/gX.txt')
+        gY = np.loadtxt(setpath+'/gY.txt')
+        gZ = np.loadtxt(setpath+'/gZ.txt')
+        accX = np.loadtxt(setpath+'/accX.txt')
+        accY = np.loadtxt(setpath+'/accY.txt')
+        accZ = np.loadtxt(setpath+'/accZ.txt')
+
+        
         if(self.gt_comparison):
             gt_lfZ  = np.loadtxt(setpath+'/gt_lfZ.txt')
             gt_rfZ  = np.loadtxt(setpath+'/gt_rfZ.txt')
@@ -128,26 +130,15 @@ class GeM_tools():
             gt_rfY  = np.loadtxt(setpath+'/gt_rfY.txt')
             mu  = np.loadtxt(setpath+'/mu.txt')
        	    self.mu = mu
-        if(self.comp_filtering):
-            aX = np.loadtxt(setpath+'/gX.txt')
-            aY = np.loadtxt(setpath+'/gY.txt')
-            accX = np.loadtxt(setpath+'/accX.txt')
-            accY = np.loadtxt(setpath+'/accY.txt')
-            accZ = np.loadtxt(setpath+'/accZ.txt')
-        else:
-            roll_ = np.loadtxt(setpath+'/roll.txt')
-            pitch_ = np.loadtxt(setpath + '/pitch.txt')
-
+       
 
 
         dlen0 = np.size(cX)
         dlen1 = np.size(cY)
         dlen2 = np.size(lfZ)
+        dlen3 = np.size(accZ)
         dlen6 = np.size(rfZ)
-        if(self.comp_filtering):
-            dlen3 = np.size(accZ)
-        else:
-            dlen3 = np.size(roll_)
+
 
         if(self.gt_comparison):
             dlen4 = np.size(gt_lfZ)
@@ -158,19 +149,10 @@ class GeM_tools():
 
 
 
-
-
-        if(self.comp_filtering):
-            roll = np.zeros((dlen))
-            pitch = np.zeros((dlen))
-
-
         dcX = np.zeros((dlen))
         dcY = np.zeros((dlen))
         dcZ= np.zeros((dlen))
-        droll = np.zeros((dlen))
-        dpitch = np.zeros((dlen))
-
+     
         if(self.gt_comparison):
             phase = np.zeros((dlen))
 
@@ -178,18 +160,9 @@ class GeM_tools():
 
 
         for i in range(dlen):
-
-            if(self.comp_filtering):
-                roll[i], pitch[i] = self.compf.update(accX[i],accY[i],accZ[i],aX[i],aY[i])
-
-
             dcX[i]=self.cXdt.diff(cX[i])
             dcY[i]=self.cYdt.diff(cY[i])
             dcZ[i]=self.cZdt.diff(cZ[i])
-            droll[i]=self.rolldt.diff(roll[i])
-            dpitch[i]=self.pitchdt.diff(pitch[i])
-
-
 
             if(self.gt_comparison):
                 lcon = np.sqrt(gt_lfX[i] * gt_lfX[i] + gt_lfY[i] * gt_lfY[i])
@@ -204,99 +177,144 @@ class GeM_tools():
                     phase[i] = -1
 
 
-
-
-        #Normalization + Standarization
-        self.data_train = np.zeros((dlen, 11))
+        self.data_train = np.zeros((dlen, 21))
+        #Leg Forces and Torques
         self.data_train[:, 0] = lfX[0:dlen] - rfX[0:dlen]
         self.data_train[:, 1] = lfY[0:dlen] - rfY[0:dlen]
         self.data_train[:, 2] = lfZ[0:dlen] - rfZ[0:dlen]
         self.data_train[:, 3] = ltX[0:dlen] - rtX[0:dlen]
         self.data_train[:, 4] = ltY[0:dlen] - rtY[0:dlen]
         self.data_train[:, 5] = ltZ[0:dlen] - rtZ[0:dlen]
-
-
+        #CoM Velocity
         self.data_train[1:dlen, 6] = dcX[1:dlen]
         self.data_train[1:dlen, 7] = dcY[1:dlen]
         self.data_train[1:dlen, 8] = dcZ[1:dlen]
-        self.data_train[1:dlen, 9] = droll[1:dlen]
-        self.data_train[1:dlen, 10] = dpitch[1:dlen]
         self.data_train[0, 6] = dcX[1]
         self.data_train[0, 7] = dcY[1]
         self.data_train[0, 8] = dcZ[1]
-        self.data_train[0, 9] = droll[1]
-        self.data_train[0, 10] = dpitch[1]
+        #Leg Linear and Angular Velocities
+        self.data_train[:, 9]  = lvX[0:dlen] - rvX[0:dlen]
+        self.data_train[:, 10] = lvY[0:dlen] - rvY[0:dlen]
+        self.data_train[:, 11] = lvZ[0:dlen] - rvZ[0:dlen]
+        self.data_train[:, 12] = lwX[0:dlen] - rwX[0:dlen]
+        self.data_train[:, 13] = lwY[0:dlen] - rwY[0:dlen]
+        self.data_train[:, 14] = lwZ[0:dlen] - rwZ[0:dlen]
+        #Base Linear Acceleration and Base Angular Velocity
+        self.data_train[:, 15] = accX[0:dlen]
+        self.data_train[:, 16] = accY[0:dlen]
+        self.data_train[:, 17] = accZ[0:dlen]
+        self.data_train[:, 18] = gX[0:dlen]
+        self.data_train[:, 19] = gY[0:dlen]
+        self.data_train[:, 20] = gZ[0:dlen]
 
-
-
-
-
-
-
-
+        #Data Statistics
+        #fX
         self.dfX_train_min = min(self.data_train[:, 0])
         self.dfX_train_max = max(self.data_train[:, 0])
         self.dfX_train_mean = np.mean(self.data_train[:, 0])
         self.dfX_train_std = np.std(self.data_train[:, 0])
-
-
+        #fY
         self.dfY_train_min = min(self.data_train[:, 1])
         self.dfY_train_max = max(self.data_train[:, 1])
         self.dfY_train_mean = np.mean(self.data_train[:, 1])
         self.dfY_train_std = np.std(self.data_train[:, 1])
-
+        #fZ
         self.dfZ_train_min = min(self.data_train[:, 2])
         self.dfZ_train_max = max(self.data_train[:, 2])
         self.dfZ_train_mean = np.mean(self.data_train[:, 2])
         self.dfZ_train_std = np.std(self.data_train[:, 2])
-
+        #tX
         self.dtX_train_min = min(self.data_train[:, 3])
         self.dtX_train_max = max(self.data_train[:, 3])
         self.dtX_train_mean = np.mean(self.data_train[:, 3])
         self.dtX_train_std = np.std(self.data_train[:, 3])
-
+        #tY
         self.dtY_train_min = min(self.data_train[:, 4])
         self.dtY_train_max = max(self.data_train[:, 4])
         self.dtY_train_mean = np.mean(self.data_train[:, 4])
         self.dtY_train_std = np.std(self.data_train[:, 4])
-
+        #tZ
         self.dtZ_train_min = min(self.data_train[:, 5])
         self.dtZ_train_max = max(self.data_train[:, 5])
         self.dtZ_train_mean = np.mean(self.data_train[:, 5])
         self.dtZ_train_std = np.std(self.data_train[:, 5])
-
-
+        #cX
         self.dcX_train_min = min(self.data_train[:, 6])
         self.dcX_train_max = max(self.data_train[:, 6])
         self.dcX_train_mean = np.mean(self.data_train[:, 6])
         self.dcX_train_std = np.std(self.data_train[:, 6])
-
-
+        #cY
         self.dcY_train_min = min(self.data_train[:, 7])
         self.dcY_train_max = max(self.data_train[:, 7])
         self.dcY_train_mean = np.mean(self.data_train[:, 7])
         self.dcY_train_std = np.std(self.data_train[:, 7])
-
-
+        #cZ
         self.dcZ_train_min = min(self.data_train[:, 8])
         self.dcZ_train_max = max(self.data_train[:, 8])
         self.dcZ_train_mean = np.mean(self.data_train[:, 8])
         self.dcZ_train_std = np.std(self.data_train[:, 8])
+        #vX
+        self.dvX_train_min = min(self.data_train[:, 9])
+        self.dvX_train_max = max(self.data_train[:, 9])
+        self.dvX_train_mean = np.mean(self.data_train[:, 9])
+        self.dvX_train_std = np.std(self.data_train[:, 9])
+        #vY
+        self.dvY_train_min = min(self.data_train[:, 10])
+        self.dvY_train_max = max(self.data_train[:, 10])
+        self.dvY_train_mean = np.mean(self.data_train[:, 10])
+        self.dvY_train_std = np.std(self.data_train[:, 10])
+        #vZ
+        self.dvZ_train_min = min(self.data_train[:, 11])
+        self.dvZ_train_max = max(self.data_train[:, 11])
+        self.dvZ_train_mean = np.mean(self.data_train[:, 11])
+        self.dvZ_train_std = np.std(self.data_train[:, 11])
+        #wX
+        self.dwX_train_min = min(self.data_train[:, 12])    
+        self.dwX_train_max = max(self.data_train[:, 12])
+        self.dwX_train_mean = np.mean(self.data_train[:, 12])
+        self.dwX_train_std = np.std(self.data_train[:, 12])
+        #wY
+        self.dwY_train_min = min(self.data_train[:, 13])
+        self.dwY_train_max = max(self.data_train[:, 13])
+        self.dwY_train_mean = np.mean(self.data_train[:, 13])
+        self.dwY_train_std = np.std(self.data_train[:, 13])
+        #wZ
+        self.dwZ_train_min = min(self.data_train[:, 14])
+        self.dwZ_train_max = max(self.data_train[:, 14])
+        self.dwZ_train_mean = np.mean(self.data_train[:, 14])
+        self.dwZ_train_std = np.std(self.data_train[:, 14])
+        #accX
+        self.accX_train_min = min(self.data_train[:, 15])
+        self.accX_train_max = max(self.data_train[:, 15])
+        self.accX_train_mean = np.mean(self.data_train[:, 15])
+        self.accX_train_std = np.std(self.data_train[:, 15])
+        #accY
+        self.accY_train_min = min(self.data_train[:, 16])
+        self.accY_train_max = max(self.data_train[:, 16])
+        self.accY_train_mean = np.mean(self.data_train[:, 16])
+        self.accY_train_std = np.std(self.data_train[:, 16])
+        #accZ
+        self.accZ_train_min = min(self.data_train[:, 17])
+        self.accZ_train_max = max(self.data_train[:, 17])
+        self.accZ_train_mean = np.mean(self.data_train[:, 17])
+        self.accZ_train_std = np.std(self.data_train[:, 17])
+        #gX
+        self.gX_train_min = min(self.data_train[:, 18])
+        self.gX_train_max = max(self.data_train[:, 18])
+        self.gX_train_mean = np.mean(self.data_train[:, 18])
+        self.gX_train_std = np.std(self.data_train[:, 18])
+        #gY
+        self.gY_train_min = min(self.data_train[:, 19])
+        self.gY_train_max = max(self.data_train[:, 19])
+        self.gY_train_mean = np.mean(self.data_train[:, 19])
+        self.gY_train_std = np.std(self.data_train[:, 19])
+        #gZ
+        self.gZ_train_min = min(self.data_train[:, 20])
+        self.gZ_train_max = max(self.data_train[:, 20])
+        self.gZ_train_mean = np.mean(self.data_train[:, 20])
+        self.gZ_train_std = np.std(self.data_train[:, 20])
 
-
-        self.droll_train_min = min(self.data_train[:, 9])
-        self.droll_train_max = max(self.data_train[:, 9])
-        self.droll_train_mean = np.mean(self.data_train[:, 9])
-        self.droll_train_std = np.std(self.data_train[:, 9])
-
-        self.dpitch_train_min = min(self.data_train[:, 10])
-        self.dpitch_train_max = max(self.data_train[:, 10])
-        self.dpitch_train_mean = np.mean(self.data_train[:, 10])
-        self.dpitch_train_std = np.std(self.data_train[:, 10])
-
-
-
-        
+        #Normalization or Standarization?
         self.data_train[:, 0] = self.normalize_data(self.data_train[:, 0],self.dfX_train_max, self.dfX_train_min)   
         self.data_train[:, 1] = self.normalize_data(self.data_train[:, 1],self.dfY_train_max, self.dfY_train_min)   
         self.data_train[:, 2] = self.normalize_data(self.data_train[:, 2],self.dfZ_train_max, self.dfZ_train_min)   
@@ -305,10 +323,20 @@ class GeM_tools():
         self.data_train[:, 5] = self.normalize_data(self.data_train[:, 5],self.dtZ_train_max, self.dtZ_train_min)   
         self.data_train[:, 6] = self.normalize_data(self.data_train[:, 6],self.dcX_train_max, self.dcX_train_min)   
         self.data_train[:, 7] = self.normalize_data(self.data_train[:, 7],self.dcY_train_max, self.dcY_train_min)   
-        self.data_train[:, 8] = self.normalize_data(self.data_train[:, 8],self.dcZ_train_max, self.dcZ_train_min)   
-        self.data_train[:, 9] = self.normalize_data(self.data_train[:, 9],self.droll_train_max, self.droll_train_min)   
-        self.data_train[:, 10] = self.normalize_data(self.data_train[:, 10],self.dpitch_train_max, self.dpitch_train_min)   
-        
+        self.data_train[:, 8] = self.normalize_data(self.data_train[:, 8],self.dcZ_train_max, self.dcZ_train_min) 
+        self.data_train[:, 9] = self.normalize_data(self.data_train[:, 9],self.dvX_train_max, self.dvX_train_min) 
+        self.data_train[:, 10] = self.normalize_data(self.data_train[:, 10],self.dvY_train_max, self.dvY_train_min) 
+        self.data_train[:, 11] = self.normalize_data(self.data_train[:, 11],self.dvZ_train_max, self.dvZ_train_min) 
+        self.data_train[:, 12] = self.normalize_data(self.data_train[:, 12],self.dwX_train_max, self.dwX_train_min) 
+        self.data_train[:, 13] = self.normalize_data(self.data_train[:, 13],self.dwY_train_max, self.dwY_train_min) 
+        self.data_train[:, 14] = self.normalize_data(self.data_train[:, 14],self.dwZ_train_max, self.dwZ_train_min) 
+        self.data_train[:, 15] = self.normalize_data(self.data_train[:, 15],self.accX_train_max, self.accX_train_min) 
+        self.data_train[:, 16] = self.normalize_data(self.data_train[:, 16],self.accY_train_max, self.accY_train_min) 
+        self.data_train[:, 17] = self.normalize_data(self.data_train[:, 17],self.accZ_train_max, self.accZ_train_min) 
+        self.data_train[:, 18] = self.normalize_data(self.data_train[:, 18],self.gX_train_max, self.gX_train_min) 
+        self.data_train[:, 19] = self.normalize_data(self.data_train[:, 19],self.gY_train_max, self.gY_train_min) 
+        self.data_train[:, 20] = self.normalize_data(self.data_train[:, 20],self.gZ_train_max, self.gZ_train_min) 
+
         '''
         self.data_train[:, 0] = self.standarize_data(self.data_train[:, 0],self.dfX_train_mean, self.dfX_train_std)   
         self.data_train[:, 1] = self.standarize_data(self.data_train[:, 1],self.dfY_train_mean, self.dfY_train_std)   
@@ -330,18 +358,14 @@ class GeM_tools():
             self.cY = cY[~(phase2==-1)]
             self.cZ = cZ[~(phase2==-1)]
 
-            if self.comp_filtering:
-                phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
-                self.accX = accX[~(phase3==-1)]
-                self.accY = accY[~(phase3==-1)]
-                self.accZ = accZ[~(phase3==-1)]
-                phase4=np.append([phase],[np.zeros_like(np.arange(aX.shape[0]-phase.shape[0]))])
-                self.gX = aX[~(phase4==-1)]
-                self.gY = aY[~(phase4==-1)]
-            else:
-                phase0=np.append([phase],[np.zeros_like(np.arange(roll.shape[0]-phase.shape[0]))])
-                self.roll = roll[~(phase0==-1)]
-                self.pitch = pitch[~(phase0==-1)]
+            phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
+            self.accX = accX[~(phase3==-1)]
+            self.accY = accY[~(phase3==-1)]
+            self.accZ = accZ[~(phase3==-1)]
+            phase4=np.append([phase],[np.zeros_like(np.arange(gX.shape[0]-phase.shape[0]))])
+            self.gX = gX[~(phase4==-1)]
+            self.gY = gY[~(phase4==-1)]
+           
 
             phase5=np.append([phase],[np.zeros_like(np.arange(lfZ.shape[0]-phase.shape[0]))])
             self.lfZ = lfZ[~(phase5==-1)]
@@ -371,169 +395,56 @@ class GeM_tools():
         self.cXdt.reset()
         self.cYdt.reset()
         self.cZdt.reset()
-        self.rolldt.reset()
-        self.pitchdt.reset()
-        if self.comp_filtering:
-            self.compf.reset()
 
 
 
 
-
-    def genInput(self,cX,cY,cZ,roll,pitch,lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ ,gt=None):
+    def genInput(self,cX,cY,cZ,accX,accY,accZ,gX,gY,gZ,lvX,lvY,lvZ,rvX,rvY,rvZ,lwX,lwY,lwZ,rwX,rwY,rwZ,lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ ,gt=None):
 
         if gt is None:
             gt=self
 
-        output_ = np.zeros(11)
+        output_ = np.zeros(21)
         dcX = gt.cXdt.diff(cX)
         dcY = gt.cYdt.diff(cY)
         dcZ = gt.cZdt.diff(cZ)
-        droll = gt.rolldt.diff(roll)
-        dpitch = gt.pitchdt.diff(pitch)
-
-        lfX += gt.blf[0]
-        lfY += gt.blf[1]
-        lfZ += gt.blf[2]
-        rfX += gt.brf[0]
-        rfY += gt.brf[1]
-        rfZ += gt.brf[2]
-        ltX += gt.blt[0]
-        ltY += gt.blt[1]
-        ltZ += gt.blt[2]
-        rtX += gt.brt[0]
-        rtY += gt.brt[1]
-        rtZ += gt.brt[2]
-
         dfZ = lfZ - rfZ
         dfX = lfX - rfX
         dfY = lfY - rfY
         dtZ = ltZ - rtZ
         dtX = ltX - rtX
         dtY = ltY - rtY
+        
+        dfX = self.normalize(dfX, gt.dfX_train_max, gt.dfX_train_min)  
+        dfY = self.normalize(dfY, gt.dfY_train_max, gt.dfY_train_min)  
+        dfZ = self.normalize(dfZ, gt.dfZ_train_max, gt.dfZ_train_min)  
+        
+        dtX = self.normalize(dtX, gt.dtX_train_max, gt.dtX_train_min)  
+        dtY = self.normalize(dtY, gt.dtY_train_max, gt.dtY_train_min)  
+        dtZ = self.normalize(dtZ, gt.dtZ_train_max, gt.dtZ_train_min) 
+        
+        dcX = self.normalize(dcX, gt.dcX_train_max, gt.dcX_train_min)  
+        dcY = self.normalize(dcY, gt.dcY_train_max, gt.dcY_train_min)  
+        dcZ = self.normalize(dcZ, gt.dcZ_train_max, gt.dcZ_train_min) 
 
 
-        if(dfX>gt.dfX_train_max):
-            dfX=gt.dfX_train_max
-        elif(dfX<gt.dfX_train_min):
-            dfX=gt.dfX_train_min
+        dvX = self.normalize(dvX, gt.dvX_train_max, gt.dvX_train_min)  
+        dvY = self.normalize(dvY, gt.dvY_train_max, gt.dvY_train_min)  
+        dvZ = self.normalize(dvZ, gt.dvZ_train_max, gt.dvZ_train_min)  
 
-        if(gt.dfX_train_max - gt.dfX_train_min != 0):
-            dfX = (dfX - gt.dfX_train_min) / (gt.dfX_train_max - gt.dfX_train_min)
-        else:
-            dfX = 0.0
+        dwX = self.normalize(dwX, gt.dwX_train_max, gt.dwX_train_min)  
+        dwY = self.normalize(dwY, gt.dwY_train_max, gt.dwY_train_min)  
+        dwZ = self.normalize(dwZ, gt.dwZ_train_max, gt.dwZ_train_min)  
 
 
+        accX = self.normalize(accX, gt.accX_train_max, gt.accX_train_min)  
+        accY = self.normalize(accY, gt.accY_train_max, gt.accY_train_min)  
+        accZ = self.normalize(accZ, gt.accZ_train_max, gt.accZ_train_min) 
 
 
-        if(dfY>gt.dfY_train_max):
-            dfY=gt.dfY_train_max
-        elif(dfY<gt.dfY_train_min):
-            dfY=gt.dfY_train_min
-
-        if(gt.dfY_train_max - gt.dfY_train_min != 0):
-            dfY = (dfY - gt.dfY_train_min) / (gt.dfY_train_max - gt.dfY_train_min)
-        else:
-            dfY = 0.0
-
-        if(dfZ>gt.dfZ_train_max):
-            dfY=gt.dfZ_train_max
-        elif(dfZ<gt.dfZ_train_min):
-            dfZ=gt.dfZ_train_min
-
-        if(gt.dfZ_train_max - gt.dfZ_train_min):
-            dfZ = (dfZ - gt.dfZ_train_min) / (gt.dfZ_train_max - gt.dfZ_train_min)
-        else:
-            dfZ = 0.0
-
-        if(dtX>gt.dtX_train_max):
-            dtX=gt.dtX_train_max
-        elif(dtX<gt.dtX_train_min):
-            dtX=gt.dtX_train_min
-
-        if(gt.dtX_train_max - gt.dtX_train_min):
-            dtX = (dtX - gt.dtX_train_min) / (gt.dtX_train_max - gt.dtX_train_min)
-        else:
-            dtX = 0.0
-
-
-        if(dtY>gt.dtY_train_max):
-            dtY=gt.dtY_train_max
-        elif(dtY<gt.dtY_train_min):
-            dtY=gt.dtY_train_min
-
-        if(gt.dtY_train_max - gt.dtY_train_min):
-            dtY = (dtY - gt.dtY_train_min) / (gt.dtY_train_max - gt.dtY_train_min)
-        else:
-            dtY = 0.0
-
-
-        if(dtZ>gt.dtZ_train_max):
-            dtZ=gt.dtZ_train_max
-        elif(dtZ<gt.dtZ_train_min):
-            dtZ=gt.dtZ_train_min
-
-        if(gt.dtZ_train_max - gt.dtZ_train_min):
-            dtZ = (dtZ - gt.dtZ_train_min) / (gt.dtZ_train_max - gt.dtZ_train_min)
-        else:
-            dtZ = 0.0
-
-
-
-
-        if(dcX>gt.dcX_train_max):
-            dcX=gt.dcX_train_max
-        elif(dcX<gt.dcX_train_min):
-            dcX=gt.dcX_train_min
-
-        if(gt.dcX_train_max - gt.dcX_train_min):
-            dcX = (dcX -gt.dcX_train_min) / (gt.dcX_train_max - gt.dcX_train_min)
-        else:
-            dcX = 0.0
-
-
-
-        if(dcY>gt.dcY_train_max):
-            dcY=gt.dcY_train_max
-        elif(dcY<gt.dcY_train_min):
-            dcY=gt.dcY_train_min
-
-        if(gt.dcY_train_max - gt.dcY_train_min):
-            dcY = (dcY - gt.dcY_train_min) / (gt.dcY_train_max - gt.dcY_train_min)
-        else:
-            dcY = 0.0
-
-        if(dcZ>gt.dcZ_train_max):
-            dcZ=gt.dcZ_train_max
-        elif(dcZ<gt.dcZ_train_min):
-            dcZ=gt.dcZ_train_min
-
-        if(gt.dcZ_train_max - gt.dcZ_train_min):
-            dcZ = (dcZ - gt.dcZ_train_min) / (gt.dcZ_train_max - gt.dcZ_train_min)
-        else:
-            dcZ = 0.0
-
-        if(droll>gt.droll_train_max):
-            droll=gt.droll_train_max
-        elif(droll<gt.droll_train_min):
-            droll=gt.droll_train_min
-
-        if(gt.droll_train_max - gt.droll_train_min):
-            droll = (droll - gt.droll_train_min) / (gt.droll_train_max - gt.droll_train_min)
-        else:
-            droll = 0.0
-
-
-        if(dpitch>gt.dpitch_train_max):
-            droll=gt.dpitch_train_max
-        elif(dpitch<gt.dpitch_train_min):
-            dpitch=gt.dpitch_train_min
-
-        if(gt.dpitch_train_max - gt.dpitch_train_min):
-            dpitch = (dpitch - gt.dpitch_train_min) / (gt.dpitch_train_max - gt.dpitch_train_min)
-        else:
-            dpitch = 0.0
-
+        gX = self.normalize(gX, gt.gX_train_max, gt.gX_train_min)  
+        gY = self.normalize(gY, gt.gY_train_max, gt.gY_train_min)  
+        gZ = self.normalize(gZ, gt.gZ_train_max, gt.gZ_train_min) 
 
 
         output_[0] = dfX
@@ -545,8 +456,18 @@ class GeM_tools():
         output_[6] = dcX
         output_[7] = dcY
         output_[8] = dcZ
-        output_[9] = droll
-        output_[10] = dpitch
+        output_[9] = dvX
+        output_[10] = dvY
+        output_[11] = dvZ
+        output_[12] = dwX
+        output_[13] = dwY
+        output_[14] = dwZ
+        output_[15] = accX
+        output_[16] = accY
+        output_[17] = accZ
+        output_[18] = gX
+        output_[19] = gY
+        output_[20] = gZ
 
         return output_
 
@@ -560,7 +481,6 @@ class GeM_tools():
         return dout
 
     def standarize_data(self,din,dmean,dstd):
-        print(dmean,dstd)
         if(dstd != 0):
             dout = (din - dmean)/dstd
         else:
@@ -569,183 +489,26 @@ class GeM_tools():
         return dout
 
 
-    def genInputCF(self,cX,cY,cZ,accX,accY, accZ, gX, gY, lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ, gt=None):
+    def normalize(self,din, dmax, dmin):    
+        if(din>dmax):
+            din=dmax
+        elif(din<dmin):
+            din=dmin
 
-
-        if gt is None:
-            gt=self
-
-        roll, pitch = gt.compf.update(accX, accY, accZ, gX, gY)
-
-        output_ = np.zeros(11)
-        dcX = gt.cXdt.diff(cX)
-        dcY = gt.cYdt.diff(cY)
-        dcZ = gt.cZdt.diff(cZ)
-        droll = gt.rolldt.diff(roll)
-        dpitch = gt.pitchdt.diff(pitch)
-
-        lfX += gt.blf[0]
-        lfY += gt.blf[1]
-        lfZ += gt.blf[2]
-        rfX += gt.brf[0]
-        rfY += gt.brf[1]
-        rfZ += gt.brf[2]
-        ltX += gt.blt[0]
-        ltY += gt.blt[1]
-        ltZ += gt.blt[2]
-        rtX += gt.brt[0]
-        rtY += gt.brt[1]
-        rtZ += gt.brt[2]
-
-        dfZ = lfZ - rfZ
-        dfX = lfX - rfX
-        dfY = lfY - rfY
-        dtZ = ltZ - rtZ
-        dtX = ltX - rtX
-        dtY = ltY - rtY
-
-
-
-
-        if(dfX>gt.dfX_train_max):
-            dfX=gt.dfX_train_max
-        elif(dfX<gt.dfX_train_min):
-            dfX=gt.dfX_train_min
-
-        if(gt.dfX_train_max - gt.dfX_train_min != 0):
-            dfX = (dfX - gt.dfX_train_min) / (gt.dfX_train_max - gt.dfX_train_min)
+        if(dmax-dmin != 0):
+            dout = (din - dmin)/(dmax-dmin)
         else:
-            dfX = 0.0
+            dout =  0
 
+        return dout
 
-
-
-        if(dfY>gt.dfY_train_max):
-            dfY=gt.dfY_train_max
-        elif(dfY<gt.dfY_train_min):
-            dfY=gt.dfY_train_min
-
-        if(gt.dfY_train_max - gt.dfY_train_min != 0):
-            dfY = (dfY - gt.dfY_train_min) / (gt.dfY_train_max - gt.dfY_train_min)
+    def standarize(self,din,dmean,dstd):
+        if(dstd != 0):
+            dout = (din - dmean)/dstd
         else:
-            dfY = 0.0
+            dout =  0
 
-        if(dfZ>gt.dfZ_train_max):
-            dfY=gt.dfZ_train_max
-        elif(dfZ<gt.dfZ_train_min):
-            dfZ=gt.dfZ_train_min
-
-        if(gt.dfZ_train_max - gt.dfZ_train_min):
-            dfZ = (dfZ - gt.dfZ_train_min) / (gt.dfZ_train_max - gt.dfZ_train_min)
-        else:
-            dfZ = 0.0
-
-        if(dtX>gt.dtX_train_max):
-            dtX=gt.dtX_train_max
-        elif(dtX<gt.dtX_train_min):
-            dtX=gt.dtX_train_min
-
-        if(gt.dtX_train_max - gt.dtX_train_min):
-            dtX = (dtX - gt.dtX_train_min) / (gt.dtX_train_max - gt.dtX_train_min)
-        else:
-            dtX = 0.0
-
-
-        if(dtY>gt.dtY_train_max):
-            dtY=gt.dtY_train_max
-        elif(dtY<gt.dtY_train_min):
-            dtY=gt.dtY_train_min
-
-        if(gt.dtY_train_max - gt.dtY_train_min):
-            dtY = (dtY - gt.dtY_train_min) / (gt.dtY_train_max - gt.dtY_train_min)
-        else:
-            dtY = 0.0
-
-
-        if(dtZ>gt.dtZ_train_max):
-            dtZ=gt.dtZ_train_max
-        elif(dtZ<gt.dtZ_train_min):
-            dtZ=gt.dtZ_train_min
-
-        if(gt.dtZ_train_max - gt.dtZ_train_min):
-            dtZ = (dtZ - gt.dtZ_train_min) / (gt.dtZ_train_max - gt.dtZ_train_min)
-        else:
-            dtZ = 0.0
-
-
-
-
-        if(dcX>gt.dcX_train_max):
-            dcX=gt.dcX_train_max
-        elif(dcX<gt.dcX_train_min):
-            dcX=gt.dcX_train_min
-
-        if(gt.dcX_train_max - gt.dcX_train_min):
-            dcX = (dcX -gt.dcX_train_min) / (gt.dcX_train_max - gt.dcX_train_min)
-        else:
-            dcX = 0.0
-
-
-
-        if(dcY>gt.dcY_train_max):
-            dcY=gt.dcY_train_max
-        elif(dcY<gt.dcY_train_min):
-            dcY=gt.dcY_train_min
-
-        if(gt.dcY_train_max - gt.dcY_train_min):
-            dcY = (dcY - gt.dcY_train_min) / (gt.dcY_train_max - gt.dcY_train_min)
-        else:
-            dcY = 0.0
-
-        if(dcZ>gt.dcZ_train_max):
-            dcZ=gt.dcZ_train_max
-        elif(dcZ<gt.dcZ_train_min):
-            dcZ=gt.dcZ_train_min
-
-        if(gt.dcZ_train_max - gt.dcZ_train_min):
-            dcZ = (dcZ - gt.dcZ_train_min) / (gt.dcZ_train_max - gt.dcZ_train_min)
-        else:
-            dcZ = 0.0
-
-        if(droll>gt.droll_train_max):
-            droll=gt.droll_train_max
-        elif(droll<gt.droll_train_min):
-            droll=gt.droll_train_min
-
-        if(gt.droll_train_max - gt.droll_train_min):
-            droll = (droll - gt.droll_train_min) / (gt.droll_train_max - gt.droll_train_min)
-        else:
-            droll = 0.0
-
-
-        if(dpitch>gt.dpitch_train_max):
-            droll=gt.dpitch_train_max
-        elif(dpitch<gt.dpitch_train_min):
-            dpitch=gt.dpitch_train_min
-
-        if(gt.dpitch_train_max - gt.dpitch_train_min):
-            dpitch = (dpitch - gt.dpitch_train_min) / (gt.dpitch_train_max - gt.dpitch_train_min)
-        else:
-            dpitch = 0.0
-
-
-
-
-        output_[0] = dfX
-        output_[1] = dfY
-        output_[2] = dfZ
-        output_[3] = dtX
-        output_[4] = dtY
-        output_[5] = dtZ
-        output_[6] = dcX
-        output_[7] = dcY
-        output_[8] = dcZ
-        output_[9] = droll
-        output_[10] = dpitch
-
-        return output_
-
-
+        return dout
 
 
     def genGroundTruthStatistics(self, reduced_data):

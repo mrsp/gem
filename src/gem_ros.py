@@ -149,9 +149,8 @@ class  gem_ros():
 			self.rwrench_inc = False
 			self.com_inc = False
 
-			self.phase, self.reduced_data = self.g.predict(self.gt.genInputCF(self.com.pose.position.x,self.com.pose.position.y,self.com.pose.position.z,
-self.imu.linear_acceleration.x,self.imu.linear_acceleration.y, self.imu.linear_acceleration.z, self.imu.angular_velocity.x, self.imu.angular_velocity.y, self.lwrench.wrench.force.x,self.lwrench.wrench.force.y,self.lwrench.wrench.force.z,self.rwrench.wrench.force.x,self.rwrench.wrench.force.y,self.rwrench.wrench.force.z, 
-self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y,self.lwrench.wrench.torque.z,self.rwrench.wrench.torque.x,self.rwrench.wrench.torque.y,self.rwrench.wrench.torque.z,self.gt))
+			self.phase, self.reduced_data = self.g.predict(self.gt.genInput(self.com.pose.position.x,self.com.pose.position.y,self.com.pose.position.z, self.imu.linear_acceleration.x,self.imu.linear_acceleration.y, self.imu.linear_acceleration.z, self.imu.angular_velocity.x, self.imu.angular_velocity.y, self.imu.angular_velocity.z,  0,0,0,0,0,0,0,0,0,0,0,0, self.lwrench.wrench.force.x,self.lwrench.wrench.force.y,self.lwrench.wrench.force.z, self.rwrench.wrench.force.x,self.rwrench.wrench.force.y,self.rwrench.wrench.force.z, self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y, self.lwrench.wrench.torque.z,self.rwrench.wrench.torque.x,self.rwrench.wrench.torque.y,self.rwrench.wrench.torque.z,self.gt))
+			
 			self.support_leg = self.g.getSupportLeg()
 			self.phase_msg.data = self.phase        	
 			self.phase_pub.publish(self.phase_msg)
