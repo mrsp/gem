@@ -42,17 +42,17 @@ class supervisedAutoencoder():
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim, num_classes):
         sae_input = Input(shape=(input_dim,), name='input')
         # Encoder: input to Z
-        encoded = Dense(input_dim, activation='relu',
+        encoded = Dense(input_dim, activation='selu',
                         name='encode_1')(sae_input)
-        encoded = Dense(intermediate_dim, activation='relu', name='encode_2')(encoded)
-        encoded = Dense(latent_dim, activation='relu', name='z')(encoded)
+        encoded = Dense(intermediate_dim, activation='selu', name='encode_2')(encoded)
+        encoded = Dense(latent_dim, activation='selu', name='z')(encoded)
         # Classification: Z to class
         predicted = Dense(num_classes, activation='softmax',
                           name='class_output')(encoded)
         # Reconstruction Decoder: Z to input
-        decoded = Dense(latent_dim, activation='relu',
+        decoded = Dense(latent_dim, activation='selu',
                         name='decode_1')(encoded)
-        decoded = Dense(intermediate_dim, activation='relu', name='decode_2')(decoded)
+        decoded = Dense(intermediate_dim, activation='selu', name='decode_2')(decoded)
         decoded = Dense(input_dim, activation='sigmoid',
                         name='reconst_output')(decoded)
         # Take input and give classification and reconstruction

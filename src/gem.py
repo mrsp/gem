@@ -43,6 +43,8 @@ from keras.models import Model
 from Gaussian import Gaussian
 from variationalAutoencoder import variationalAutoencoder
 from autoencoder import autoencoder
+from supervisedAutoencoder import supervisedAutoencoder
+from supervisedVariationalAutoencoder import supervisedVariationalAutoencoder
 class GeM():
     def __init__(self):
         self.gmm = mixture.GaussianMixture(n_components=3, covariance_type='full', max_iter=100, tol=7e-3, init_params = 'kmeans', n_init=30,warm_start=False,verbose=1)
@@ -64,14 +66,16 @@ class GeM():
         self.ae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim)
         self.vae = variationalAutoencoder()
         self.vae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim)
-
-
+        self.sae = supervisedAutoencoder()
+        self.sae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim, 2)
+        self.svae = supervisedVariationalAutoencoder()
+        self.svae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim, 2)
 
     def setFrames(self,lfoot_frame_,rfoot_frame_):
         self.lfoot_frame = lfoot_frame_
         self.rfoot_frame = rfoot_frame_
 
-    def fit(self,data_train,red,cl):
+    def fit(self,data_train,red,cl,data_labels = None):
         self.red = red
         print("Data Size ",data_train.size)
         self.data_train = data_train
@@ -84,6 +88,12 @@ class GeM():
         elif red == "variationalAutoencoders":
             print("Dimensionality reduction with variational autoencoders")
             self.reduceVAE(data_train)
+        elif red == "supervisedautoencoders":
+            print("Dimensionality reduction with supervised autoencoders")
+            self.reduceSAE(data_train,data_labels)
+        elif red == "supervisedVariationalAutoencoder":
+            print("Dimensionality reduction with supervised variational autoencoders")
+            self.reduceSVAE(data_train,data_labels)
         else:
             self.reduced_data_train = data_train
             print("Choose a valid dimensionality reduction method")
@@ -149,6 +159,17 @@ class GeM():
         self.ae.fit(data_train, 20, 32)
         self.reduced_data_train =  self.ae.encoder.predict(data_train)
         self.pca_dim = False
+
+    def reduceSAE(self,data_train,data_labels):
+        self.sae.fit(data_train,data_labels, 20, 32)
+        self.reduced_data_train =  self.sae.encoder.predict(data_train)
+        self.pca_dim = False
+
+    def reduceSVAE(self,data_train,data_labels):
+        self.svae.fit(data_train,data_labels, 20, 32)
+        self.reduced_data_train =  self.svae.encoder.predict(data_train)[0]
+        self.pca_dim = False
+
 
     def reduceVAE(self,data_train):
         self.vae.fit(data_train,20,32)
@@ -222,8 +243,6 @@ class GeM():
 
         
     def computeContactProb(self,  coplx,  coply,  coprx,  copry, xmax, xmin, ymax, ymin,  sigmalc, sigmarc):
-
-       
         plc = self.computeCOPContactProb(xmax, xmin, sigmalc, coplx) * self.computeCOPContactProb(ymax, ymin, sigmalc, coply)
         prc = self.computeCOPContactProb(xmax, xmin, sigmarc, coprx) * self.computeCOPContactProb(ymax, ymin, sigmarc, copry)
         self.pr = self.pr * prc
