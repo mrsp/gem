@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
 '''
  * GeM - Gait-phase Estimation Module
  *
@@ -147,9 +145,6 @@ class GeM():
         print("Reprojection Error")
         print(mean_squared_error(data_train, self.pca.inverse_transform(self.reduced_data_train)))
 
-
-
-        
     def reduceAE(self,data_train):
         self.ae.fit(data_train, 20, 32)
         self.reduced_data_train =  self.ae.encoder.predict(data_train)
@@ -159,7 +154,6 @@ class GeM():
         self.vae.fit(data_train,20,32)
         self.reduced_data_train =  self.vae.encoder.predict(data_train)[0]
         self.pca_dim = False
-
 
     def clusterGMM(self):
         self.gmm.fit(self.reduced_data_train)

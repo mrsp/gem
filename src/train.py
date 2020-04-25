@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-
 '''
  * GeM - Gait-phase Estimation Module
  *
