@@ -88,7 +88,7 @@ class GeM():
         elif red == "variationalAutoencoders":
             print("Dimensionality reduction with variational autoencoders")
             self.reduceVAE(data_train)
-        elif red == "supervisedautoencoders":
+        elif red == "supervisedAutoencoders":
             print("Dimensionality reduction with supervised autoencoders")
             self.reduceSAE(data_train,data_labels)
         elif red == "supervisedVariationalAutoencoder":
@@ -121,7 +121,12 @@ class GeM():
             reduced_data = self.ae.encoder.predict(data_.reshape(1,-1))
         elif(self.red == 'variationalAutoencoders'):
             reduced_data = self.vae.encoder.predict(data_.reshape(1,-1))[0]
+        elif(self.red == 'supervisedAutoencoders'):
+            reduced_data = self.sae.encoder.predict(data_.reshape(1,-1))
+        elif(self.red == 'supervisedVariationalAutoencoders'):
+            reduced_data = self.svae.encoder.predict(data_.reshape(1,-1))[0]
         else:
+            print('Unrecognired Training Method')
             reduced_data = data_
 
         if(self.gmm_cl_id):
@@ -129,7 +134,7 @@ class GeM():
         elif(self.kmeans_cl_id):
             gait_phase = self.kmeans.predict(reduced_data), reduced_data
         else:
-            print('Unrecognired Training Module')
+            print('Unrecognired Clustering Method')
 
         if(self.firstrun == False):
             if(gait_phase == 0):
