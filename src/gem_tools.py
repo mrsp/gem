@@ -105,7 +105,7 @@ class GeM_tools():
             gt_lfY  = np.loadtxt(setpath+'/gt_lfY.txt')
             gt_rfY  = np.loadtxt(setpath+'/gt_rfY.txt')
             mu  = np.loadtxt(setpath+'/mu.txt')
-            dlen = min(dlen,min(np.size(gt_rfZ),p.size(gt_lfZ)))
+            dlen = min(dlen,min(np.size(gt_rfZ),np.size(gt_lfZ)))
        	    self.mu = mu
 
             
@@ -137,7 +137,7 @@ class GeM_tools():
             dcY = np.loadtxt(setpath+'/comvY.txt')
             dcZ = np.loadtxt(setpath+'/comvZ.txt')
             dlen = min(dlen,np.size(dcZ))
-            if(self.labels):
+            if(self.useLabels):
                 accX_LL = np.loadtxt(setpath+'/accX_LL.txt')
                 accY_LL = np.loadtxt(setpath+'/accY_LL.txt')
                 accZ_LL = np.loadtxt(setpath+'/accZ_LL.txt')
@@ -182,6 +182,7 @@ class GeM_tools():
                     phase[i] = -1
 
 
+        self.data_label = np.array([])
         #Leg Forces and Torques
         self.data_train = lfX[0:dlen] - rfX[0:dlen]
         self.data_train = np.column_stack([self.data_train, lfY[0:dlen] - rfY[0:dlen]])
@@ -229,20 +230,18 @@ class GeM_tools():
 
 
         self.data_train_min = np.zeros((self.data_train.shape[1]))
-        self.data_train_max = self.data_train_min
-        self.data_train_mean = self.data_train_min
-        self.data_train_std = self.data_train_min
-        
+        self.data_train_max = np.zeros((self.data_train.shape[1]))
+        self.data_train_mean = np.zeros((self.data_train.shape[1]))
+        self.data_train_std = np.zeros((self.data_train.shape[1]))
+    
         #Data Statistics
         for i in range(self.data_train.shape[1]):
-            self.data_train_min[i] = min(self.data_train[:, i])
-            self.data_train_max[i] = max(self.data_train[:, i])
+            self.data_train_min[i] = np.min(self.data_train[:, i])
+            self.data_train_max[i] = np.max(self.data_train[:, i])
             self.data_train_mean[i] = np.mean(self.data_train[:, i])
             self.data_train_std[i] = np.std(self.data_train[:, i])
             self.data_train[:, i] = self.normalize_data(self.data_train[:, i],self.data_train_max[i], self.data_train_min[i])   
-            #self.data_train[:, i] = self.standarize_data(self.data_train[:, i],sself.data_train_mean[i], self.data_train_std[i])   
-
-
+            #self.data_train[:, i] = self.standarize_data(self.data_train[:, i],self.data_train_mean[i], self.data_train_std[i])   
 
         if (self.gt_comparison):
             phase2=np.append([phase],[np.zeros_like(np.arange(cX.shape[0]-phase.shape[0]))])
@@ -278,9 +277,10 @@ class GeM_tools():
         else:
             self.dlen = dlen
 
-        self.cXdt.reset()
-        self.cYdt.reset()
-        self.cZdt.reset()
+        if(not self.gem2):
+            self.cXdt.reset()
+            self.cYdt.reset()
+            self.cZdt.reset()
 
 
 

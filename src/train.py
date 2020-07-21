@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
 	config = load_config(sys.argv[1])
 	path = config['gem_train_path']
-	gt = GeM_tools(gt_comparison=config['gem_gt_comparison'])
+	gt = GeM_tools(gt_comparison=config['gem_gt_comparison'], gem2=config['gem2'], useLabels = False)
 
 	gt.input_data(path)
 
@@ -63,7 +63,8 @@ if __name__ == "__main__":
 	g.setFrames(config['gem_lfoot_frame'], config['gem_rfoot_frame'])
 	g.setDimReduction(config['gem_dim'])
 	data_train = gt.data_train
-	g.fit(data_train, config['gem_dim_reduction'], config['gem_clustering'])
+	data_labels = gt.data_label
+	g.fit(data_train, config['gem_dim_reduction'], config['gem_clustering'], data_labels)
 
 
 	if(config['gem_plot_results']):
