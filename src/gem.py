@@ -175,7 +175,6 @@ class GeM():
         self.reduced_data_train =  self.svae.encoder.predict(data_train)[0]
         self.pca_dim = False
 
-
     def reduceVAE(self,data_train):
         self.vae.fit(data_train,20,32)
         self.reduced_data_train =  self.vae.encoder.predict(data_train)[0]

@@ -15,7 +15,7 @@
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
  *     * Neither the name of the Foundation for Research and Technology Hellas (FORTH) 
- *	 nor the names of its contributors may be used to endorse or promote products derived from
+ *	     nor the names of its contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -67,18 +67,14 @@ params = {
 plt.rcParams.update(params)
 
 class GeM_tools():
-    def __init__(self, gt_comparison=False):
+    def __init__(self, gt_comparison=False, gem2 = False, useLabels = False):
         self.gt_comparison = gt_comparison
-        self.cXdt = diff_tool()
-        self.cYdt = diff_tool()
-        self.cZdt = diff_tool()
+        self.gem2 = gem2
+        self.useLabels = useLabels
 
 
     def input_data(self, setpath):
 
-        cX = np.loadtxt(setpath+'/c_encx.txt')
-        cY = np.loadtxt(setpath+'/c_ency.txt')
-        cZ = np.loadtxt(setpath+'/c_encz.txt')
 
         rfX = np.loadtxt(setpath+'/rfX.txt')
         rfY = np.loadtxt(setpath+'/rfY.txt')
@@ -86,40 +82,21 @@ class GeM_tools():
         rtX = np.loadtxt(setpath+'/rtX.txt')
         rtY = np.loadtxt(setpath+'/rtY.txt')
         rtZ = np.loadtxt(setpath+'/rtZ.txt')
-
-
         lfX = np.loadtxt(setpath+'/lfX.txt')
         lfY = np.loadtxt(setpath+'/lfY.txt')
         lfZ = np.loadtxt(setpath+'/lfZ.txt')
         ltX = np.loadtxt(setpath+'/ltX.txt')
         ltY = np.loadtxt(setpath+'/ltY.txt')
         ltZ = np.loadtxt(setpath+'/ltZ.txt')
-        
-
-        
-        lvX = np.loadtxt(setpath+'/accX.txt')
-        lvY = np.loadtxt(setpath+'/accX.txt')
-        lvZ = np.loadtxt(setpath+'/accX.txt')
-        lwX = np.loadtxt(setpath+'/accX.txt')
-        lwY = np.loadtxt(setpath+'/accX.txt')
-        lwZ = np.loadtxt(setpath+'/accX.txt')
-        
-        rvX = np.loadtxt(setpath+'/gX.txt')
-        rvY = np.loadtxt(setpath+'/gX.txt')
-        rvZ = np.loadtxt(setpath+'/gX.txt')
-        rwX = np.loadtxt(setpath+'/gX.txt')
-        rwY = np.loadtxt(setpath+'/gX.txt')
-        rwZ = np.loadtxt(setpath+'/gX.txt')
-
-
+        dlen = min(np.size(lfZ),np.size(rfZ))
         gX = np.loadtxt(setpath+'/gX.txt')
         gY = np.loadtxt(setpath+'/gY.txt')
         gZ = np.loadtxt(setpath+'/gZ.txt')
         accX = np.loadtxt(setpath+'/accX.txt')
         accY = np.loadtxt(setpath+'/accY.txt')
         accZ = np.loadtxt(setpath+'/accZ.txt')
+        dlen = min(dlen,np.size(accZ))
 
-        
         if(self.gt_comparison):
             gt_lfZ  = np.loadtxt(setpath+'/gt_lfZ.txt')
             gt_rfZ  = np.loadtxt(setpath+'/gt_rfZ.txt')
@@ -128,41 +105,70 @@ class GeM_tools():
             gt_lfY  = np.loadtxt(setpath+'/gt_lfY.txt')
             gt_rfY  = np.loadtxt(setpath+'/gt_rfY.txt')
             mu  = np.loadtxt(setpath+'/mu.txt')
+            dlen = min(dlen,min(np.size(gt_rfZ),p.size(gt_lfZ)))
        	    self.mu = mu
-       
 
+            
 
-        dlen0 = np.size(cX)
-        dlen1 = np.size(cY)
-        dlen2 = np.size(lfZ)
-        dlen3 = np.size(accZ)
-        dlen6 = np.size(rfZ)
-
-
-        if(self.gt_comparison):
-            dlen4 = np.size(gt_lfZ)
-            dlen5 = np.size(gt_rfX)
-            dlen = min(dlen0, dlen1, dlen2, dlen3, dlen4, dlen5,dlen6)
+        if(self.gem2):
+            lvX = np.loadtxt(setpath+'/lvX.txt')
+            lvY = np.loadtxt(setpath+'/lvY.txt')
+            lvZ = np.loadtxt(setpath+'/lvZ.txt')
+            dlen = min(dlen,np.size(lvZ))
+            rvX = np.loadtxt(setpath+'/rvX.txt')
+            rvY = np.loadtxt(setpath+'/rvY.txt')
+            rvZ = np.loadtxt(setpath+'/rvZ.txt')
+            dlen = min(dlen,np.size(rvZ))
+            lwX = np.loadtxt(setpath+'/lwX.txt')
+            lwY = np.loadtxt(setpath+'/lwY.txt')
+            lwZ = np.loadtxt(setpath+'/lwZ.txt')
+            rwX = np.loadtxt(setpath+'/rwX.txt')
+            rwY = np.loadtxt(setpath+'/rwY.txt')
+            rwZ = np.loadtxt(setpath+'/rwZ.txt')
+            laccX = np.loadtxt(setpath+'/laccX.txt')
+            laccY = np.loadtxt(setpath+'/laccY.txt')
+            laccZ = np.loadtxt(setpath+'/laccZ.txt')
+            dlen = min(dlen,np.size(laccZ))
+            raccX = np.loadtxt(setpath+'/raccX.txt')
+            raccY = np.loadtxt(setpath+'/raccY.txt')
+            raccZ = np.loadtxt(setpath+'/raccZ.txt')
+            dlen = min(dlen,np.size(raccZ))
+            dcX = np.loadtxt(setpath+'/comvX.txt')
+            dcY = np.loadtxt(setpath+'/comvY.txt')
+            dcZ = np.loadtxt(setpath+'/comvZ.txt')
+            dlen = min(dlen,np.size(dcZ))
+            if(self.labels):
+                accX_LL = np.loadtxt(setpath+'/accX_LL.txt')
+                accY_LL = np.loadtxt(setpath+'/accY_LL.txt')
+                accZ_LL = np.loadtxt(setpath+'/accZ_LL.txt')
+                accX_RL = np.loadtxt(setpath+'/accX_RL.txt')
+                accY_RL = np.loadtxt(setpath+'/accY_RL.txt')
+                accZ_RL = np.loadtxt(setpath+'/accZ_RL.txt')
+                baccX = np.loadtxt(setpath+'/baccX.txt')
+                baccY = np.loadtxt(setpath+'/baccY.txt')
+                baccZ = np.loadtxt(setpath+'/baccZ.txt')
+                dlen = min(dlen,min(np.size(accZ_LL),np.size(accZ_RL)))
         else:
-            dlen = min(dlen0, dlen1, dlen2, dlen3,dlen6)
-
-
-
-        dcX = np.zeros((dlen))
-        dcY = np.zeros((dlen))
-        dcZ= np.zeros((dlen))
+            cX = np.loadtxt(setpath+'/c_encx.txt')
+            cY = np.loadtxt(setpath+'/c_ency.txt')
+            cZ = np.loadtxt(setpath+'/c_encz.txt')
+            dlen = min(dlen,np.size(cZ))
+            self.cXdt = diff_tool()
+            self.cYdt = diff_tool()
+            self.cZdt = diff_tool()
      
         if(self.gt_comparison):
             phase = np.zeros((dlen))
-
-
-
+        if(not self.gem2):
+            dcX = np.zeros((dlen))
+            dcY = np.zeros((dlen))
+            dcZ = np.zeros((dlen))
 
         for i in range(dlen):
-            dcX[i]=self.cXdt.diff(cX[i])
-            dcY[i]=self.cYdt.diff(cY[i])
-            dcZ[i]=self.cZdt.diff(cZ[i])
-
+            if(not self.gem2):
+                dcX[i]=self.cXdt.diff(cX[i])
+                dcY[i]=self.cYdt.diff(cY[i])
+                dcZ[i]=self.cZdt.diff(cZ[i])
             if(self.gt_comparison):
                 lcon = np.sqrt(gt_lfX[i] * gt_lfX[i] + gt_lfY[i] * gt_lfY[i])
                 rcon = np.sqrt(gt_rfX[i] * gt_rfX[i] + gt_rfY[i] * gt_rfY[i])
@@ -176,179 +182,66 @@ class GeM_tools():
                     phase[i] = -1
 
 
-        self.data_train = np.zeros((dlen, 21))
         #Leg Forces and Torques
-        self.data_train[:, 0] = lfX[0:dlen] - rfX[0:dlen]
-        self.data_train[:, 1] = lfY[0:dlen] - rfY[0:dlen]
-        self.data_train[:, 2] = lfZ[0:dlen] - rfZ[0:dlen]
-        self.data_train[:, 3] = ltX[0:dlen] - rtX[0:dlen]
-        self.data_train[:, 4] = ltY[0:dlen] - rtY[0:dlen]
-        self.data_train[:, 5] = ltZ[0:dlen] - rtZ[0:dlen]
+        self.data_train = lfX[0:dlen] - rfX[0:dlen]
+        self.data_train = np.column_stack([self.data_train, lfY[0:dlen] - rfY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, lfZ[0:dlen] - rfZ[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, ltX[0:dlen] - rtX[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, ltY[0:dlen] - rtY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, ltZ[0:dlen] - rtZ[0:dlen]])
         #CoM Velocity
-        self.data_train[1:dlen, 6] = dcX[1:dlen]
-        self.data_train[1:dlen, 7] = dcY[1:dlen]
-        self.data_train[1:dlen, 8] = dcZ[1:dlen]
-        self.data_train[0, 6] = dcX[1]
-        self.data_train[0, 7] = dcY[1]
-        self.data_train[0, 8] = dcZ[1]
-        #Leg Linear and Angular Velocities
-        self.data_train[:, 9]  = lvX[0:dlen] - rvX[0:dlen]
-        self.data_train[:, 10] = lvY[0:dlen] - rvY[0:dlen]
-        self.data_train[:, 11] = lvZ[0:dlen] - rvZ[0:dlen]
-        self.data_train[:, 12] = lwX[0:dlen] - rwX[0:dlen]
-        self.data_train[:, 13] = lwY[0:dlen] - rwY[0:dlen]
-        self.data_train[:, 14] = lwZ[0:dlen] - rwZ[0:dlen]
+        self.data_train = np.column_stack([self.data_train, dcX[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, dcY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, dcZ[0:dlen]])
+        if(self.gem2):
+            #Leg Linear and Angular Velocities
+            self.data_train = np.column_stack([self.data_train, lvX[0:dlen] - rvX[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lvY[0:dlen] - rvY[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lvZ[0:dlen] - rvZ[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lwX[0:dlen] - rwX[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lwY[0:dlen] - rwY[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lwZ[0:dlen] - rwZ[0:dlen]])
+
+            #Base/Legs Acceleration as labels
+            if(self.useLabels):
+                self.data_label = accX_LL[0:dlen]
+                self.data_label = np.column_stack([self.data_label, accY_LL[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, accZ_LL[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, accX_RL[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, accY_RL[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, accZ_RL[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, baccX[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, baccY[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, baccZ[0:dlen]])
+            else:
+                #Leg Linear Acceleration
+                self.data_train = np.column_stack([self.data_train, laccX[0:dlen] - raccX[0:dlen]])
+                self.data_train = np.column_stack([self.data_train, laccY[0:dlen] - raccY[0:dlen]])
+                self.data_train = np.column_stack([self.data_train, laccZ[0:dlen] - raccX[0:dlen]])
+       
         #Base Linear Acceleration and Base Angular Velocity
-        self.data_train[:, 15] = accX[0:dlen]
-        self.data_train[:, 16] = accY[0:dlen]
-        self.data_train[:, 17] = accZ[0:dlen]
-        self.data_train[:, 18] = gX[0:dlen]
-        self.data_train[:, 19] = gY[0:dlen]
-        self.data_train[:, 20] = gZ[0:dlen]
+        self.data_train = np.column_stack([self.data_train, accX[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, accY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, accZ[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, gX[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, gY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, gZ[0:dlen]])
 
+
+        self.data_train_min = np.zeros((self.data_train.shape[1]))
+        self.data_train_max = self.data_train_min
+        self.data_train_mean = self.data_train_min
+        self.data_train_std = self.data_train_min
+        
         #Data Statistics
-        #fX
-        self.dfX_train_min = min(self.data_train[:, 0])
-        self.dfX_train_max = max(self.data_train[:, 0])
-        self.dfX_train_mean = np.mean(self.data_train[:, 0])
-        self.dfX_train_std = np.std(self.data_train[:, 0])
-        #fY
-        self.dfY_train_min = min(self.data_train[:, 1])
-        self.dfY_train_max = max(self.data_train[:, 1])
-        self.dfY_train_mean = np.mean(self.data_train[:, 1])
-        self.dfY_train_std = np.std(self.data_train[:, 1])
-        #fZ
-        self.dfZ_train_min = min(self.data_train[:, 2])
-        self.dfZ_train_max = max(self.data_train[:, 2])
-        self.dfZ_train_mean = np.mean(self.data_train[:, 2])
-        self.dfZ_train_std = np.std(self.data_train[:, 2])
-        #tX
-        self.dtX_train_min = min(self.data_train[:, 3])
-        self.dtX_train_max = max(self.data_train[:, 3])
-        self.dtX_train_mean = np.mean(self.data_train[:, 3])
-        self.dtX_train_std = np.std(self.data_train[:, 3])
-        #tY
-        self.dtY_train_min = min(self.data_train[:, 4])
-        self.dtY_train_max = max(self.data_train[:, 4])
-        self.dtY_train_mean = np.mean(self.data_train[:, 4])
-        self.dtY_train_std = np.std(self.data_train[:, 4])
-        #tZ
-        self.dtZ_train_min = min(self.data_train[:, 5])
-        self.dtZ_train_max = max(self.data_train[:, 5])
-        self.dtZ_train_mean = np.mean(self.data_train[:, 5])
-        self.dtZ_train_std = np.std(self.data_train[:, 5])
-        #cX
-        self.dcX_train_min = min(self.data_train[:, 6])
-        self.dcX_train_max = max(self.data_train[:, 6])
-        self.dcX_train_mean = np.mean(self.data_train[:, 6])
-        self.dcX_train_std = np.std(self.data_train[:, 6])
-        #cY
-        self.dcY_train_min = min(self.data_train[:, 7])
-        self.dcY_train_max = max(self.data_train[:, 7])
-        self.dcY_train_mean = np.mean(self.data_train[:, 7])
-        self.dcY_train_std = np.std(self.data_train[:, 7])
-        #cZ
-        self.dcZ_train_min = min(self.data_train[:, 8])
-        self.dcZ_train_max = max(self.data_train[:, 8])
-        self.dcZ_train_mean = np.mean(self.data_train[:, 8])
-        self.dcZ_train_std = np.std(self.data_train[:, 8])
-        #vX
-        self.dvX_train_min = min(self.data_train[:, 9])
-        self.dvX_train_max = max(self.data_train[:, 9])
-        self.dvX_train_mean = np.mean(self.data_train[:, 9])
-        self.dvX_train_std = np.std(self.data_train[:, 9])
-        #vY
-        self.dvY_train_min = min(self.data_train[:, 10])
-        self.dvY_train_max = max(self.data_train[:, 10])
-        self.dvY_train_mean = np.mean(self.data_train[:, 10])
-        self.dvY_train_std = np.std(self.data_train[:, 10])
-        #vZ
-        self.dvZ_train_min = min(self.data_train[:, 11])
-        self.dvZ_train_max = max(self.data_train[:, 11])
-        self.dvZ_train_mean = np.mean(self.data_train[:, 11])
-        self.dvZ_train_std = np.std(self.data_train[:, 11])
-        #wX
-        self.dwX_train_min = min(self.data_train[:, 12])    
-        self.dwX_train_max = max(self.data_train[:, 12])
-        self.dwX_train_mean = np.mean(self.data_train[:, 12])
-        self.dwX_train_std = np.std(self.data_train[:, 12])
-        #wY
-        self.dwY_train_min = min(self.data_train[:, 13])
-        self.dwY_train_max = max(self.data_train[:, 13])
-        self.dwY_train_mean = np.mean(self.data_train[:, 13])
-        self.dwY_train_std = np.std(self.data_train[:, 13])
-        #wZ
-        self.dwZ_train_min = min(self.data_train[:, 14])
-        self.dwZ_train_max = max(self.data_train[:, 14])
-        self.dwZ_train_mean = np.mean(self.data_train[:, 14])
-        self.dwZ_train_std = np.std(self.data_train[:, 14])
-        #accX
-        self.accX_train_min = min(self.data_train[:, 15])
-        self.accX_train_max = max(self.data_train[:, 15])
-        self.accX_train_mean = np.mean(self.data_train[:, 15])
-        self.accX_train_std = np.std(self.data_train[:, 15])
-        #accY
-        self.accY_train_min = min(self.data_train[:, 16])
-        self.accY_train_max = max(self.data_train[:, 16])
-        self.accY_train_mean = np.mean(self.data_train[:, 16])
-        self.accY_train_std = np.std(self.data_train[:, 16])
-        #accZ
-        self.accZ_train_min = min(self.data_train[:, 17])
-        self.accZ_train_max = max(self.data_train[:, 17])
-        self.accZ_train_mean = np.mean(self.data_train[:, 17])
-        self.accZ_train_std = np.std(self.data_train[:, 17])
-        #gX
-        self.gX_train_min = min(self.data_train[:, 18])
-        self.gX_train_max = max(self.data_train[:, 18])
-        self.gX_train_mean = np.mean(self.data_train[:, 18])
-        self.gX_train_std = np.std(self.data_train[:, 18])
-        #gY
-        self.gY_train_min = min(self.data_train[:, 19])
-        self.gY_train_max = max(self.data_train[:, 19])
-        self.gY_train_mean = np.mean(self.data_train[:, 19])
-        self.gY_train_std = np.std(self.data_train[:, 19])
-        #gZ
-        self.gZ_train_min = min(self.data_train[:, 20])
-        self.gZ_train_max = max(self.data_train[:, 20])
-        self.gZ_train_mean = np.mean(self.data_train[:, 20])
-        self.gZ_train_std = np.std(self.data_train[:, 20])
+        for i in range(self.data_train.shape[1]):
+            self.data_train_min[i] = min(self.data_train[:, i])
+            self.data_train_max[i] = max(self.data_train[:, i])
+            self.data_train_mean[i] = np.mean(self.data_train[:, i])
+            self.data_train_std[i] = np.std(self.data_train[:, i])
+            self.data_train[:, i] = self.normalize_data(self.data_train[:, i],self.data_train_max[i], self.data_train_min[i])   
+            #self.data_train[:, i] = self.standarize_data(self.data_train[:, i],sself.data_train_mean[i], self.data_train_std[i])   
 
-        #Normalization or Standarization?
-        self.data_train[:, 0] = self.normalize_data(self.data_train[:, 0],self.dfX_train_max, self.dfX_train_min)   
-        self.data_train[:, 1] = self.normalize_data(self.data_train[:, 1],self.dfY_train_max, self.dfY_train_min)   
-        self.data_train[:, 2] = self.normalize_data(self.data_train[:, 2],self.dfZ_train_max, self.dfZ_train_min)   
-        self.data_train[:, 3] = self.normalize_data(self.data_train[:, 3],self.dtX_train_max, self.dtX_train_min)   
-        self.data_train[:, 4] = self.normalize_data(self.data_train[:, 4],self.dtY_train_max, self.dtY_train_min)   
-        self.data_train[:, 5] = self.normalize_data(self.data_train[:, 5],self.dtZ_train_max, self.dtZ_train_min)   
-        self.data_train[:, 6] = self.normalize_data(self.data_train[:, 6],self.dcX_train_max, self.dcX_train_min)   
-        self.data_train[:, 7] = self.normalize_data(self.data_train[:, 7],self.dcY_train_max, self.dcY_train_min)   
-        self.data_train[:, 8] = self.normalize_data(self.data_train[:, 8],self.dcZ_train_max, self.dcZ_train_min) 
-        self.data_train[:, 9] = self.normalize_data(self.data_train[:, 9],self.dvX_train_max, self.dvX_train_min) 
-        self.data_train[:, 10] = self.normalize_data(self.data_train[:, 10],self.dvY_train_max, self.dvY_train_min) 
-        self.data_train[:, 11] = self.normalize_data(self.data_train[:, 11],self.dvZ_train_max, self.dvZ_train_min) 
-        self.data_train[:, 12] = self.normalize_data(self.data_train[:, 12],self.dwX_train_max, self.dwX_train_min) 
-        self.data_train[:, 13] = self.normalize_data(self.data_train[:, 13],self.dwY_train_max, self.dwY_train_min) 
-        self.data_train[:, 14] = self.normalize_data(self.data_train[:, 14],self.dwZ_train_max, self.dwZ_train_min) 
-        self.data_train[:, 15] = self.normalize_data(self.data_train[:, 15],self.accX_train_max, self.accX_train_min) 
-        self.data_train[:, 16] = self.normalize_data(self.data_train[:, 16],self.accY_train_max, self.accY_train_min) 
-        self.data_train[:, 17] = self.normalize_data(self.data_train[:, 17],self.accZ_train_max, self.accZ_train_min) 
-        self.data_train[:, 18] = self.normalize_data(self.data_train[:, 18],self.gX_train_max, self.gX_train_min) 
-        self.data_train[:, 19] = self.normalize_data(self.data_train[:, 19],self.gY_train_max, self.gY_train_min) 
-        self.data_train[:, 20] = self.normalize_data(self.data_train[:, 20],self.gZ_train_max, self.gZ_train_min) 
-
-        '''
-        self.data_train[:, 0] = self.standarize_data(self.data_train[:, 0],self.dfX_train_mean, self.dfX_train_std)   
-        self.data_train[:, 1] = self.standarize_data(self.data_train[:, 1],self.dfY_train_mean, self.dfY_train_std)   
-        self.data_train[:, 2] = self.standarize_data(self.data_train[:, 2],self.dfZ_train_mean, self.dfZ_train_std)   
-        self.data_train[:, 3] = self.standarize_data(self.data_train[:, 3],self.dtX_train_mean, self.dtX_train_std)   
-        self.data_train[:, 4] = self.standarize_data(self.data_train[:, 4],self.dtY_train_mean, self.dtY_train_std)   
-        self.data_train[:, 5] = self.standarize_data(self.data_train[:, 5],self.dtZ_train_mean, self.dtZ_train_std)   
-        self.data_train[:, 6] = self.standarize_data(self.data_train[:, 6],self.dcX_train_mean, self.dcX_train_std)   
-        self.data_train[:, 7] = self.standarize_data(self.data_train[:, 7],self.dcY_train_mean, self.dcY_train_std)   
-        self.data_train[:, 8] = self.standarize_data(self.data_train[:, 8],self.dcZ_train_mean, self.dcZ_train_std)   
-        self.data_train[:, 9] = self.standarize_data(self.data_train[:, 9],self.droll_train_mean, self.droll_train_std)   
-        self.data_train[:, 10] = self.standarize_data(self.data_train[:, 10],self.dpitch_train_mean, self.dpitch_train_std)   
-        '''
 
 
         if (self.gt_comparison):
@@ -356,7 +249,6 @@ class GeM_tools():
             self.cX = cX[~(phase2==-1)]
             self.cY = cY[~(phase2==-1)]
             self.cZ = cZ[~(phase2==-1)]
-
             phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
             self.accX = accX[~(phase3==-1)]
             self.accY = accY[~(phase3==-1)]
@@ -364,8 +256,6 @@ class GeM_tools():
             phase4=np.append([phase],[np.zeros_like(np.arange(gX.shape[0]-phase.shape[0]))])
             self.gX = gX[~(phase4==-1)]
             self.gY = gY[~(phase4==-1)]
-           
-
             phase5=np.append([phase],[np.zeros_like(np.arange(lfZ.shape[0]-phase.shape[0]))])
             self.lfZ = lfZ[~(phase5==-1)]
             self.lfX = lfX[~(phase5==-1)]
@@ -388,9 +278,6 @@ class GeM_tools():
         else:
             self.dlen = dlen
 
-
-
-
         self.cXdt.reset()
         self.cYdt.reset()
         self.cZdt.reset()
@@ -398,75 +285,58 @@ class GeM_tools():
 
 
 
-    def genInput(self,cX,cY,cZ,accX,accY,accZ,gX,gY,gZ,lvX,lvY,lvZ,rvX,rvY,rvZ,lwX,lwY,lwZ,rwX,rwY,rwZ,lfX,lfY,lfZ,rfX,rfY,rfZ,ltX,ltY,ltZ,rtX,rtY,rtZ ,gt=None):
+    def genInput(self, data, gt=None):
 
         if gt is None:
             gt=self
 
-        output_ = np.zeros(21)
-        dcX = gt.cXdt.diff(cX)
-        dcY = gt.cYdt.diff(cY)
-        dcZ = gt.cZdt.diff(cZ)
-        dfZ = lfZ - rfZ
-        dfX = lfX - rfX
-        dfY = lfY - rfY
-        dtZ = ltZ - rtZ
-        dtX = ltX - rtX
-        dtY = ltY - rtY
-        
-        dfX = self.normalize(dfX, gt.dfX_train_max, gt.dfX_train_min)  
-        dfY = self.normalize(dfY, gt.dfY_train_max, gt.dfY_train_min)  
-        dfZ = self.normalize(dfZ, gt.dfZ_train_max, gt.dfZ_train_min)  
-        
-        dtX = self.normalize(dtX, gt.dtX_train_max, gt.dtX_train_min)  
-        dtY = self.normalize(dtY, gt.dtY_train_max, gt.dtY_train_min)  
-        dtZ = self.normalize(dtZ, gt.dtZ_train_max, gt.dtZ_train_min) 
-        
-        dcX = self.normalize(dcX, gt.dcX_train_max, gt.dcX_train_min)  
-        dcY = self.normalize(dcY, gt.dcY_train_max, gt.dcY_train_min)  
-        dcZ = self.normalize(dcZ, gt.dcZ_train_max, gt.dcZ_train_min) 
+        output_ = np.array([])
+        output_ = np.append(output_, data.lfX - data.rfX, axis = 0)
+        output_ = np.append(output_, data.lfY - data.rfY, axis = 0)
+        output_ = np.append(output_, data.lfZ - data.rfZ, axis = 0)
+        output_ = np.append(output_, data.ltX - data.rtX, axis = 0)
+        output_ = np.append(output_, data.ltY - data.rtY, axis = 0)
+        output_ = np.append(output_, data.ltZ - data.rtZ, axis = 0)
 
+        if(not gt.gem2):
+            output_ = np.append(output_, gt.cXdt.diff(data.cX), axis = 0)
+            output_ = np.append(output_, gt.cYdt.diff(data.cY), axis = 0)
+            output_ = np.append(output_, gt.cZdt.diff(data.cZ), axis = 0)
+            output_ = np.append(output_, data.accX, axis = 0)
+            output_ = np.append(output_, data.accY, axis = 0)
+            output_ = np.append(output_, data.accZ, axis = 0)
+            output_ = np.append(output_, data.gX, axis = 0)
+            output_ = np.append(output_, data.gY, axis = 0)
+            output_ = np.append(output_, data.gZ, axis = 0)
+        else:
+            output_ = np.append(output_, data.dcX, axis = 0)
+            output_ = np.append(output_, data.dcY, axis = 0)
+            output_ = np.append(output_, data.dcZ, axis = 0)
+            output_ = np.append(output_, data.lvX - data.rvX, axis = 0)
+            output_ = np.append(output_, data.lvY - data.rvY, axis = 0)
+            output_ = np.append(output_, data.lvZ - data.rvZ, axis = 0)
+            output_ = np.append(output_, data.lwX - data.rwX, axis = 0)
+            output_ = np.append(output_, data.lwY - data.rwY, axis = 0)
+            output_ = np.append(output_, data.lwZ - data.rwZ, axis = 0)
 
-        dvX = self.normalize(dvX, gt.dvX_train_max, gt.dvX_train_min)  
-        dvY = self.normalize(dvY, gt.dvY_train_max, gt.dvY_train_min)  
-        dvZ = self.normalize(dvZ, gt.dvZ_train_max, gt.dvZ_train_min)  
+            if(not gt.useLabels):
+                output_ = np.append(output_, data.laccX - data.raccX, axis = 0)
+                output_ = np.append(output_, data.laccY - data.raccY, axis = 0)
+                output_ = np.append(output_, data.laccZ - data.raccZ, axis = 0)
+            else:
+                output_ = np.append(output_, data.accX_LL, axis = 0)
+                output_ = np.append(output_, data.accY_LL, axis = 0)
+                output_ = np.append(output_, data.accZ_LL, axis = 0)
+                output_ = np.append(output_, data.accX_RL, axis = 0)
+                output_ = np.append(output_, data.accY_RL, axis = 0)
+                output_ = np.append(output_, data.accZ_RL, axis = 0)
+                output_ = np.append(output_, data.baccX, axis = 0)
+                output_ = np.append(output_, data.baccY, axis = 0)
+                output_ = np.append(output_, data.baccZ, axis = 0)
 
-        dwX = self.normalize(dwX, gt.dwX_train_max, gt.dwX_train_min)  
-        dwY = self.normalize(dwY, gt.dwY_train_max, gt.dwY_train_min)  
-        dwZ = self.normalize(dwZ, gt.dwZ_train_max, gt.dwZ_train_min)  
+        for i in range(self.data_train.shape[1]):
+            output_[i] = self.normalize_data(output_[i],self.data_train_max[i], self.data_train_min[i])   
 
-
-        accX = self.normalize(accX, gt.accX_train_max, gt.accX_train_min)  
-        accY = self.normalize(accY, gt.accY_train_max, gt.accY_train_min)  
-        accZ = self.normalize(accZ, gt.accZ_train_max, gt.accZ_train_min) 
-
-
-        gX = self.normalize(gX, gt.gX_train_max, gt.gX_train_min)  
-        gY = self.normalize(gY, gt.gY_train_max, gt.gY_train_min)  
-        gZ = self.normalize(gZ, gt.gZ_train_max, gt.gZ_train_min) 
-
-
-        output_[0] = dfX
-        output_[1] = dfY
-        output_[2] = dfZ
-        output_[3] = dtX
-        output_[4] = dtY
-        output_[5] = dtZ
-        output_[6] = dcX
-        output_[7] = dcY
-        output_[8] = dcZ
-        output_[9] = dvX
-        output_[10] = dvY
-        output_[11] = dvZ
-        output_[12] = dwX
-        output_[13] = dwY
-        output_[14] = dwZ
-        output_[15] = accX
-        output_[16] = accY
-        output_[17] = accZ
-        output_[18] = gX
-        output_[19] = gY
-        output_[20] = gZ
 
         return output_
 
@@ -513,7 +383,6 @@ class GeM_tools():
     def genGroundTruthStatistics(self, reduced_data):
         if(self.gt_comparison):
             #remove extra zeros elements
-
             d1 = np.zeros((self.dlen,2))
             d2 = np.zeros((self.dlen,2))
             d3 = np.zeros((self.dlen,2))
@@ -536,7 +405,6 @@ class GeM_tools():
             mean[0,0]=np.mean(d1[:,0])
             mean[0,1]=np.mean(d1[:,1])
             mean[1,0]=np.mean(d2[:,0])
-
             mean[1,1]=np.mean(d2[:,1])
             mean[2,0]=np.mean(d3[:,0])
             mean[2,1]=np.mean(d3[:,1])
