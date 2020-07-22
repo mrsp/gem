@@ -37,9 +37,10 @@ import keras.backend as K
 import numpy as np
 
 def clf_loss(y_true, y_pred):
-    loss  = y_true[6] - (y_pred[0]*y_true[0] - y_pred[1]*y_true[3])/(y_pred[0]+y_pred[1])
-    loss += y_true[7] - (y_pred[0]*y_true[1] - y_pred[1]*y_true[4])/(y_pred[0]+y_pred[1])
-    loss += y_true[8] - (y_pred[0]*y_true[2] - y_pred[1]*y_true[5])/(y_pred[0]+y_pred[1])
+    
+    loss  = y_true[:,6] - (y_pred[:,0]*y_true[:,0] - y_pred[:,1]*y_true[:,3])
+    loss += y_true[:,7] - (y_pred[:,0]*y_true[:,1] - y_pred[:,1]*y_true[:,4])
+    loss += y_true[:,8] - (y_pred[:,0]*y_true[:,2] - y_pred[:,1]*y_true[:,5])
     return K.square(loss)
 class supervisedAutoencoder():
     def __init__(self):
@@ -55,6 +56,8 @@ class supervisedAutoencoder():
                         name='encode_1')(sae_input)
         encoded = Dense(intermediate_dim, activation='selu', name='encode_2')(encoded)
         encoded = Dense(latent_dim, activation='selu', name='z')(encoded)
+        # this model maps an input to its encoded representation
+        self.encoder = Model(sae_input, encoded)
         # Classification: Z to class
         predicted = Dense(num_classes, activation='softmax',
                           name='class_output')(encoded)
@@ -69,9 +72,9 @@ class supervisedAutoencoder():
         self.model.compile(optimizer='adam',
                            loss={'class_output': clf_loss,
                                  'reconst_output': 'binary_crossentropy'},
-                           loss_weights={'class_output': 0.1,
+                           loss_weights={'class_output': 0.25,
                                          'reconst_output': 1.0})
-        self.model.summary()
+        #self.model.summary()
         self.firstrun = False
 
     def fit(self, x_train, y_train, epochs, batch_size):

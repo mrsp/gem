@@ -71,7 +71,7 @@ class supervisedVariationalAutoencoder():
         # instantiate encoder model
         encoder = Model(inputs, [z_mean, z_log_var, z], name='encoder')
         encoder.summary()
-        plot_model(encoder, to_file='vae_mlp_encoder.png', show_shapes=True)
+        #plot_model(encoder, to_file='vae_mlp_encoder.png', show_shapes=True)
 
 
         # build decoder model
@@ -81,7 +81,7 @@ class supervisedVariationalAutoencoder():
         # instantiate decoder model
         decoder = Model(latent_inputs, outputs, name='decoder')
         decoder.summary()
-        plot_model(decoder, to_file='vae_mlp_decoder.png', show_shapes=True)
+        #plot_model(decoder, to_file='vae_mlp_decoder.png', show_shapes=True)
 
         # Add a classifier
         clf_latent_inputs = Input(shape=(latent_dim,), name='z_sampling_clf')
@@ -109,7 +109,7 @@ class supervisedVariationalAutoencoder():
         # New: add the clf loss
         self.model.compile(optimizer='adam', loss={'clf': 'categorical_crossentropy'},loss_weights={'clf': 0.1})
         self.model.summary()
-        plot_model(self.model, to_file='supervised_vae.png', show_shapes=True)
+        #plot_model(self.model, to_file='supervised_vae.png', show_shapes=True)
 
     def fit(self,x_train,y_train,epochs,batch_size):
         # reconstruction_loss = binary_crossentropy(inputs, outputs)
