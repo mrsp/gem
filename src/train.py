@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
 	config = load_config(sys.argv[1])
 	path = config['gem_train_path']
-	gt = GeM_tools(gt_comparison=config['gem_gt_comparison'], gem2=config['gem2'], useLabels = False)
+	gt = GeM_tools(gt_comparison=config['gem_gt_comparison'], gem2=config['gem2'], useLabels = config['useLabels'])
 
 	gt.input_data(path)
 

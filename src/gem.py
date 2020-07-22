@@ -59,7 +59,7 @@ class GeM():
 	
     def setDimReduction(self, dim_):
         self.latent_dim = dim_
-        self.input_dim = 15
+        self.input_dim = 21
         self.intermidiate_dim = 10
         self.pca = PCA(n_components=self.latent_dim)
         self.ae = autoencoder()
@@ -90,6 +90,10 @@ class GeM():
             self.reduceVAE(data_train)
         elif red == "supervisedAutoencoders":
             print("Dimensionality reduction with supervised autoencoders")
+            print("Train Data Size ")
+            print(data_train.shape)
+            print("Train Label Size ")
+            print(data_labels.shape)        
             self.reduceSAE(data_train,data_labels)
         elif red == "supervisedVariationalAutoencoder":
             print("Dimensionality reduction with supervised variational autoencoders")

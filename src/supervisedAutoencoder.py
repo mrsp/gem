@@ -36,15 +36,16 @@ from keras.utils import plot_model
 import keras.backend as K
 import numpy as np
 
+def clf_loss(y_true, y_pred):
+    loss  = y_true[6] - (y_pred[0]*y_true[0] - y_pred[1]*y_true[3])/(y_pred[0]+y_pred[1])
+    loss += y_true[7] - (y_pred[0]*y_true[1] - y_pred[1]*y_true[4])/(y_pred[0]+y_pred[1])
+    loss += y_true[8] - (y_pred[0]*y_true[2] - y_pred[1]*y_true[5])/(y_pred[0]+y_pred[1])
+    return K.square(loss)
 class supervisedAutoencoder():
     def __init__(self):
         self.firstrun = True
 
-    def clf_loss(y_true, y_pred):
-         loss  = y_true[6] - (y_pred[0]*y_true[0] y_pred[1]*y_true[3])/(y_pred[0]+y_pred[1])
-         loss += y_true[7] - (y_pred[0]*y_true[1] y_pred[1]*y_true[4])/(y_pred[0]+y_pred[1])
-         loss += y_true[8] - (y_pred[0]*y_true[2] y_pred[1]*y_true[5])/(y_pred[0]+y_pred[1])
-         return K.square(loss)
+
 
 
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim, num_classes):
