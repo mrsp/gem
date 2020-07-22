@@ -214,6 +214,18 @@ class GeM_tools():
                 self.data_label = np.column_stack([self.data_label, baccX[0:dlen]])
                 self.data_label = np.column_stack([self.data_label, baccY[0:dlen]])
                 self.data_label = np.column_stack([self.data_label, baccZ[0:dlen]])
+                self.data_label_min = np.zeros((self.data_label.shape[1]))
+                self.data_label_max = np.zeros((self.data_label.shape[1]))
+                self.data_label_mean = np.zeros((self.data_label.shape[1]))
+                self.data_label_std = np.zeros((self.data_label.shape[1]))
+                #Label Statistics
+                for i in range(self.data_label.shape[1]):
+                    self.data_label_min[i] = np.min(self.data_label[:, i])
+                    self.data_label_max[i] = np.max(self.data_label[:, i])
+                    self.data_label_mean[i] = np.mean(self.data_label[:, i])
+                    self.data_label_std[i] = np.std(self.data_label[:, i])
+                    #self.data_label[:, i] = self.normalize_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i])   
+                    self.data_label[:, i] = self.standarize_data(self.data_label[:, i],self.data_label_mean[i], self.data_label_std[i])   
             else:
                 #Leg Linear Acceleration
                 self.data_train = np.column_stack([self.data_train, laccX[0:dlen] - raccX[0:dlen]])

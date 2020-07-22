@@ -65,6 +65,16 @@ if __name__ == "__main__":
 	data_train = gt.data_train
 	data_labels = gt.data_label
 	g.fit(data_train, config['gem_dim_reduction'], config['gem_clustering'], data_labels)
+	plt.plot(data_labels[:,6])
+	plt.plot(g.reduced_data_train[:,0].T*data_labels[:,0] + g.reduced_data_train[:,1].T*data_labels[:,3])
+	plt.show()
+	plt.plot(data_labels[:,7])
+	plt.plot(g.reduced_data_train[:,0].T*data_labels[:,1] + g.reduced_data_train[:,1].T*data_labels[:,4])
+	plt.show()
+	plt.plot(data_labels[:,8])
+	plt.plot(g.reduced_data_train[:,0].T*data_labels[:,2] + g.reduced_data_train[:,1].T*data_labels[:,5])
+	plt.show()
+
 
 
 	if(config['gem_plot_results']):
@@ -83,6 +93,7 @@ if __name__ == "__main__":
 			gt.plot_results(g.reduced_data_train, g.predicted_labels_train, g.gmm.means_, g.gmm.covariances_, 'Clustering with Gaussian Mixture Models')
 		else:
 			print("Unsupported Result Plotting")
+
 
 
 

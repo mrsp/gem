@@ -37,11 +37,10 @@ import keras.backend as K
 import numpy as np
 
 def clf_loss(y_true, y_pred):
-    
-    loss  = y_true[:,6] - (y_pred[:,0]*y_true[:,0] - y_pred[:,1]*y_true[:,3])
-    loss += y_true[:,7] - (y_pred[:,0]*y_true[:,1] - y_pred[:,1]*y_true[:,4])
-    loss += y_true[:,8] - (y_pred[:,0]*y_true[:,2] - y_pred[:,1]*y_true[:,5])
-    return K.square(loss)
+    loss  = K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    loss += K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    loss += K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    return K.sum(K.sqrt(loss),axis = -1,keepdims=True)
 class supervisedAutoencoder():
     def __init__(self):
         self.firstrun = True
@@ -55,12 +54,13 @@ class supervisedAutoencoder():
         encoded = Dense(input_dim, activation='selu',
                         name='encode_1')(sae_input)
         encoded = Dense(intermediate_dim, activation='selu', name='encode_2')(encoded)
-        encoded = Dense(latent_dim, activation='selu', name='z')(encoded)
+        #encoded = Dense(latent_dim, activation='selu', name='z')(encoded)
+        encoded = Dense(latent_dim, activation='softmax', name='class_output')(encoded)
+        predicted = encoded
         # this model maps an input to its encoded representation
         self.encoder = Model(sae_input, encoded)
         # Classification: Z to class
-        predicted = Dense(num_classes, activation='softmax',
-                          name='class_output')(encoded)
+        #predicted = Dense(num_classes, activation='softmax', name='class_output')(encoded)
         # Reconstruction Decoder: Z to input
         decoded = Dense(latent_dim, activation='selu',
                         name='decode_1')(encoded)
@@ -72,8 +72,8 @@ class supervisedAutoencoder():
         self.model.compile(optimizer='adam',
                            loss={'class_output': clf_loss,
                                  'reconst_output': 'binary_crossentropy'},
-                           loss_weights={'class_output': 0.25,
-                                         'reconst_output': 1.0})
+                           loss_weights={'class_output': 1.0,
+                                         'reconst_output': 0.1})
         #self.model.summary()
         self.firstrun = False
 
