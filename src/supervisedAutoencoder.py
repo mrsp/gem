@@ -33,11 +33,19 @@ from keras.layers import Input, Dense
 from keras.models import Model
 from keras.losses import binary_crossentropy
 from keras.utils import plot_model
+import keras.backend as K
 import numpy as np
 
 class supervisedAutoencoder():
     def __init__(self):
         self.firstrun = True
+
+    def clf_loss(y_true, y_pred):
+         loss  = y_true[6] - (y_pred[0]*y_true[0] y_pred[1]*y_true[3])/(y_pred[0]+y_pred[1])
+         loss += y_true[7] - (y_pred[0]*y_true[1] y_pred[1]*y_true[4])/(y_pred[0]+y_pred[1])
+         loss += y_true[8] - (y_pred[0]*y_true[2] y_pred[1]*y_true[5])/(y_pred[0]+y_pred[1])
+         return K.square(loss)
+
 
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim, num_classes):
         sae_input = Input(shape=(input_dim,), name='input')
@@ -58,7 +66,7 @@ class supervisedAutoencoder():
         # Take input and give classification and reconstruction
         self.model = Model(inputs=[sae_input], outputs=[decoded, predicted])
         self.model.compile(optimizer='adam',
-                           loss={'class_output': 'categorical_crossentropy',
+                           loss={'class_output': clf_loss,
                                  'reconst_output': 'binary_crossentropy'},
                            loss_weights={'class_output': 0.1,
                                          'reconst_output': 1.0})
