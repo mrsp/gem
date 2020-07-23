@@ -38,15 +38,15 @@ import keras.backend as K
 import numpy as np
 
 def clf_loss(y_true, y_pred):
-    loss  = K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
-    loss += K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
-    loss += K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
-    return K.mean(loss,axis = -1)
+    x  = K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    y  = K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    z  = K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    loss = K.sum(K.sqrt(x + y + z + K.epsilon()))
+    return loss
+
 class supervisedAutoencoder():
     def __init__(self):
         self.firstrun = True
-
-
 
 
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim, num_classes):
@@ -55,8 +55,8 @@ class supervisedAutoencoder():
         encoded = Dense(input_dim, activation='selu',
                         name='encode_1')(sae_input)
         encoded = Dense(intermediate_dim, activation='selu', name='encode_2')(encoded)
-        #encoded = Dense(latent_dim, activation='selu', name='z')(encoded)
-        encoded = Dense(latent_dim, activation='softmax', name='class_output')(encoded)
+        encoded = Dense(latent_dim, activation='selu', name='class_output')(encoded)
+        #encoded = Dense(latent_dim, activation='softmax', name='class_output')(encoded)
         predicted = encoded
         # this model maps an input to its encoded representation
         self.encoder = Model(sae_input, encoded)
@@ -70,7 +70,7 @@ class supervisedAutoencoder():
                         name='reconst_output')(decoded)
         # Take input and give classification and reconstruction
         self.model = Model(inputs=[sae_input], outputs=[decoded, predicted])
-        self.model.compile(optimizer=Adam(lr=0.001),
+        self.model.compile(optimizer='adam',
                            loss={'class_output': clf_loss,
                                  'reconst_output': 'binary_crossentropy'},
                            loss_weights={'class_output': 1.0,

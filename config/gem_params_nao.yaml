@@ -17,6 +17,7 @@ gem_gt_comparison: False  #compare to ground-truth, to do so user must supply tr
 gem_save: False  #Save the Training Results to load in real-time
 gem_dim_reduction: "supervisedClassifier" 
 #gem_dim_reduction: "supervisedVariationalAutoencoders" 
+#gem_dim_reduction: "supervisedAutoencoders" 
 
 gem_clustering: "gmm" #gmm or kmeans supported at the current time
 #gem_train_path: "/home/master/gem_ws/src/gem/src/GEM2_test_nao" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.

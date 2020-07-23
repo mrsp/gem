@@ -37,12 +37,21 @@ from keras.utils import plot_model
 import keras.backend as K
 import numpy as np
 
-
+'''
 def clf_loss(y_true, y_pred):
     loss  = K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
     loss += K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
     loss += K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
-    return K.mean(loss,axis = -1)
+    loss =  K.sqrt(K.sum(loss,axis = -1) + K.epsilon())
+    return loss
+'''
+
+def clf_loss(y_true, y_pred):
+    x  = K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    y  = K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    z  = K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    loss = K.sum(K.sqrt(x + y + z + K.epsilon()))
+    return loss
 
 
 class supervisedClassifier():
@@ -51,11 +60,14 @@ class supervisedClassifier():
 
     def setDimensions(self, input_dim_, latent_dim, intermediate_dim):
         self.model = Sequential()
-        self.model.add(Dense(30, activation='relu', input_dim=input_dim_))
-        self.model.add(Dense(15, activation='relu'))
-        self.model.add(Dense(2, activation='relu'))
-        self.model.add(Dense(latent_dim, activation='softmax'))
-
+        self.model.add(Dense(input_dim_, activation='selu', input_dim=input_dim_))
+        self.model.add(Dense(100, activation='selu', input_dim=input_dim_))
+        self.model.add(Dense(50, activation='selu'))
+        self.model.add(Dense(20, activation='selu'))
+        self.model.add(Dense(10, activation='selu'))
+        self.model.add(Dense(5, activation='selu'))
+        self.model.add(Dense(latent_dim, activation='selu'))
+        #self.model.add(Dense(latent_dim, activation='softmax'))
         # Compile the model
         self.model.compile(optimizer='adam', 
                     loss=clf_loss, 

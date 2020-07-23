@@ -37,10 +37,12 @@ from keras import backend as K
 import numpy as np
 
 def clf_loss(y_true, y_pred):
-    loss  = K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
-    loss += K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
-    loss += K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
-    return K.mean(loss,axis = -1)
+    x  = K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    y  = K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    z  = K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    loss = K.sum(K.sqrt(x + y + z + K.epsilon()))
+    return loss
+
 
 
 class supervisedVariationalAutoencoder():
@@ -67,13 +69,13 @@ class supervisedVariationalAutoencoder():
 
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim, num_classes):
         # VAE model = encoder + decoder
+        vae_loss_weight = 0.1
         # build encoder model
         inputs = Input(shape=(input_dim,), name='encoder_input')
-        x = Dense(intermediate_dim, activation='relu')(inputs)
-        z_mean = Dense(latent_dim, name='z_mean')(x)
-        z_log_var = Dense(latent_dim, name='z_log_var')(x)
+        x = Dense(intermediate_dim, activation='selu')(inputs)
+        z_mean = Dense(latent_dim, activation='selu', name='z_mean')(x)
+        z_log_var = Dense(latent_dim, activation='selu', name='z_log_var')(x)
         # use reparameterization trick to push the sampling out as input
-        # note that "output_shape" isn't necessary with the TensorFlow backend
         z = Lambda(self.sampling, output_shape=(latent_dim,), name='z')([z_mean, z_log_var])
         # instantiate encoder model
         self.encoder = Model(inputs, [z_mean, z_log_var, z], name='encoder')
@@ -83,24 +85,16 @@ class supervisedVariationalAutoencoder():
 
         # build decoder model
         latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-        x = Dense(intermediate_dim, activation='relu')(latent_inputs)
+        x = Dense(intermediate_dim, activation='selu')(latent_inputs)
         outputs = Dense(input_dim, activation='sigmoid')(x)
         # instantiate decoder model
         decoder = Model(latent_inputs, outputs, name='decoder')
         #decoder.summary()
         #plot_model(decoder, to_file='vae_mlp_decoder.png', show_shapes=True)
 
-        # Add a classifier
-        clf_latent_inputs = Input(shape=(latent_dim,), name='z_sampling_clf')
-        clf_outputs = Dense(num_classes, activation='softmax',
-                            name='class_output')(clf_latent_inputs)
-        clf_supervised = Model(clf_latent_inputs, clf_outputs, name='clf')
-        clf_supervised.summary()
-
-
         # instantiate VAE model
-        # New: Add another output
-        outputs = [decoder(self.encoder(inputs)[2]), clf_supervised(self.encoder(inputs)[2])]
+        # New: Add another output for classification
+        outputs = [decoder(self.encoder(inputs)[2]), self.encoder(inputs)[2]]
         self.model = Model(inputs, outputs, name='vae_mlp')
         self.model.summary()
 
@@ -110,14 +104,14 @@ class supervisedVariationalAutoencoder():
         kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5
-        vae_loss = K.mean((reconstruction_loss + kl_loss) / 100.0)
+        vae_loss = vae_loss_weight * K.mean((reconstruction_loss + kl_loss) / 100.0)
         self.model.add_loss(vae_loss)
 
         # New: add the clf loss
-        self.model.compile(optimizer='adam', loss={'clf': clf_loss},loss_weights={'clf': 0.1})
+        self.model.compile(optimizer='adam', loss={'encoder': clf_loss},loss_weights={'encoder': 1.0})
         self.model.summary()
         #plot_model(self.model, to_file='supervised_vae.png', show_shapes=True)
 
     def fit(self,x_train,y_train,epochs,batch_size):
         # reconstruction_loss = binary_crossentropy(inputs, outputs)
-        self.model_log = self.model.fit(x_train, {'decoder':x_train, 'clf': y_train}, epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
+        self.model_log = self.model.fit(x_train, {'decoder':x_train, 'encoder': y_train}, epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
