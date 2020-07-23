@@ -98,7 +98,7 @@ class GeM():
             print("Train Label Size ")
             print(data_labels.shape)        
             self.reduceSAE(data_train,data_labels)
-        elif red == "supervisedVariationalAutoencoder":
+        elif red == "supervisedVariationalAutoencoders":
             print("Dimensionality reduction with supervised variational autoencoders")
             self.reduceSVAE(data_train,data_labels)
         elif red == "supervisedClassifier":
@@ -135,7 +135,7 @@ class GeM():
             reduced_data = self.sae.encoder.predict(data_.reshape(1,-1))
         elif(self.red == 'supervisedVariationalAutoencoders'):
             reduced_data = self.svae.encoder.predict(data_.reshape(1,-1))[0]
-        elif red == "supervisedClassifier":
+        elif(self.red == "supervisedClassifier"):
             reduced_data = self.sc.model.predict(data_.reshape(1,-1))[0]
         else:
             print('Unrecognired Training Method')

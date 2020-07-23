@@ -36,6 +36,13 @@ from keras.utils import plot_model
 from keras import backend as K
 import numpy as np
 
+def clf_loss(y_true, y_pred):
+    loss  = K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    loss += K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    loss += K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    return K.mean(loss,axis = -1)
+
+
 class supervisedVariationalAutoencoder():
     def __init__(self):
         self.firstrun = True
@@ -69,8 +76,8 @@ class supervisedVariationalAutoencoder():
         # note that "output_shape" isn't necessary with the TensorFlow backend
         z = Lambda(self.sampling, output_shape=(latent_dim,), name='z')([z_mean, z_log_var])
         # instantiate encoder model
-        encoder = Model(inputs, [z_mean, z_log_var, z], name='encoder')
-        encoder.summary()
+        self.encoder = Model(inputs, [z_mean, z_log_var, z], name='encoder')
+        #self.encoder.summary()
         #plot_model(encoder, to_file='vae_mlp_encoder.png', show_shapes=True)
 
 
@@ -80,7 +87,7 @@ class supervisedVariationalAutoencoder():
         outputs = Dense(input_dim, activation='sigmoid')(x)
         # instantiate decoder model
         decoder = Model(latent_inputs, outputs, name='decoder')
-        decoder.summary()
+        #decoder.summary()
         #plot_model(decoder, to_file='vae_mlp_decoder.png', show_shapes=True)
 
         # Add a classifier
@@ -93,7 +100,7 @@ class supervisedVariationalAutoencoder():
 
         # instantiate VAE model
         # New: Add another output
-        outputs = [decoder(encoder(inputs)[2]), clf_supervised(encoder(inputs)[2])]
+        outputs = [decoder(self.encoder(inputs)[2]), clf_supervised(self.encoder(inputs)[2])]
         self.model = Model(inputs, outputs, name='vae_mlp')
         self.model.summary()
 
@@ -107,10 +114,10 @@ class supervisedVariationalAutoencoder():
         self.model.add_loss(vae_loss)
 
         # New: add the clf loss
-        self.model.compile(optimizer='adam', loss={'clf': 'categorical_crossentropy'},loss_weights={'clf': 0.1})
+        self.model.compile(optimizer='adam', loss={'clf': clf_loss},loss_weights={'clf': 0.1})
         self.model.summary()
         #plot_model(self.model, to_file='supervised_vae.png', show_shapes=True)
 
     def fit(self,x_train,y_train,epochs,batch_size):
         # reconstruction_loss = binary_crossentropy(inputs, outputs)
-        self.model_log = self.model.fit(x_train, {'clf': y_train}, epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
+        self.model_log = self.model.fit(x_train, {'vae_mlp':x_train, 'clf': y_train}, epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
