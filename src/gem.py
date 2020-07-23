@@ -45,6 +45,7 @@ from variationalAutoencoder import variationalAutoencoder
 from autoencoder import autoencoder
 from supervisedAutoencoder import supervisedAutoencoder
 from supervisedVariationalAutoencoder import supervisedVariationalAutoencoder
+from supervisedClassifier import supervisedClassifier
 class GeM():
     def __init__(self):
         self.gmm = mixture.GaussianMixture(n_components=3, covariance_type='full', max_iter=100, tol=7e-3, init_params = 'kmeans', n_init=30,warm_start=False,verbose=1)
@@ -70,6 +71,8 @@ class GeM():
         self.sae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim, 2)
         self.svae = supervisedVariationalAutoencoder()
         self.svae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim, 2)
+        self.sc = supervisedClassifier()
+        self.sc.setDimensions(self.input_dim, self.latent_dim, self.intermidiate_dim)
 
     def setFrames(self,lfoot_frame_,rfoot_frame_):
         self.lfoot_frame = lfoot_frame_
@@ -98,6 +101,9 @@ class GeM():
         elif red == "supervisedVariationalAutoencoder":
             print("Dimensionality reduction with supervised variational autoencoders")
             self.reduceSVAE(data_train,data_labels)
+        elif red == "supervisedClassifier":
+            print("Classification with Labels")
+            self.reduceSC(data_train,data_labels)
         else:
             self.reduced_data_train = data_train
             print("Choose a valid dimensionality reduction method")
@@ -129,6 +135,8 @@ class GeM():
             reduced_data = self.sae.encoder.predict(data_.reshape(1,-1))
         elif(self.red == 'supervisedVariationalAutoencoders'):
             reduced_data = self.svae.encoder.predict(data_.reshape(1,-1))[0]
+        elif red == "supervisedClassifier":
+            reduced_data = self.sc.model.predict(data_.reshape(1,-1))[0]
         else:
             print('Unrecognired Training Method')
             reduced_data = data_
@@ -182,6 +190,11 @@ class GeM():
     def reduceVAE(self,data_train):
         self.vae.fit(data_train,20,32)
         self.reduced_data_train =  self.vae.encoder.predict(data_train)[0]
+        self.pca_dim = False
+
+    def reduceSC(self,data_train, data_labels):
+        self.sc.fit(data_train,data_labels,20,32)
+        self.reduced_data_train =  self.sc.model.predict(data_train)
         self.pca_dim = False
 
     def clusterGMM(self):
