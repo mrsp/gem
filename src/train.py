@@ -39,7 +39,7 @@ import pickle as pickle
 import matplotlib.pyplot as plt
 import sys
 import yaml
-
+import os
 
 def load_config(config_file):
     with open(config_file, 'r') as stream:
@@ -54,7 +54,7 @@ def load_config(config_file):
 if __name__ == "__main__":
 
 	config = load_config(sys.argv[1])
-	path = config['gem_train_path']
+	path =  os.path.dirname(os.path.realpath(__file__)) + "/" + config['gem_train_path']
 	gt = GeM_tools(gt_comparison=config['gem_gt_comparison'], gem2=config['gem2'], useLabels = config['useLabels'])
 
 	gt.input_data(path)

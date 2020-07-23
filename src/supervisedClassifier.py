@@ -51,13 +51,15 @@ class supervisedClassifier():
 
     def setDimensions(self, input_dim_, latent_dim, intermediate_dim):
         self.model = Sequential()
-        self.model.add(Dense(25, activation='relu', input_dim=input_dim_))
-        self.model.add(Dense(12, activation='relu'))
+        self.model.add(Dense(30, activation='relu', input_dim=input_dim_))
+        self.model.add(Dense(15, activation='relu'))
+        self.model.add(Dense(2, activation='relu'))
         self.model.add(Dense(latent_dim, activation='softmax'))
 
         # Compile the model
         self.model.compile(optimizer='adam', 
-                    loss=clf_loss)
+                    loss=clf_loss, 
+)
         #self.model.summary()
         self.firstrun = False
 

@@ -92,11 +92,7 @@ class GeM():
             print("Dimensionality reduction with variational autoencoders")
             self.reduceVAE(data_train)
         elif red == "supervisedAutoencoders":
-            print("Dimensionality reduction with supervised autoencoders")
-            print("Train Data Size ")
-            print(data_train.shape)
-            print("Train Label Size ")
-            print(data_labels.shape)        
+            print("Dimensionality reduction with supervised autoencoders")     
             self.reduceSAE(data_train,data_labels)
         elif red == "supervisedVariationalAutoencoders":
             print("Dimensionality reduction with supervised variational autoencoders")
@@ -193,7 +189,7 @@ class GeM():
         self.pca_dim = False
 
     def reduceSC(self,data_train, data_labels):
-        self.sc.fit(data_train,data_labels,20,32)
+        self.sc.fit(data_train,data_labels,100,32)
         self.reduced_data_train =  self.sc.model.predict(data_train)
         self.pca_dim = False
 

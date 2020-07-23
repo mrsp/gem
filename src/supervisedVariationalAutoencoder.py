@@ -120,4 +120,4 @@ class supervisedVariationalAutoencoder():
 
     def fit(self,x_train,y_train,epochs,batch_size):
         # reconstruction_loss = binary_crossentropy(inputs, outputs)
-        self.model_log = self.model.fit(x_train, {'vae_mlp':x_train, 'clf': y_train}, epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
+        self.model_log = self.model.fit(x_train, {'decoder':x_train, 'clf': y_train}, epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
