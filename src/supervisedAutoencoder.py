@@ -31,6 +31,7 @@
 
 from keras.layers import Input, Dense
 from keras.models import Model
+from keras.optimizers import Adam
 from keras.losses import binary_crossentropy
 from keras.utils import plot_model
 import keras.backend as K
@@ -69,11 +70,11 @@ class supervisedAutoencoder():
                         name='reconst_output')(decoded)
         # Take input and give classification and reconstruction
         self.model = Model(inputs=[sae_input], outputs=[decoded, predicted])
-        self.model.compile(optimizer='adam',
+        self.model.compile(optimizer=Adam(lr=0.001),
                            loss={'class_output': clf_loss,
                                  'reconst_output': 'binary_crossentropy'},
-                           loss_weights={'class_output': 0.1,
-                                         'reconst_output': 1.0})
+                           loss_weights={'class_output': 1.0,
+                                         'reconst_output': 0.1})
         #self.model.summary()
         self.firstrun = False
 
