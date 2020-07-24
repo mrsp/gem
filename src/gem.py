@@ -189,7 +189,7 @@ class GeM():
         self.pca_dim = False
 
     def reduceSC(self,data_train, data_labels):
-        self.sc.fit(data_train,data_labels,100,32)
+        self.sc.fit(data_train,data_labels,50000,32)
         self.reduced_data_train =  self.sc.model.predict(data_train)
         self.pca_dim = False
 

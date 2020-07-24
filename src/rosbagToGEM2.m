@@ -4,7 +4,7 @@ clc
 %%
 %Set the required paths
 saveData = 1;
-pathTorosbag = '~/Desktop/walkInPlaceDriftGEM.bag';
+pathTorosbag = '~/Desktop/GEM2_NAODATA/walkInPlaceDriftGEM.bag';
 save_dir = 'GEM2_test_nao';
 mkdir(save_dir);
 
