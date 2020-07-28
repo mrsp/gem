@@ -48,7 +48,7 @@ from supervisedVariationalAutoencoder import supervisedVariationalAutoencoder
 from supervisedClassifier import supervisedClassifier
 class GeM():
     def __init__(self):
-        self.gmm = mixture.GaussianMixture(n_components=3, covariance_type='full', max_iter=100, tol=7e-3, init_params = 'kmeans', n_init=30,warm_start=False,verbose=1)
+        self.gmm = mixture.GaussianMixture(n_components=3, covariance_type='full', max_iter=100, tol=7e-2, init_params = 'kmeans', n_init=30,warm_start=False,verbose=1)
         self.kmeans = KMeans(init='k-means++',n_clusters=3, n_init=500,tol=6.5e-2)
         self.pca_dim = False
         self.gmm_cl_id = False
@@ -174,12 +174,12 @@ class GeM():
         self.pca_dim = False
 
     def reduceSAE(self,data_train,data_labels):
-        self.sae.fit(data_train,data_labels, 100, 32)
+        self.sae.fit(data_train,data_labels, 20, 2)
         self.reduced_data_train =  self.sae.encoder.predict(data_train)
         self.pca_dim = False
 
     def reduceSVAE(self,data_train,data_labels):
-        self.svae.fit(data_train,data_labels, 500, 32)
+        self.svae.fit(data_train,data_labels, 200, 32)
         self.reduced_data_train =  self.svae.encoder.predict(data_train)[0]
         self.pca_dim = False
 
@@ -189,7 +189,7 @@ class GeM():
         self.pca_dim = False
 
     def reduceSC(self,data_train, data_labels):
-        self.sc.fit(data_train,data_labels,50000,32)
+        self.sc.fit(data_train,data_labels,100,2)
         self.reduced_data_train =  self.sc.model.predict(data_train)
         self.pca_dim = False
 
