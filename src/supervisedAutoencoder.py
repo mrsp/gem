@@ -58,19 +58,17 @@ class supervisedAutoencoder():
 
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim, num_classes):
         sae_input = Input(shape=(input_dim,), name='input')
-        encoded = Dense(input_dim, activation='selu',name='encode_1')(sae_input)
-        #encoded = Dense(intermediate_dim, activation='selu', name='encode_2')(encoded)
-        encoded = Dense(latent_dim, activation='selu', name='class_output', use_bias=True)(encoded)
-        #encoded = Dense(latent_dim, activation='softmax', name='class_output', use_bias=True)(encoded)
+        #swish and tanh
+        encoded = Dense(input_dim, activation='tanh',name='encode_1', use_bias=True)(sae_input)
+        encoded = Dense(intermediate_dim, activation='tanh', name='encode_2')(encoded)
+        encoded = Dense(latent_dim, activation='sigmoid', name='class_output', use_bias=True)(encoded)
         predicted = encoded
         # this model maps an input to its encoded representation
         self.encoder = Model(sae_input, encoded)
-        # Classification: Z to class
-        #predicted = Dense(num_classes, activation='sigmoid', name='class_output', use_bias=True)(encoded)
-        # Reconstruction Decoder: Z to input
-        decoded = Dense(latent_dim, activation='selu', name='decode_1')(encoded)
-        #decoded = Dense(intermediate_dim, activation='selu', name='decode_2')(decoded)
-        decoded = Dense(input_dim, activation='selu', name='reconst_output')(decoded)
+        # Reconstruction Decoder: Latent to input
+        decoded = Dense(latent_dim, activation='tanh', name='decode_1', use_bias=True)(encoded)
+        decoded = Dense(intermediate_dim, activation='tanh', name='decode_2')(decoded)
+        decoded = Dense(input_dim, activation='tanh', name='reconst_output', use_bias=True)(decoded)
         # Take input and give classification and reconstruction
         self.model = Model(inputs=[sae_input], outputs=[decoded, predicted])
         self.model.compile(optimizer='adam',
