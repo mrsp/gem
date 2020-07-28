@@ -60,14 +60,14 @@ class supervisedAutoencoder():
         sae_input = Input(shape=(input_dim,), name='input')
         #swish and tanh
         encoded = Dense(input_dim, activation='tanh',name='encode_1', use_bias=True)(sae_input)
-        encoded = Dense(intermediate_dim, activation='tanh', name='encode_2')(encoded)
+        #encoded = Dense(intermediate_dim, activation='tanh', name='encode_2', use_bias=True)(encoded)
         encoded = Dense(latent_dim, activation='sigmoid', name='class_output', use_bias=True)(encoded)
         predicted = encoded
         # this model maps an input to its encoded representation
         self.encoder = Model(sae_input, encoded)
         # Reconstruction Decoder: Latent to input
         decoded = Dense(latent_dim, activation='tanh', name='decode_1', use_bias=True)(encoded)
-        decoded = Dense(intermediate_dim, activation='tanh', name='decode_2')(decoded)
+        #decoded = Dense(intermediate_dim, activation='tanh', name='decode_2', use_bias=True)(decoded)
         decoded = Dense(input_dim, activation='tanh', name='reconst_output', use_bias=True)(decoded)
         # Take input and give classification and reconstruction
         self.model = Model(inputs=[sae_input], outputs=[decoded, predicted])
