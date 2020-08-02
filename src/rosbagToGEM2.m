@@ -4,8 +4,8 @@ clc
 %%
 %Set the required paths
 saveData = 1;
-pathTorosbag = '~/Desktop/StandingSuperStillGEM.bag';
-save_dir = './NAO_GEM/StandingSuperStill_nao';
+pathTorosbag = '~/Desktop/DS_DisturbancesGEM.bag';
+save_dir = './NAO_GEM/DS_Disturbances_nao';
 mkdir(save_dir);
 
 %Set the required topics
