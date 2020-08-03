@@ -138,15 +138,15 @@ class GeM_tools():
             dcZ = np.loadtxt(setpath+'/comvZ.txt')
             dlen = min(dlen,np.size(dcZ))
             if(self.useLabels):
-                baccX_LL = np.loadtxt(setpath+'/baccX_LL.txt')
-                baccY_LL = np.loadtxt(setpath+'/baccY_LL.txt')
-                baccZ_LL = np.loadtxt(setpath+'/baccZ_LL.txt')
-                baccX_RL = np.loadtxt(setpath+'/baccX_RL.txt')
-                baccY_RL = np.loadtxt(setpath+'/baccY_RL.txt')
-                baccZ_RL = np.loadtxt(setpath+'/baccZ_RL.txt')
-                baccX = np.loadtxt(setpath+'/baccX.txt')
-                baccY = np.loadtxt(setpath+'/baccY.txt')
-                baccZ = np.loadtxt(setpath+'/baccZ.txt')
+                baccX_LL = np.loadtxt(setpath+'/baccXf_LL.txt')
+                baccY_LL = np.loadtxt(setpath+'/baccYf_LL.txt')
+                baccZ_LL = np.loadtxt(setpath+'/baccZf_LL.txt')
+                baccX_RL = np.loadtxt(setpath+'/baccXf_RL.txt')
+                baccY_RL = np.loadtxt(setpath+'/baccYf_RL.txt')
+                baccZ_RL = np.loadtxt(setpath+'/baccZf_RL.txt')
+                baccX = np.loadtxt(setpath+'/baccXf.txt')
+                baccY = np.loadtxt(setpath+'/baccYf.txt')
+                baccZ = np.loadtxt(setpath+'/baccZf.txt')
                 dlen = min(dlen,min(np.size(baccZ_LL),np.size(baccZ_RL)))
         else:
             cX = np.loadtxt(setpath+'/c_encx.txt')
@@ -224,8 +224,10 @@ class GeM_tools():
                     self.data_label_max[i] = np.max(self.data_label[:, i])
                     self.data_label_mean[i] = np.mean(self.data_label[:, i])
                     self.data_label_std[i] = np.std(self.data_label[:, i])
-                    self.data_label[:, i] = self.normalize_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i])   
+                    #self.data_label[:, i] = self.normalize_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i])   
                     #self.data_label[:, i] = self.standarize_data(self.data_label[:, i],self.data_label_mean[i], self.data_label_std[i])
+                    self.data_label[:, i] = self.normalizeMean_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i],self.data_label_mean[i])   
+
             else:
                 #Leg Linear Acceleration
                 self.data_train = np.column_stack([self.data_train, laccX[0:dlen] - raccX[0:dlen]])
@@ -252,8 +254,9 @@ class GeM_tools():
             self.data_train_max[i] = np.max(self.data_train[:, i])
             self.data_train_mean[i] = np.mean(self.data_train[:, i])
             self.data_train_std[i] = np.std(self.data_train[:, i])
-            self.data_train[:, i] = self.normalize_data(self.data_train[:, i],self.data_train_max[i], self.data_train_min[i])   
+            #self.data_train[:, i] = self.normalize_data(self.data_train[:, i],self.data_train_max[i], self.data_train_min[i])   
             #self.data_train[:, i] = self.standarize_data(self.data_train[:, i],self.data_train_mean[i], self.data_train_std[i])   
+            self.data_train[:, i] = self.normalizeMean_data(self.data_train[:, i],self.data_train_max[i], self.data_train_min[i],self.data_train_mean[i])   
 
         if (self.gt_comparison):
             phase2=np.append([phase],[np.zeros_like(np.arange(cX.shape[0]-phase.shape[0]))])
@@ -347,7 +350,8 @@ class GeM_tools():
                 output_ = np.append(output_, data.baccZ, axis = 0)
 
         for i in range(self.data_train.shape[1]):
-            output_[i] = self.normalize_data(output_[i],self.data_train_max[i], self.data_train_min[i])   
+            #output_[i] = self.normalize_data(output_[i],self.data_train_max[i], self.data_train_min[i])   
+            output_[i] = self.normalizeMean_data(output_[i],self.data_train_max[i], self.data_train_min[i], self.data_train_mean[i])   
 
 
         return output_
@@ -382,6 +386,27 @@ class GeM_tools():
             dout =  0
 
         return dout
+
+    def normalizeMean(self,din, dmax, dmin, dmean):    
+        if(din>dmax):
+            din=dmax
+        elif(din<dmin):
+            din=dmin
+
+        if(dmax-dmin != 0):
+            dout = (din - dmean)/(dmax-dmin)
+        else:
+            dout =  0
+
+        return dout
+
+    def normalizeMean_data(self,din, dmax, dmin, dmean):    
+        if(dmax-dmin != 0):
+            dout = (din - dmean)/(dmax-dmin)
+        else:
+            dout =  np.zeros((np.size(din)))
+
+        return dout  
 
     def standarize(self,din,dmean,dstd):
         if(dstd != 0):

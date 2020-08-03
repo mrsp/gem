@@ -313,3 +313,61 @@ with open( '../GEM2_nao_training/gZ.txt', 'w' ) as result:
     for file_ in files:
         for line in open( file_, 'r' ):
             result.write( line )
+
+
+
+#baccX_LL 4
+files = glob.glob('./NAO_GEM/**/baccXf_LL.txt')
+with open( '../GEM2_nao_training/baccXf_LL.txt', 'w' ) as result:
+    for file_ in files:
+        for line in open( file_, 'r' ):
+            result.write( line )
+#baccY_LL 5 
+files = glob.glob('./NAO_GEM/**/baccYf_LL.txt')
+with open( '../GEM2_nao_training/baccYf_LL.txt', 'w' ) as result:
+    for file_ in files:
+        for line in open( file_, 'r' ):
+            result.write( line )
+#baccZ_LL 6
+files = glob.glob('./NAO_GEM/**/baccZf_LL.txt')
+with open( '../GEM2_nao_training/baccZf_LL.txt', 'w' ) as result:
+    for file_ in files:
+        for line in open( file_, 'r' ):
+            result.write( line )
+#baccX_RL 7
+files = glob.glob('./NAO_GEM/**/baccXf_RL.txt')
+with open( '../GEM2_nao_training/baccXf_RL.txt', 'w' ) as result:
+    for file_ in files:
+        for line in open( file_, 'r' ):
+            result.write( line )
+#baccY_RL 8
+files = glob.glob('./NAO_GEM/**/baccYf_RL.txt')
+with open( '../GEM2_nao_training/baccYf_RL.txt', 'w' ) as result:
+    for file_ in files:
+        for line in open( file_, 'r' ):
+            result.write( line )
+#baccZ_RL 9
+files = glob.glob('./NAO_GEM/**/baccZf_RL.txt')
+with open( '../GEM2_nao_training/baccZf_RL.txt', 'w' ) as result:
+    for file_ in files:
+        for line in open( file_, 'r' ):
+            result.write( line )            
+
+#baccX 10
+files = glob.glob('./NAO_GEM/**/baccXf.txt')
+with open( '../GEM2_nao_training/baccXf.txt', 'w' ) as result:
+    for file_ in files:
+        for line in open( file_, 'r' ):
+            result.write( line )
+#baccY 11
+files = glob.glob('./NAO_GEM/**/baccYf.txt')
+with open( '../GEM2_nao_training/baccYf.txt', 'w' ) as result:
+    for file_ in files:
+        for line in open( file_, 'r' ):
+            result.write( line )
+#baccZ 12
+files = glob.glob('./NAO_GEM/**/baccZf.txt')
+with open( '../GEM2_nao_training/baccZf.txt', 'w' ) as result:
+    for file_ in files:
+        for line in open( file_, 'r' ):
+            result.write( line )
