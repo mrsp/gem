@@ -138,15 +138,15 @@ class GeM_tools():
             dcZ = np.loadtxt(setpath+'/comvZ.txt')
             dlen = min(dlen,np.size(dcZ))
             if(self.useLabels):
-                baccX_LL = np.loadtxt(setpath+'/baccXf_LL.txt')
-                baccY_LL = np.loadtxt(setpath+'/baccYf_LL.txt')
-                baccZ_LL = np.loadtxt(setpath+'/baccZf_LL.txt')
-                baccX_RL = np.loadtxt(setpath+'/baccXf_RL.txt')
-                baccY_RL = np.loadtxt(setpath+'/baccYf_RL.txt')
-                baccZ_RL = np.loadtxt(setpath+'/baccZf_RL.txt')
-                baccX = np.loadtxt(setpath+'/baccXf.txt')
-                baccY = np.loadtxt(setpath+'/baccYf.txt')
-                baccZ = np.loadtxt(setpath+'/baccZf.txt')
+                baccX_LL = np.loadtxt(setpath+'/baccX_LL.txt')
+                baccY_LL = np.loadtxt(setpath+'/baccY_LL.txt')
+                baccZ_LL = np.loadtxt(setpath+'/baccZ_LL.txt')
+                baccX_RL = np.loadtxt(setpath+'/baccX_RL.txt')
+                baccY_RL = np.loadtxt(setpath+'/baccY_RL.txt')
+                baccZ_RL = np.loadtxt(setpath+'/baccZ_RL.txt')
+                baccX = np.loadtxt(setpath+'/baccX.txt')
+                baccY = np.loadtxt(setpath+'/baccY.txt')
+                baccZ = np.loadtxt(setpath+'/baccZ.txt')
                 dlen = min(dlen,min(np.size(baccZ_LL),np.size(baccZ_RL)))
         else:
             cX = np.loadtxt(setpath+'/c_encx.txt')
@@ -184,24 +184,38 @@ class GeM_tools():
 
         self.data_label = np.array([])
         #Leg Forces and Torques
-        self.data_train = lfX[0:dlen] - rfX[0:dlen]
-        self.data_train = np.column_stack([self.data_train, lfY[0:dlen] - rfY[0:dlen]])
-        self.data_train = np.column_stack([self.data_train, lfZ[0:dlen] - rfZ[0:dlen]])
-        self.data_train = np.column_stack([self.data_train, ltX[0:dlen] - rtX[0:dlen]])
-        self.data_train = np.column_stack([self.data_train, ltY[0:dlen] - rtY[0:dlen]])
-        self.data_train = np.column_stack([self.data_train, ltZ[0:dlen] - rtZ[0:dlen]])
+        self.data_train = lfX[0:dlen]
+        self.data_train = np.column_stack([self.data_train,lfY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train,lfZ[0:dlen]])
+        self.data_train = np.column_stack([self.data_train,rfX[0:dlen]])
+        self.data_train = np.column_stack([self.data_train,rfY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train,rfZ[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, ltX[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, ltY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, ltZ[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, rtX[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, rtY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, rtZ[0:dlen]])
+
         #CoM Velocity
         self.data_train = np.column_stack([self.data_train, dcX[0:dlen]])
         self.data_train = np.column_stack([self.data_train, dcY[0:dlen]])
         self.data_train = np.column_stack([self.data_train, dcZ[0:dlen]])
         if(self.gem2):
             #Leg Linear and Angular Velocities
-            self.data_train = np.column_stack([self.data_train, lvX[0:dlen] - rvX[0:dlen]])
-            self.data_train = np.column_stack([self.data_train, lvY[0:dlen] - rvY[0:dlen]])
-            self.data_train = np.column_stack([self.data_train, lvZ[0:dlen] - rvZ[0:dlen]])
-            self.data_train = np.column_stack([self.data_train, lwX[0:dlen] - rwX[0:dlen]])
-            self.data_train = np.column_stack([self.data_train, lwY[0:dlen] - rwY[0:dlen]])
-            self.data_train = np.column_stack([self.data_train, lwZ[0:dlen] - rwZ[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lvX[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lvY[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lvZ[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lwX[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lwY[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, lwZ[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, rvX[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, rvY[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, rvZ[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, rwX[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, rwY[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, rwZ[0:dlen]])
+
 
             #Base/Legs Acceleration as labels
             if(self.useLabels):
@@ -230,10 +244,14 @@ class GeM_tools():
 
             else:
                 #Leg Linear Acceleration
-                self.data_train = np.column_stack([self.data_train, laccX[0:dlen] - raccX[0:dlen]])
-                self.data_train = np.column_stack([self.data_train, laccY[0:dlen] - raccY[0:dlen]])
-                self.data_train = np.column_stack([self.data_train, laccZ[0:dlen] - raccX[0:dlen]])
-       
+                self.data_train = np.column_stack([self.data_train, laccX[0:dlen]])
+                self.data_train = np.column_stack([self.data_train, laccY[0:dlen]])
+                self.data_train = np.column_stack([self.data_train, laccZ[0:dlen]])
+                self.data_train = np.column_stack([self.data_train, raccX[0:dlen]])
+                self.data_train = np.column_stack([self.data_train, raccY[0:dlen]])
+                self.data_train = np.column_stack([self.data_train, raccZ[0:dlen]])
+
+
         #Base Linear Acceleration and Base Angular Velocity
         self.data_train = np.column_stack([self.data_train, accX[0:dlen]])
         self.data_train = np.column_stack([self.data_train, accY[0:dlen]])
