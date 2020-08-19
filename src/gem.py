@@ -78,7 +78,7 @@ class GeM():
         self.lfoot_frame = lfoot_frame_
         self.rfoot_frame = rfoot_frame_
 
-    def fit(self,data_train,red,cl,data_labels = None):
+    def fit(self,data_train,data_validation,red,cl,data_labels = None, data_validation_labels = None):
         self.red = red
         print("Data Size ",data_train.size)
         self.data_train = data_train
@@ -87,19 +87,19 @@ class GeM():
             self.reducePCA(data_train)
         elif red == 'autoencoders':
             print("Dimensionality reduction with autoencoders")
-            self.reduceAE(data_train)
+            self.reduceAE(data_train, data_validation)
         elif red == "variationalAutoencoders":
             print("Dimensionality reduction with variational autoencoders")
-            self.reduceVAE(data_train)
+            self.reduceVAE(data_train, data_validation)
         elif red == "supervisedAutoencoders":
             print("Dimensionality reduction with supervised autoencoders")     
-            self.reduceSAE(data_train,data_labels)
+            self.reduceSAE(data_train,data_labels,data_validation,data_validation_labels)
         elif red == "supervisedVariationalAutoencoders":
             print("Dimensionality reduction with supervised variational autoencoders")
-            self.reduceSVAE(data_train,data_labels)
+            self.reduceSVAE(data_train,data_labels,data_validation,data_validation_labels)
         elif red == "supervisedClassifier":
             print("Classification with Labels")
-            self.reduceSC(data_train,data_labels)
+            self.reduceSC(data_train,data_labels,data_validation,data_validation_labels)
         else:
             self.reduced_data_train = data_train
             print("Choose a valid dimensionality reduction method")
@@ -168,28 +168,28 @@ class GeM():
         print("Reprojection Error")
         print(mean_squared_error(data_train, self.pca.inverse_transform(self.reduced_data_train)))
 
-    def reduceAE(self,data_train):
-        self.ae.fit(data_train,150, 2)
+    def reduceAE(self,data_train,data_validation):
+        self.ae.fit(data_train,data_validation,150, 2)
         self.reduced_data_train =  self.ae.encoder.predict(data_train)
         self.pca_dim = False
 
-    def reduceSAE(self,data_train,data_labels):
-        self.sae.fit(data_train,data_labels, 50, 2)
+    def reduceSAE(self,data_train,data_labels,data_validation,data_validation_labels):
+        self.sae.fit(data_train,data_labels,data_validation, data_validation_labels, 50, 2)
         self.reduced_data_train =  self.sae.model.predict(data_train)[1]
         self.pca_dim = False
 
-    def reduceSVAE(self,data_train,data_labels):
-        self.svae.fit(data_train,data_labels, 200, 2)
+    def reduceSVAE(self,data_train,data_labels,data_validation,data_validation_labels):
+        self.svae.fit(data_train,data_labels,data_validation, data_validation_labels, 50, 2)
         self.reduced_data_train =  self.svae.encoder.predict(data_train)[0]
         self.pca_dim = False
 
-    def reduceVAE(self,data_train):
-        self.vae.fit(data_train,150,2)
+    def reduceVAE(self,data_train,data_validation):
+        self.vae.fit(data_train,data_validation,150,2)
         self.reduced_data_train =  self.vae.encoder.predict(data_train)[0]
         self.pca_dim = False
 
-    def reduceSC(self,data_train, data_labels):
-        self.sc.fit(data_train,data_labels,150,2)
+    def reduceSC(self,data_train,data_labels,data_validation,data_validation_labels):
+        self.sc.fit(data_train,data_labels,data_validation, data_validation_labels, 50, 2)
         self.reduced_data_train =  self.sc.model.predict(data_train)
         self.pca_dim = False
 

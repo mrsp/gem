@@ -76,6 +76,6 @@ class supervisedClassifier():
         self.firstrun = False
 
 
-    def fit(self, x_train, y_train, epochs, batch_size):
-        self.model_log = self.model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size,  verbose=1, shuffle=True)
+    def fit(self, x_train, y_train, x_validation, y_validation, epochs, batch_size):
+        self.model_log = self.model.fit(x_train, y_train, validation_data=(x_validation, y_validation), epochs=epochs, batch_size=batch_size,  verbose=1, shuffle=True)
 

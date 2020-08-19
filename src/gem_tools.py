@@ -67,108 +67,192 @@ params = {
 plt.rcParams.update(params)
 
 class GeM_tools():
-    def __init__(self, gt_comparison=False, gem2 = False, useLabels = False):
+    def __init__(self, validation = False, gt_comparison=False, gem2 = False, useLabels = False):
         self.gt_comparison = gt_comparison
+        self.validation = validation
         self.gem2 = gem2
         self.useLabels = useLabels
 
 
-    def input_data(self, setpath):
+    def input_data(self, training_path, validation_path):
 
 
-        rfX = np.loadtxt(setpath+'/rfX.txt')
-        rfY = np.loadtxt(setpath+'/rfY.txt')
-        rfZ = np.loadtxt(setpath+'/rfZ.txt')
-        rtX = np.loadtxt(setpath+'/rtX.txt')
-        rtY = np.loadtxt(setpath+'/rtY.txt')
-        rtZ = np.loadtxt(setpath+'/rtZ.txt')
-        lfX = np.loadtxt(setpath+'/lfX.txt')
-        lfY = np.loadtxt(setpath+'/lfY.txt')
-        lfZ = np.loadtxt(setpath+'/lfZ.txt')
-        ltX = np.loadtxt(setpath+'/ltX.txt')
-        ltY = np.loadtxt(setpath+'/ltY.txt')
-        ltZ = np.loadtxt(setpath+'/ltZ.txt')
-        dlen = min(np.size(lfZ),np.size(rfZ))
-        gX = np.loadtxt(setpath+'/gX.txt')
-        gY = np.loadtxt(setpath+'/gY.txt')
-        gZ = np.loadtxt(setpath+'/gZ.txt')
-        accX = np.loadtxt(setpath+'/accX.txt')
-        accY = np.loadtxt(setpath+'/accY.txt')
-        accZ = np.loadtxt(setpath+'/accZ.txt')
-        dlen = min(dlen,np.size(accZ))
+     
 
         if(self.gt_comparison):
-            gt_lfZ  = np.loadtxt(setpath+'/gt_lfZ.txt')
-            gt_rfZ  = np.loadtxt(setpath+'/gt_rfZ.txt')
-            gt_lfX  = np.loadtxt(setpath+'/gt_lfX.txt')
-            gt_rfX  = np.loadtxt(setpath+'/gt_rfX.txt')
-            gt_lfY  = np.loadtxt(setpath+'/gt_lfY.txt')
-            gt_rfY  = np.loadtxt(setpath+'/gt_rfY.txt')
-            mu  = np.loadtxt(setpath+'/mu.txt')
+            gt_lfZ  = np.loadtxt(training_path+'/gt_lfZ.txt')
+            gt_rfZ  = np.loadtxt(training_path+'/gt_rfZ.txt')
+            gt_lfX  = np.loadtxt(training_path+'/gt_lfX.txt')
+            gt_rfX  = np.loadtxt(training_path+'/gt_rfX.txt')
+            gt_lfY  = np.loadtxt(training_path+'/gt_lfY.txt')
+            gt_rfY  = np.loadtxt(training_path+'/gt_rfY.txt')
+            mu  = np.loadtxt(training_path+'/mu.txt')
             dlen = min(dlen,min(np.size(gt_rfZ),np.size(gt_lfZ)))
        	    self.mu = mu
 
+        rfX = np.loadtxt(training_path+'/rfX.txt')
+        rfY = np.loadtxt(training_path+'/rfY.txt')
+        rfZ = np.loadtxt(training_path+'/rfZ.txt')
+        rtX = np.loadtxt(training_path+'/rtX.txt')
+        rtY = np.loadtxt(training_path+'/rtY.txt')
+        rtZ = np.loadtxt(training_path+'/rtZ.txt')
+        lfX = np.loadtxt(training_path+'/lfX.txt')
+        lfY = np.loadtxt(training_path+'/lfY.txt')
+        lfZ = np.loadtxt(training_path+'/lfZ.txt')
+        ltX = np.loadtxt(training_path+'/ltX.txt')
+        ltY = np.loadtxt(training_path+'/ltY.txt')
+        ltZ = np.loadtxt(training_path+'/ltZ.txt')
+        dlen = min(np.size(lfZ),np.size(rfZ))
+        gX = np.loadtxt(training_path+'/gX.txt')
+        gY = np.loadtxt(training_path+'/gY.txt')
+        gZ = np.loadtxt(training_path+'/gZ.txt')
+        accX = np.loadtxt(training_path+'/accX.txt')
+        accY = np.loadtxt(training_path+'/accY.txt')
+        accZ = np.loadtxt(training_path+'/accZ.txt')
+        dlen = min(dlen,np.size(accZ))
             
 
         if(self.gem2):
-            lvX = np.loadtxt(setpath+'/lvX.txt')
-            lvY = np.loadtxt(setpath+'/lvY.txt')
-            lvZ = np.loadtxt(setpath+'/lvZ.txt')
+            lvX = np.loadtxt(training_path+'/lvX.txt')
+            lvY = np.loadtxt(training_path+'/lvY.txt')
+            lvZ = np.loadtxt(training_path+'/lvZ.txt')
             dlen = min(dlen,np.size(lvZ))
-            rvX = np.loadtxt(setpath+'/rvX.txt')
-            rvY = np.loadtxt(setpath+'/rvY.txt')
-            rvZ = np.loadtxt(setpath+'/rvZ.txt')
+            rvX = np.loadtxt(training_path+'/rvX.txt')
+            rvY = np.loadtxt(training_path+'/rvY.txt')
+            rvZ = np.loadtxt(training_path+'/rvZ.txt')
             dlen = min(dlen,np.size(rvZ))
-            lwX = np.loadtxt(setpath+'/lwX.txt')
-            lwY = np.loadtxt(setpath+'/lwY.txt')
-            lwZ = np.loadtxt(setpath+'/lwZ.txt')
-            rwX = np.loadtxt(setpath+'/rwX.txt')
-            rwY = np.loadtxt(setpath+'/rwY.txt')
-            rwZ = np.loadtxt(setpath+'/rwZ.txt')
-            laccX = np.loadtxt(setpath+'/laccX.txt')
-            laccY = np.loadtxt(setpath+'/laccY.txt')
-            laccZ = np.loadtxt(setpath+'/laccZ.txt')
+            lwX = np.loadtxt(training_path+'/lwX.txt')
+            lwY = np.loadtxt(training_path+'/lwY.txt')
+            lwZ = np.loadtxt(training_path+'/lwZ.txt')
+            rwX = np.loadtxt(training_path+'/rwX.txt')
+            rwY = np.loadtxt(training_path+'/rwY.txt')
+            rwZ = np.loadtxt(training_path+'/rwZ.txt')
+            laccX = np.loadtxt(training_path+'/laccX.txt')
+            laccY = np.loadtxt(training_path+'/laccY.txt')
+            laccZ = np.loadtxt(training_path+'/laccZ.txt')
             dlen = min(dlen,np.size(laccZ))
-            raccX = np.loadtxt(setpath+'/raccX.txt')
-            raccY = np.loadtxt(setpath+'/raccY.txt')
-            raccZ = np.loadtxt(setpath+'/raccZ.txt')
+            raccX = np.loadtxt(training_path+'/raccX.txt')
+            raccY = np.loadtxt(training_path+'/raccY.txt')
+            raccZ = np.loadtxt(training_path+'/raccZ.txt')
             dlen = min(dlen,np.size(raccZ))
-            dcX = np.loadtxt(setpath+'/comvX.txt')
-            dcY = np.loadtxt(setpath+'/comvY.txt')
-            dcZ = np.loadtxt(setpath+'/comvZ.txt')
+            dcX = np.loadtxt(training_path+'/comvX.txt')
+            dcY = np.loadtxt(training_path+'/comvY.txt')
+            dcZ = np.loadtxt(training_path+'/comvZ.txt')
             dlen = min(dlen,np.size(dcZ))
             if(self.useLabels):
-                baccX_LL = np.loadtxt(setpath+'/baccXf_LL.txt')
-                baccY_LL = np.loadtxt(setpath+'/baccYf_LL.txt')
-                baccZ_LL = np.loadtxt(setpath+'/baccZf_LL.txt')
-                baccX_RL = np.loadtxt(setpath+'/baccXf_RL.txt')
-                baccY_RL = np.loadtxt(setpath+'/baccYf_RL.txt')
-                baccZ_RL = np.loadtxt(setpath+'/baccZf_RL.txt')
-                baccX = np.loadtxt(setpath+'/baccXf.txt')
-                baccY = np.loadtxt(setpath+'/baccYf.txt')
-                baccZ = np.loadtxt(setpath+'/baccZf.txt')
+                baccX_LL = np.loadtxt(training_path+'/baccX_LL.txt')
+                baccY_LL = np.loadtxt(training_path+'/baccY_LL.txt')
+                baccZ_LL = np.loadtxt(training_path+'/baccZ_LL.txt')
+                baccX_RL = np.loadtxt(training_path+'/baccX_RL.txt')
+                baccY_RL = np.loadtxt(training_path+'/baccY_RL.txt')
+                baccZ_RL = np.loadtxt(training_path+'/baccZ_RL.txt')
+                baccX = np.loadtxt(training_path+'/baccX.txt')
+                baccY = np.loadtxt(training_path+'/baccY.txt')
+                baccZ = np.loadtxt(training_path+'/baccZ.txt')
                 dlen = min(dlen,min(np.size(baccZ_LL),np.size(baccZ_RL)))
         else:
-            cX = np.loadtxt(setpath+'/c_encx.txt')
-            cY = np.loadtxt(setpath+'/c_ency.txt')
-            cZ = np.loadtxt(setpath+'/c_encz.txt')
+            cX = np.loadtxt(training_path+'/c_encx.txt')
+            cY = np.loadtxt(training_path+'/c_ency.txt')
+            cZ = np.loadtxt(training_path+'/c_encz.txt')
             dlen = min(dlen,np.size(cZ))
             self.cXdt = diff_tool()
             self.cYdt = diff_tool()
             self.cZdt = diff_tool()
-     
+
+
+        if(self.validation):
+            rfX_val = np.loadtxt(validation_path+'/rfX.txt')
+            rfY_val = np.loadtxt(validation_path+'/rfY.txt')
+            rfZ_val = np.loadtxt(validation_path+'/rfZ.txt')
+            rtX_val = np.loadtxt(validation_path+'/rtX.txt')
+            rtY_val = np.loadtxt(validation_path+'/rtY.txt')
+            rtZ_val = np.loadtxt(validation_path+'/rtZ.txt')
+            lfX_val = np.loadtxt(validation_path+'/lfX.txt')
+            lfY_val = np.loadtxt(validation_path+'/lfY.txt')
+            lfZ_val = np.loadtxt(validation_path+'/lfZ.txt')
+            ltX_val = np.loadtxt(validation_path+'/ltX.txt')
+            ltY_val = np.loadtxt(validation_path+'/ltY.txt')
+            ltZ_val = np.loadtxt(validation_path+'/ltZ.txt')
+            dlen = min(np.size(lfZ_val),np.size(rfZ_val))
+            gX_val = np.loadtxt(validation_path+'/gX.txt')
+            gY_val = np.loadtxt(validation_path+'/gY.txt')
+            gZ_val = np.loadtxt(validation_path+'/gZ.txt')
+            accX_val = np.loadtxt(validation_path+'/accX.txt')
+            accY_val = np.loadtxt(validation_path+'/accY.txt')
+            accZ_val = np.loadtxt(validation_path+'/accZ.txt')
+            dlen = min(dlen,np.size(accZ_val))
+                
+
+            if(self.gem2):
+                lvX_val = np.loadtxt(validation_path+'/lvX.txt')
+                lvY_val = np.loadtxt(validation_path+'/lvY.txt')
+                lvZ_val = np.loadtxt(validation_path+'/lvZ.txt')
+                dlen = min(dlen,np.size(lvZ_val))
+                rvX_val = np.loadtxt(validation_path+'/rvX.txt')
+                rvY_val = np.loadtxt(validation_path+'/rvY.txt')
+                rvZ_val = np.loadtxt(validation_path+'/rvZ.txt')
+                dlen = min(dlen,np.size(rvZ_val))
+                lwX_val = np.loadtxt(validation_path+'/lwX.txt')
+                lwY_val = np.loadtxt(validation_path+'/lwY.txt')
+                lwZ_val = np.loadtxt(validation_path+'/lwZ.txt')
+                rwX_val = np.loadtxt(validation_path+'/rwX.txt')
+                rwY_val = np.loadtxt(validation_path+'/rwY.txt')
+                rwZ_val = np.loadtxt(validation_path+'/rwZ.txt')
+                laccX_val = np.loadtxt(validation_path+'/laccX.txt')
+                laccY_val = np.loadtxt(validation_path+'/laccY.txt')
+                laccZ_val = np.loadtxt(validation_path+'/laccZ.txt')
+                dlen = min(dlen,np.size(laccZ_val))
+                raccX_val = np.loadtxt(validation_path+'/raccX.txt')
+                raccY_val = np.loadtxt(validation_path+'/raccY.txt')
+                raccZ_val = np.loadtxt(validation_path+'/raccZ.txt')
+                dlen = min(dlen,np.size(raccZ_val))
+                dcX_val = np.loadtxt(validation_path+'/comvX.txt')
+                dcY_val = np.loadtxt(validation_path+'/comvY.txt')
+                dcZ_val = np.loadtxt(validation_path+'/comvZ.txt')
+                dlen = min(dlen,np.size(dcZ_val))
+                if(self.useLabels):
+                    baccX_LL_val = np.loadtxt(validation_path+'/baccX_LL.txt')
+                    baccY_LL_val = np.loadtxt(validation_path+'/baccY_LL.txt')
+                    baccZ_LL_val = np.loadtxt(validation_path+'/baccZ_LL.txt')
+                    baccX_RL_val = np.loadtxt(validation_path+'/baccX_RL.txt')
+                    baccY_RL_val = np.loadtxt(validation_path+'/baccY_RL.txt')
+                    baccZ_RL_val = np.loadtxt(validation_path+'/baccZ_RL.txt')
+                    baccX_val = np.loadtxt(validation_path+'/baccX.txt')
+                    baccY_val = np.loadtxt(validation_path+'/baccY.txt')
+                    baccZ_val = np.loadtxt(validation_path+'/baccZ.txt')
+                    dlen = min(dlen,min(np.size(baccZ_LL_val),np.size(baccZ_RL_val)))
+            else:
+                cX_val = np.loadtxt(validation_path+'/c_encx.txt')
+                cY_val = np.loadtxt(validation_path+'/c_ency.txt')
+                cZ_val = np.loadtxt(validation_path+'/c_encz.txt')
+                dlen = min(dlen,np.size(cZ_val))
+                self.cXdt_val = diff_tool()
+                self.cYdt_val = diff_tool()
+                self.cZdt_val = diff_tool()
+
+
+
         if(self.gt_comparison):
             phase = np.zeros((dlen))
         if(not self.gem2):
             dcX = np.zeros((dlen))
             dcY = np.zeros((dlen))
             dcZ = np.zeros((dlen))
+            dcX_val = np.zeros((dlen))
+            dcY_val = np.zeros((dlen))
+            dcZ_val = np.zeros((dlen))
 
         for i in range(dlen):
             if(not self.gem2):
                 dcX[i]=self.cXdt.diff(cX[i])
                 dcY[i]=self.cYdt.diff(cY[i])
                 dcZ[i]=self.cZdt.diff(cZ[i])
+                dcX_val[i]=self.cXdt_val.diff(cX_val[i])
+                dcY_val[i]=self.cYdt_val.diff(cY_val[i])
+                dcZ_val[i]=self.cZdt_val.diff(cZ_val[i])
+
+
+
             if(self.gt_comparison):
                 lcon = np.sqrt(gt_lfX[i] * gt_lfX[i] + gt_lfY[i] * gt_lfY[i])
                 rcon = np.sqrt(gt_rfX[i] * gt_rfX[i] + gt_rfY[i] * gt_rfY[i])
@@ -183,13 +267,17 @@ class GeM_tools():
 
 
         self.data_label = np.array([])
+        self.data_train = np.array([])
+        self.data_val = np.array([])
+        self.data_val_label = np.array([])
+
         #Leg Forces and Torques
         self.data_train = lfX[0:dlen]
-        self.data_train = np.column_stack([self.data_train,lfY[0:dlen]])
-        self.data_train = np.column_stack([self.data_train,lfZ[0:dlen]])
-        self.data_train = np.column_stack([self.data_train,rfX[0:dlen]])
-        self.data_train = np.column_stack([self.data_train,rfY[0:dlen]])
-        self.data_train = np.column_stack([self.data_train,rfZ[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, lfY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, lfZ[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, rfX[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, rfY[0:dlen]])
+        self.data_train = np.column_stack([self.data_train, rfZ[0:dlen]])
         self.data_train = np.column_stack([self.data_train, ltX[0:dlen]])
         self.data_train = np.column_stack([self.data_train, ltY[0:dlen]])
         self.data_train = np.column_stack([self.data_train, ltZ[0:dlen]])
@@ -225,9 +313,9 @@ class GeM_tools():
                 self.data_label = np.column_stack([self.data_label, baccX_RL[0:dlen]])
                 self.data_label = np.column_stack([self.data_label, baccY_RL[0:dlen]])
                 self.data_label = np.column_stack([self.data_label, baccZ_RL[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, accX[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, accY[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, accZ[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, baccX[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, baccY[0:dlen]])
+                self.data_label = np.column_stack([self.data_label, baccZ[0:dlen]])
                 self.data_label_min = np.zeros((self.data_label.shape[1]))
                 self.data_label_max = np.zeros((self.data_label.shape[1]))
                 self.data_label_mean = np.zeros((self.data_label.shape[1]))
@@ -275,6 +363,106 @@ class GeM_tools():
             #self.data_train[:, i] = self.normalize_data(self.data_train[:, i],self.data_train_max[i], self.data_train_min[i])   
             #self.data_train[:, i] = self.standarize_data(self.data_train[:, i],self.data_train_mean[i], self.data_train_std[i])   
             self.data_train[:, i] = self.normalizeMean_data(self.data_train[:, i],self.data_train_max[i], self.data_train_min[i],self.data_train_mean[i])   
+
+        if(self.validation):
+            #Leg Forces and Torques
+            self.data_val = lfX_val[0:dlen]
+            self.data_val = np.column_stack([self.data_val, lfY_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, lfZ_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, rfX_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, rfY_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, rfZ_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, ltX_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, ltY_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, ltZ_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, rtX_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, rtY_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, rtZ_val[0:dlen]])
+
+            #CoM Velocity
+            self.data_val = np.column_stack([self.data_val, dcX_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, dcY_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, dcZ_val[0:dlen]])
+            if(self.gem2):
+                #Leg Linear and Angular Velocities
+                self.data_val = np.column_stack([self.data_val, lvX_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, lvY_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, lvZ_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, lwX_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, lwY_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, lwZ_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, rvX_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, rvY_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, rvZ_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, rwX_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, rwY_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, rwZ_val[0:dlen]])
+
+
+                #Base/Legs Acceleration as labels
+                if(self.useLabels):
+                    self.data_val_label = baccX_LL_val[0:dlen]
+                    self.data_val_label = np.column_stack([self.data_val_label, baccY_LL_val[0:dlen]])
+                    self.data_val_label = np.column_stack([self.data_val_label, baccZ_LL_val[0:dlen]])
+                    self.data_val_label = np.column_stack([self.data_val_label, baccX_RL_val[0:dlen]])
+                    self.data_val_label = np.column_stack([self.data_val_label, baccY_RL_val[0:dlen]])
+                    self.data_val_label = np.column_stack([self.data_val_label, baccZ_RL_val[0:dlen]])
+                    self.data_val_label = np.column_stack([self.data_val_label, baccX_val[0:dlen]])
+                    self.data_val_label = np.column_stack([self.data_val_label, baccY_val[0:dlen]])
+                    self.data_val_label = np.column_stack([self.data_val_label, baccZ_val[0:dlen]])
+                    self.data_val_label_min = np.zeros((self.data_val_label.shape[1]))
+                    self.data_val_label_max = np.zeros((self.data_val_label.shape[1]))
+                    self.data_val_label_mean = np.zeros((self.data_val_label.shape[1]))
+                    self.data_val_label_std = np.zeros((self.data_val_label.shape[1]))
+                    #Label Statistics
+                    for i in range(self.data_val_label.shape[1]):
+                        self.data_val_label_min[i] = np.min(self.data_val_label[:, i])
+                        self.data_val_label_max[i] = np.max(self.data_val_label[:, i])
+                        self.data_val_label_mean[i] = np.mean(self.data_val_label[:, i])
+                        self.data_val_label_std[i] = np.std(self.data_val_label[:, i])
+                        #self.data_val_label[:, i] = self.normalize_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i])   
+                        #self.data_val_label[:, i] = self.standarize_data(self.data_val_label[:, i],self.data_val_label_mean[i], self.data_val_label_std[i])
+                        self.data_val_label[:, i] = self.normalizeMean_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i],self.data_val_label_mean[i])   
+
+                else:
+                    #Leg Linear Acceleration
+                    self.data_val = np.column_stack([self.data_val, laccX_val[0:dlen]])
+                    self.data_val = np.column_stack([self.data_val, laccY_val[0:dlen]])
+                    self.data_val = np.column_stack([self.data_val, laccZ_val[0:dlen]])
+                    self.data_val = np.column_stack([self.data_val, raccX_val[0:dlen]])
+                    self.data_val = np.column_stack([self.data_val, raccY_val[0:dlen]])
+                    self.data_val = np.column_stack([self.data_val, raccZ_val[0:dlen]])
+
+
+            #Base Linear Acceleration and Base Angular Velocity
+            self.data_val = np.column_stack([self.data_val, accX_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, accY_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, accZ_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, gX_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, gY_val[0:dlen]])
+            self.data_val = np.column_stack([self.data_val, gZ_val[0:dlen]])
+
+
+            self.data_val_min = np.zeros((self.data_val.shape[1]))
+            self.data_val_max = np.zeros((self.data_val.shape[1]))
+            self.data_val_mean = np.zeros((self.data_val.shape[1]))
+            self.data_val_std = np.zeros((self.data_val.shape[1]))
+        
+            #Data Statistics
+            for i in range(self.data_val.shape[1]):
+                self.data_val_min[i] = np.min(self.data_val[:, i])
+                self.data_val_max[i] = np.max(self.data_val[:, i])
+                self.data_val_mean[i] = np.mean(self.data_val[:, i])
+                self.data_val_std[i] = np.std(self.data_val[:, i])
+                #self.data_val[:, i] = self.normalize_data(self.data_val[:, i],self.data_val_max[i], self.data_val_min[i])   
+                #self.data_val[:, i] = self.standarize_data(self.data_val[:, i],self.data_val_mean[i], self.data_val_std[i])   
+                self.data_val[:, i] = self.normalizeMean_data(self.data_val[:, i],self.data_val_max[i], self.data_val_min[i],self.data_val_mean[i])   
+
+
+
+
+
+
 
         if (self.gt_comparison):
             phase2=np.append([phase],[np.zeros_like(np.arange(cX.shape[0]-phase.shape[0]))])

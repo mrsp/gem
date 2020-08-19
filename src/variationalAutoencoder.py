@@ -101,5 +101,5 @@ class variationalAutoencoder():
         #plot_model(self.model, to_file='vae.png', show_shapes=True)
         self.firstrun = False
 
-    def fit(self,x_train,epochs,batch_size):
-        self.model_log = self.model.fit(x_train, epochs=epochs, batch_size=batch_size,verbose=1, shuffle=True)
+    def fit(self, x_train, x_validation, epochs, batch_size):
+        self.model_log = self.model.fit(x_train, x_train, validation_data=(x_validation, x_validation), epochs=epochs, batch_size=batch_size,verbose=1, shuffle=True)

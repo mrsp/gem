@@ -112,6 +112,6 @@ class supervisedVariationalAutoencoder():
         self.model.summary()
         #plot_model(self.model, to_file='supervised_vae.png', show_shapes=True)
 
-    def fit(self,x_train,y_train,epochs,batch_size):
+    def fit(self, x_train, y_train, x_validation, y_validation, epochs, batch_size):
         # reconstruction_loss = binary_crossentropy(inputs, outputs)
-        self.model_log = self.model.fit(x_train, {'decoder':x_train, 'encoder': y_train}, epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
+        self.model_log = self.model.fit(x_train, {'decoder':x_train, 'encoder': y_train}, validation_data = (x_validation, {'decoder':x_validation, 'encoder': y_validation}), epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)

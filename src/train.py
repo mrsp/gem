@@ -54,17 +54,22 @@ def load_config(config_file):
 if __name__ == "__main__":
 
 	config = load_config(sys.argv[1])
-	path =  os.path.dirname(os.path.realpath(__file__)) + "/" + config['gem_train_path']
-	gt = GeM_tools(gt_comparison=config['gem_gt_comparison'], gem2=config['gem2'], useLabels = config['useLabels'])
+	train_path =  os.path.dirname(os.path.realpath(__file__)) + "/" + config['gem_train_path']
+	val_path =  os.path.dirname(os.path.realpath(__file__)) + "/" + config['gem_validation_path']
 
-	gt.input_data(path)
+	gt = GeM_tools(validation = config['gem_validation'], gt_comparison=config['gem_gt_comparison'], gem2=config['gem2'], useLabels = config['useLabels'])
+
+	gt.input_data(train_path,val_path)
 
 	g = GeM()
 	g.setFrames(config['gem_lfoot_frame'], config['gem_rfoot_frame'])
 	g.setDimReduction(config['gem_dim'])
 	data_train = gt.data_train
 	data_labels = gt.data_label
-	g.fit(data_train, config['gem_dim_reduction'], config['gem_clustering'], data_labels)
+	data_val = gt.data_val
+	data_val_labels = gt.data_val_label
+
+	g.fit(data_train, data_val,  config['gem_dim_reduction'], config['gem_clustering'], data_labels, data_val_labels)
 	plt.plot(data_labels[:,6])
 	plt.plot(g.reduced_data_train[:,0].T*data_labels[:,0] + g.reduced_data_train[:,1].T*data_labels[:,3])
 	plt.show()

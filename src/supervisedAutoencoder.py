@@ -78,8 +78,7 @@ class supervisedAutoencoder():
                                          'reconst_output': 0.1})
         #self.model.summary()
         self.firstrun = False
-
-    def fit(self, x_train, y_train, epochs, batch_size):
-        self.model_log = self.model.fit(x_train, {
-                                          'reconst_output': x_train, 'class_output': y_train}, epochs=epochs, batch_size=batch_size,  verbose=1, shuffle=True)
+    
+    def fit(self, x_train, y_train, x_validation, y_validation, epochs, batch_size):
+        self.model_log = self.model.fit(x_train, {'reconst_output': x_train, 'class_output': y_train}, validation_data = (x_validation,{'reconst_output': x_validation, 'class_output': y_validation}), epochs=epochs, batch_size=batch_size,  verbose=1, shuffle=True)
 
