@@ -96,7 +96,7 @@ class supervisedVariationalAutoencoder():
         # New: Add another output for classification
         outputs = [decoder(self.encoder(inputs)[2]), self.encoder(inputs)[2]]
         self.model = Model(inputs, outputs, name='vae_mlp')
-        self.model.summary()
+        #self.model.summary()
 
         reconstruction_loss = binary_crossentropy(inputs, outputs[0])
         reconstruction_loss *= input_dim

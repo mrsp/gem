@@ -37,6 +37,9 @@ from keras.utils import plot_model
 import keras.backend as K
 import numpy as np
 
+def rmse(y_true, y_pred):
+    return K.sqrt(K.mean(K.square(y_pred - y_true))) 
+
 def clf_loss(y_true, y_pred):
     #x  = 1.0 * K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
     #y  = 1.0 * K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
@@ -73,7 +76,7 @@ class supervisedAutoencoder():
         self.model = Model(inputs=[sae_input], outputs=[decoded, predicted])
         self.model.compile(optimizer='adam',
                            loss={'class_output': clf_loss,
-                                 'reconst_output': 'mean_squared_error'},
+                                 'reconst_output': rmse},
                            loss_weights={'class_output': 1.0,
                                          'reconst_output': 0.1})
         #self.model.summary()

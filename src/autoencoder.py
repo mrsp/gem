@@ -33,7 +33,11 @@ from keras.layers import Input, Dense
 from keras.models import Model
 from keras.losses import binary_crossentropy
 from keras.utils import plot_model
+from keras import backend as K
 import numpy as np
+
+def rmse(y_true, y_pred):
+        return K.sqrt(K.mean(K.square(y_pred - y_true))) 
 
 class autoencoder():
     def __init__(self):
@@ -42,23 +46,16 @@ class autoencoder():
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim):
         input_= Input(shape=(input_dim,))
         # "encoded" is the encoded representation of the input
-        encoded = Dense(intermediate_dim, activation='selu')(input_)
-        encoded = Dense(latent_dim, activation='selu')(encoded)
+        encoded = Dense(input_dim, activation='tanh',name='encode_1', use_bias=False)(input_)
+        encoded = Dense(latent_dim, activation='tanh',name='encode_2', use_bias=True)(encoded)
         ## "decoded" is the lossy reconstruction of the input
-        decoded = Dense(intermediate_dim, activation='selu')(encoded)
-        decoded = Dense(input_dim, activation='sigmoid')(decoded)
+        decoded = Dense(latent_dim, activation='tanh',name='decode_1', use_bias=False)(encoded)
+        decoded = Dense(input_dim, activation='tanh',name='decode_2', use_bias=False)(decoded)
         # this model maps an input to its reconstruction
-        self.model = Model(input_, decoded)
+        self.model = Model(inputs=[input_], outputs=[decoded])
         # this model maps an input to its encoded representation
-        self.encoder = Model(input_, encoded)
-        # create a placeholder for an encoded (2-dimensional) input
-        encoded_input = Input(shape=(latent_dim,))
-        # retrieve the last layer of the autoencoder model
-        deco = self.model.layers[-2](encoded_input)
-        deco = self.model.layers[-1](deco)
-        # create the decoder model
-        self.decoder = Model(encoded_input, deco)
-        self.model.compile(optimizer='adam', loss='binary_crossentropy')
+        self.encoder = Model(inputs=[input_], outputs=[encoded])
+        self.model.compile(optimizer='adam', loss=rmse)
         self.model.summary()
         self.firstrun = False
 
