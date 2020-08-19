@@ -36,7 +36,12 @@ from keras.utils import plot_model
 from keras import backend as K
 import numpy as np
 def rmse(y_true, y_pred):
-        return K.sqrt(K.mean(K.square(y_pred - y_true))) 
+    return K.sqrt(K.mean(K.square(y_pred - y_true))) 
+
+def mae(y_true, y_pred):
+    return K.mean(K.abs(y_pred - y_true)) 
+
+
 
 class variationalAutoencoder():
     def __init__(self):
@@ -88,7 +93,7 @@ class variationalAutoencoder():
         outputs = self.decoder(self.encoder(inputs)[0])
         self.model = Model(inputs, outputs, name='vae_mlp')
         self.model.summary()
-        reconstruction_loss = rmse(inputs, outputs)
+        reconstruction_loss = mae(inputs, outputs)
         kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5

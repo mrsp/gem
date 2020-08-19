@@ -37,12 +37,24 @@ from keras import backend as K
 import numpy as np
 
 def clf_loss(y_true, y_pred):
-    x  = K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
-    y  = K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
-    z  = K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
-    loss = K.sum(K.sqrt(x + y + z + K.epsilon()))
+    #x  = 1.0 * K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    #y  = 1.0 * K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    #z  = 1.0 * K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    #loss = K.mean(K.sqrt(x + y + z + K.epsilon()))
+
+
+    x  = 1.0 * K.abs(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    y  = 1.0 * K.abs(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    z  = 1.0 * K.abs(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    #loss = K.sum(x + y + z, axis = -1)
+    loss = K.mean(x + y + z)
     return loss
 
+def rmse(y_true, y_pred):
+    return K.sqrt(K.mean(K.square(y_pred - y_true))) 
+
+def mae(y_true, y_pred):
+    return K.mean(K.abs(y_pred - y_true)) 
 
 
 class supervisedVariationalAutoencoder():
@@ -72,7 +84,7 @@ class supervisedVariationalAutoencoder():
         vae_loss_weight = 0.1
         # build encoder model
         inputs = Input(shape=(input_dim,), name='encoder_input')
-        x = Dense(intermediate_dim, activation='selu')(inputs)
+        x = Dense(input_dim, activation='selu')(inputs)
         z_mean = Dense(latent_dim, activation='selu', name='z_mean')(x)
         z_log_var = Dense(latent_dim, activation='selu', name='z_log_var')(x)
         # use reparameterization trick to push the sampling out as input
@@ -85,8 +97,8 @@ class supervisedVariationalAutoencoder():
 
         # build decoder model
         latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-        x = Dense(intermediate_dim, activation='selu')(latent_inputs)
-        outputs = Dense(input_dim, activation='sigmoid')(x)
+        x = Dense(latent_dim, activation='selu')(latent_inputs)
+        outputs = Dense(input_dim, activation='selu')(x)
         # instantiate decoder model
         decoder = Model(latent_inputs, outputs, name='decoder')
         #decoder.summary()
@@ -97,10 +109,7 @@ class supervisedVariationalAutoencoder():
         outputs = [decoder(self.encoder(inputs)[2]), self.encoder(inputs)[2]]
         self.model = Model(inputs, outputs, name='vae_mlp')
         #self.model.summary()
-
-        reconstruction_loss = binary_crossentropy(inputs, outputs[0])
-        reconstruction_loss *= input_dim
-
+        reconstruction_loss = mae(inputs, outputs[0])
         kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5
