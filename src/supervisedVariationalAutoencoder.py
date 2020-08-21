@@ -81,46 +81,47 @@ class supervisedVariationalAutoencoder():
 
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim, num_classes):
         # VAE model = encoder + decoder
-        vae_loss_weight = 0.1
+        vae_loss_weight = 1.0
         # build encoder model
         inputs = Input(shape=(input_dim,), name='encoder_input')
-        x = Dense(input_dim, activation='selu')(inputs)
-        z_mean = Dense(latent_dim, activation='selu', name='z_mean')(x)
-        z_log_var = Dense(latent_dim, activation='selu', name='z_log_var')(x)
+        x = Dense(intermediate_dim, activation='swish', use_bias = False)(inputs)
+        z_mean = Dense(latent_dim, activation='swish',  use_bias = False, name='z_mean')(x)
+        z_log_var = Dense(latent_dim, activation='swish', use_bias = False, name='z_log_var')(x)
         # use reparameterization trick to push the sampling out as input
         z = Lambda(self.sampling, output_shape=(latent_dim,), name='z')([z_mean, z_log_var])
         # instantiate encoder model
         self.encoder = Model(inputs, [z_mean, z_log_var, z], name='encoder')
         #self.encoder.summary()
         #plot_model(encoder, to_file='vae_mlp_encoder.png', show_shapes=True)
+        self.predicted = Dense(latent_dim, activation='softmax', name='class_output', use_bias=True)(z)
 
 
         # build decoder model
         latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-        x = Dense(latent_dim, activation='selu')(latent_inputs)
-        outputs = Dense(input_dim, activation='selu')(x)
+        decoded = Dense(intermediate_dim, activation='swish', use_bias = False)(latent_inputs)
+        decoded = Dense(input_dim, activation='swish', use_bias = False)(decoded)
         # instantiate decoder model
-        decoder = Model(latent_inputs, outputs, name='decoder')
+        decoder = Model(latent_inputs, decoded, name='reconst_output')
         #decoder.summary()
         #plot_model(decoder, to_file='vae_mlp_decoder.png', show_shapes=True)
 
         # instantiate VAE model
         # New: Add another output for classification
-        outputs = [decoder(self.encoder(inputs)[2]), self.encoder(inputs)[2]]
+        outputs = [decoder(self.encoder(inputs)[2]), self.predicted]
         self.model = Model(inputs, outputs, name='vae_mlp')
         #self.model.summary()
         reconstruction_loss = mae(inputs, outputs[0])
         kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5
-        vae_loss = vae_loss_weight * K.mean((reconstruction_loss + kl_loss) / 100.0)
+        vae_loss = vae_loss_weight * K.mean(reconstruction_loss + kl_loss)
         self.model.add_loss(vae_loss)
 
         # New: add the clf loss
-        self.model.compile(optimizer='adam', loss={'encoder': clf_loss},loss_weights={'encoder': 1.0})
-        self.model.summary()
+        self.model.compile(optimizer='adam', loss={'class_output': clf_loss},loss_weights={'class_output': 0.1})
+        #self.model.summary()
         #plot_model(self.model, to_file='supervised_vae.png', show_shapes=True)
 
     def fit(self, x_train, y_train, x_validation, y_validation, epochs, batch_size):
         # reconstruction_loss = binary_crossentropy(inputs, outputs)
-        self.model_log = self.model.fit(x_train, {'decoder':x_train, 'encoder': y_train}, validation_data = (x_validation, {'decoder':x_validation, 'encoder': y_validation}), epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
+        self.model_log = self.model.fit(x_train, {'reconst_output':x_train, 'class_output': y_train}, validation_data = (x_validation, {'reconst_output':x_validation, 'class_output': y_validation}), epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)

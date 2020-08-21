@@ -60,14 +60,9 @@ class supervisedClassifier():
 
     def setDimensions(self, input_dim_, latent_dim, intermediate_dim):
         self.model = Sequential()
-        self.model.add(Dense(input_dim_, activation='selu', input_dim=input_dim_))
-        #self.model.add(Dense(100, activation='selu', input_dim=input_dim_))
-        #self.model.add(Dense(50, activation='selu'))
-        #self.model.add(Dense(20, activation='selu'))
-        self.model.add(Dense(10, activation='selu'))
-        self.model.add(Dense(5, activation='selu'))
-        self.model.add(Dense(latent_dim, activation='selu'))
-        #self.model.add(Dense(latent_dim, activation='softmax'))
+        self.model.add(Dense(intermediate_dim, activation='swish', use_bias = False, input_dim=input_dim_))
+        self.model.add(Dense(latent_dim, activation='swish', use_bias = False))
+        self.model.add(Dense(latent_dim, activation='softmax', use_bias = True))
         # Compile the model
         self.model.compile(optimizer='adam', 
                     loss=clf_loss, 

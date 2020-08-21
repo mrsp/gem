@@ -61,7 +61,7 @@ class GeM():
     def setDimReduction(self, dim_):
         self.latent_dim = dim_
         self.input_dim = 33
-        self.intermidiate_dim = 10
+        self.intermidiate_dim = 16
         self.pca = PCA(n_components=self.latent_dim)
         self.ae = autoencoder()
         self.ae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim)

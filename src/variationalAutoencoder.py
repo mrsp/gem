@@ -70,10 +70,10 @@ class variationalAutoencoder():
         # VAE model = encoder + decoder
         # build encoder model
         inputs = Input(shape=(input_dim,), name='encoder_input')
-        x = Dense(input_dim, activation='tanh')(inputs)
+        x = Dense(intermediate_dim, activation='swish',use_bias = False)(inputs)
         
-        z_mean = Dense(latent_dim, name='z_mean')(x)
-        z_log_var = Dense(latent_dim, name='z_log_var')(x)
+        z_mean = Dense(latent_dim, name='z_mean', use_bias = False)(x)
+        z_log_var = Dense(latent_dim, name='z_log_var', use_bias = False)(x)
         # use reparameterization trick to push the sampling out as input
         # note that "output_shape" isn't necessary with the TensorFlow backend
         z = Lambda(self.sampling, output_shape=(latent_dim,), name='z')([z_mean, z_log_var])
@@ -83,8 +83,8 @@ class variationalAutoencoder():
         #plot_model(self.encoder, to_file='vae_mlp_encoder.png', show_shapes=True)
         # build decoder model
         latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-        x = Dense(latent_dim, activation='tanh')(latent_inputs)
-        outputs = Dense(input_dim, activation='tanh')(x)
+        x = Dense(intermediate_dim, activation='swish')(latent_inputs)
+        outputs = Dense(input_dim, activation='swish')(x)
         # instantiate decoder model
         self.decoder = Model(latent_inputs, outputs, name='decoder')
         self.decoder.summary()
@@ -97,7 +97,7 @@ class variationalAutoencoder():
         kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5
-        vae_loss = reconstruction_loss + kl_loss
+        vae_loss = K.mean(reconstruction_loss + kl_loss)
         self.model.add_loss(vae_loss)
         self.model.compile(optimizer='adam')
         #self.model.summary()

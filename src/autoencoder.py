@@ -46,17 +46,17 @@ class autoencoder():
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim):
         input_= Input(shape=(input_dim,))
         # "encoded" is the encoded representation of the input
-        encoded = Dense(input_dim, activation='tanh',name='encode_1', use_bias=False)(input_)
-        encoded = Dense(latent_dim, activation='tanh',name='encode_2', use_bias=True)(encoded)
+        encoded = Dense(intermediate_dim, activation='swish',name='encode_1', use_bias=False)(input_)
+        encoded = Dense(latent_dim, activation='swish',name='encode_2', use_bias=False)(encoded)
         ## "decoded" is the lossy reconstruction of the input
-        decoded = Dense(latent_dim, activation='tanh',name='decode_1', use_bias=False)(encoded)
-        decoded = Dense(input_dim, activation='tanh',name='decode_2', use_bias=False)(decoded)
+        decoded = Dense(latent_dim, activation='swish',name='decode_1', use_bias=False)(encoded)
+        decoded = Dense(input_dim, activation='swish',name='decode_2', use_bias=False)(decoded)
         # this model maps an input to its reconstruction
         self.model = Model(inputs=[input_], outputs=[decoded])
         # this model maps an input to its encoded representation
         self.encoder = Model(inputs=[input_], outputs=[encoded])
-        self.model.compile(optimizer='adam', loss=rmse)
-        self.model.summary()
+        self.model.compile(optimizer='adam', loss='log_cosh')
+        #self.model.summary()
         self.firstrun = False
 
     def fit(self, x_train, x_validation, epochs, batch_size):
