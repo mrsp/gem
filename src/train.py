@@ -69,16 +69,11 @@ if __name__ == "__main__":
 	data_val = gt.data_val
 	data_val_labels = gt.data_val_label
 
+
+
 	g.fit(data_train, data_val,  config['gem_dim_reduction'], config['gem_clustering'], data_labels, data_val_labels)
-	plt.plot(data_labels[:,6])
-	plt.plot(g.reduced_data_train[:,0].T*data_labels[:,0] + g.reduced_data_train[:,1].T*data_labels[:,3])
-	plt.show()
-	plt.plot(data_labels[:,7])
-	plt.plot(g.reduced_data_train[:,0].T*data_labels[:,1] + g.reduced_data_train[:,1].T*data_labels[:,4])
-	plt.show()
-	plt.plot(data_labels[:,8])
-	plt.plot(g.reduced_data_train[:,0].T*data_labels[:,2] + g.reduced_data_train[:,1].T*data_labels[:,5])
-	plt.show()
+	gt.plot_accelerations_LR(g.reduced_data_train, data_labels)
+	gt.plot_accelerations_LRD(g.reduced_data_train, data_labels,g.predicted_labels_train)
 
 
 

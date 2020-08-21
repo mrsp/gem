@@ -61,7 +61,7 @@ params = {
     'legend.fontsize': 15,
     'xtick.labelsize': 15,
     'ytick.labelsize': 15,
-    'text.usetex': False,
+    'text.usetex': True,
     'figure.figsize': [7, 4] # instead of 4.5, 4.5
 }
 plt.rcParams.update(params)
@@ -660,6 +660,78 @@ class GeM_tools():
         else:
             print('Input data did not have Ground-Truth Information')
 
+
+
+    def plot_accelerations_LR(self,reduced_data, data_labels):
+        t = np.arange(0,reduced_data.shape[0], 1)
+        base_accX = data_labels[:,6]
+        base_accY = data_labels[:,7]
+        base_accZ = data_labels[:,8]
+        est_accX = reduced_data[:,0].T*data_labels[:,0] + reduced_data[:,1].T*data_labels[:,3]
+        est_accY = reduced_data[:,0].T*data_labels[:,1] + reduced_data[:,1].T*data_labels[:,4]
+        est_accZ = reduced_data[:,0].T*data_labels[:,2] + reduced_data[:,1].T*data_labels[:,5]
+        est_accX_LL = np.ma.masked_where(reduced_data[:,0] < reduced_data[:,1], est_accX)
+        est_accX_RL = np.ma.masked_where(reduced_data[:,0] >= reduced_data[:,1], est_accX)
+        est_accY_LL = np.ma.masked_where(reduced_data[:,0] < reduced_data[:,1], est_accY)
+        est_accY_RL = np.ma.masked_where(reduced_data[:,0] >= reduced_data[:,1], est_accY)
+        est_accZ_LL = np.ma.masked_where(reduced_data[:,0] < reduced_data[:,1], est_accZ)
+        est_accZ_RL = np.ma.masked_where(reduced_data[:,0] >= reduced_data[:,1], est_accZ)
+
+        plt.figure()
+        plt.subplot(311)
+        plt.plot(t,base_accX)
+        #plt.scatter(t,est_accX,s=2.0, color=c)
+        plt.plot(t,est_accX_LL,t,est_accX_RL)
+        plt.ylabel('$acc_x$')
+        plt.subplot(312)
+        plt.plot(t,base_accY)
+        #plt.scatter(t,est_accY, s=2.0,color=c)
+        plt.plot(t,est_accY_LL,t,est_accY_RL)
+        plt.ylabel('$acc_y$')
+        plt.subplot(313)
+        plt.plot(t,base_accZ)
+        #plt.scatter(t,est_accZ, s=2.0,color=c)
+        plt.plot(t,est_accZ_LL,t,est_accZ_RL)
+        plt.ylabel('$acc_z$')
+        plt.xlabel('$samples$')
+        plt.show()
+
+
+    def plot_accelerations_LRD(self,reduced_data, data_labels, predicted_labels):
+        t = np.arange(0,reduced_data.shape[0], 1)
+        base_accX = data_labels[:,6]
+        base_accY = data_labels[:,7]
+        base_accZ = data_labels[:,8]
+        est_accX = reduced_data[:,0].T*data_labels[:,0] + reduced_data[:,1].T*data_labels[:,3]
+        est_accY = reduced_data[:,0].T*data_labels[:,1] + reduced_data[:,1].T*data_labels[:,4]
+        est_accZ = reduced_data[:,0].T*data_labels[:,2] + reduced_data[:,1].T*data_labels[:,5]
+        est_accX_LSS = np.ma.masked_where(predicted_labels == 0, est_accX)
+        est_accX_RSS = np.ma.masked_where(predicted_labels == 1, est_accX)
+        est_accX_DS = np.ma.masked_where(predicted_labels == 2, est_accX)
+        est_accY_LSS = np.ma.masked_where(predicted_labels == 0, est_accY)
+        est_accY_RSS =np.ma.masked_where(predicted_labels == 1, est_accY)
+        est_accY_DS = np.ma.masked_where(predicted_labels == 2, est_accY)
+        est_accZ_LSS = np.ma.masked_where(predicted_labels == 0, est_accZ)
+        est_accZ_RSS = np.ma.masked_where(predicted_labels == 1, est_accZ)
+        est_accZ_DS = np.ma.masked_where(predicted_labels == 2, est_accZ)
+
+        plt.figure()
+        plt.subplot(311)
+        plt.plot(t,base_accX)
+        plt.plot(t,est_accX_LSS,t,est_accX_RSS, t,est_accX_DS)
+        plt.ylabel('$acc_x$')
+
+        plt.subplot(312)
+        plt.plot(t,base_accY)
+        plt.plot(t,est_accY_LSS,t,est_accY_RSS, t,est_accY_DS)
+        plt.ylabel('$acc_y$')
+
+        plt.subplot(313)
+        plt.plot(t,base_accZ)
+        plt.plot(t,est_accZ_LSS,t,est_accZ_RSS, t,est_accZ_DS)
+        plt.ylabel('$acc_z$')
+        plt.xlabel('$samples$')
+        plt.show()
 
 
     def plot_results(self,X, Y_, means, covariances, title):
