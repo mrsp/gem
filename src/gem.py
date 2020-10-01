@@ -174,7 +174,7 @@ class GeM():
         self.pca_dim = False
 
     def reduceSAE(self,data_train,data_labels,data_validation,data_validation_labels):
-        self.sae.fit(data_train,data_labels,data_validation, data_validation_labels, 4, 2)
+        self.sae.fit(data_train,data_labels,data_validation, data_validation_labels, 1, 2)
         self.reduced_data_train =  self.sae.model.predict(data_train)[1]
         self.pca_dim = False
 
@@ -196,6 +196,7 @@ class GeM():
     def clusterGMM(self):
         self.gmm.fit(self.reduced_data_train)
         self.predicted_labels_train = self.gmm.predict(self.reduced_data_train)
+        
 
     def clusterKMeans(self):
         self.kmeans.fit(self.reduced_data_train)

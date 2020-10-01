@@ -4,8 +4,8 @@ clc
 %%
 %Set the required paths
 saveData = 1;
-pathTorosbag = '~/Desktop/DS_DisturbancesGEM.bag';
-save_dir = './NAO_GEM/DS_Disturbances_nao';
+pathTorosbag = '~/Desktop/talos.bag';
+save_dir = './TALOS_GEM';
 mkdir(save_dir);
 
 %Set the required topics
@@ -20,11 +20,21 @@ lvel_topic = '/gem/rel_LLeg_velocity';
 rvel_topic = '/gem/rel_RLeg_velocity';
 llabel_topic = '/gem/rel_base_acceleration_LLeg';
 rlabel_topic = '/gem/rel_base_acceleration_RLeg';
+gt_topic = '/gem/ground_truth/gait_phase';
 
+
+useGT = 1;
 %%
 %Import the bagfile
 bag=rosbag(pathTorosbag);
 datalen = min(bag.AvailableTopics.NumMessages);
+
+%GT Gait-Phase
+if(useGT  == 1)
+    bagSelection = select(bag,'Topic',gt_topic);
+    test = timeseries(bagSelection,'Data');
+    gt = test.Data;
+end
 %Base IMU
 bagSelection = select(bag,'Topic',imu_topic);
 test = timeseries(bagSelection,'AngularVelocity.X');
@@ -291,6 +301,10 @@ baccZ_RL = test.Data;
 
 if(saveData == 1)
     cd(save_dir)
+    if(useGT == 1)
+        dlmwrite('gt.txt',gt)
+    end
+    
     %Base IMU
     dlmwrite('gX.txt',gX)
     dlmwrite('gY.txt',gY)

@@ -80,15 +80,34 @@ class GeM_tools():
      
 
         if(self.gt_comparison):
-            gt_lfZ  = np.loadtxt(training_path+'/gt_lfZ.txt')
-            gt_rfZ  = np.loadtxt(training_path+'/gt_rfZ.txt')
-            gt_lfX  = np.loadtxt(training_path+'/gt_lfX.txt')
-            gt_rfX  = np.loadtxt(training_path+'/gt_rfX.txt')
-            gt_lfY  = np.loadtxt(training_path+'/gt_lfY.txt')
-            gt_rfY  = np.loadtxt(training_path+'/gt_rfY.txt')
-            mu  = np.loadtxt(training_path+'/mu.txt')
-            dlen = min(dlen,min(np.size(gt_rfZ),np.size(gt_lfZ)))
-       	    self.mu = mu
+            if(self.gem2):
+                phase = np.loadtxt(training_path+'/gt.txt')
+                dlen = np.size(phase)
+               
+            else:
+                gt_lfZ  = np.loadtxt(training_path+'/gt_lfZ.txt')
+                gt_rfZ  = np.loadtxt(training_path+'/gt_rfZ.txt')
+                gt_lfX  = np.loadtxt(training_path+'/gt_lfX.txt')
+                gt_rfX  = np.loadtxt(training_path+'/gt_rfX.txt')
+                gt_lfY  = np.loadtxt(training_path+'/gt_lfY.txt')
+                gt_rfY  = np.loadtxt(training_path+'/gt_rfY.txt')
+                mu  = np.loadtxt(training_path+'/mu.txt')
+                dlen = min(dlen,min(np.size(gt_rfZ),np.size(gt_lfZ)))
+                self.mu = mu
+                lcon = np.sqrt(gt_lfX[i] * gt_lfX[i] + gt_lfY[i] * gt_lfY[i])
+                rcon = np.sqrt(gt_rfX[i] * gt_rfX[i] + gt_rfY[i] * gt_rfY[i])
+                if( ((self.mu[i]*gt_lfZ[i])>lcon) and ((self.mu[i] * gt_rfZ[i])>rcon)):
+                    phase[i] = 0
+                elif( (self.mu[i]*gt_lfZ[i])>lcon ):
+                    phase[i] = 1
+                elif( (self.mu[i]*gt_rfZ[i])>rcon ):
+                    phase[i] = 2
+                else:
+                    phase[i] = -1
+
+
+
+
 
         rfX = np.loadtxt(training_path+'/rfX.txt')
         rfY = np.loadtxt(training_path+'/rfY.txt')
@@ -232,8 +251,7 @@ class GeM_tools():
 
 
 
-        if(self.gt_comparison):
-            phase = np.zeros((dlen))
+     
         if(not self.gem2):
             dcX = np.zeros((dlen))
             dcY = np.zeros((dlen))
@@ -253,17 +271,7 @@ class GeM_tools():
 
 
 
-            if(self.gt_comparison):
-                lcon = np.sqrt(gt_lfX[i] * gt_lfX[i] + gt_lfY[i] * gt_lfY[i])
-                rcon = np.sqrt(gt_rfX[i] * gt_rfX[i] + gt_rfY[i] * gt_rfY[i])
-                if( ((self.mu[i]*gt_lfZ[i])>lcon) and ((self.mu[i] * gt_rfZ[i])>rcon)):
-                    phase[i] = 2
-                elif( (self.mu[i]*gt_lfZ[i])>lcon ):
-                    phase[i] = 1
-                elif( (self.mu[i]*gt_rfZ[i])>rcon ):
-                    phase[i] = 0
-                else:
-                    phase[i] = -1
+
 
 
         self.data_label = np.array([])
@@ -460,43 +468,45 @@ class GeM_tools():
 
 
 
-
-
-
-
+        
         if (self.gt_comparison):
-            phase2=np.append([phase],[np.zeros_like(np.arange(cX.shape[0]-phase.shape[0]))])
-            self.cX = cX[~(phase2==-1)]
-            self.cY = cY[~(phase2==-1)]
-            self.cZ = cZ[~(phase2==-1)]
-            phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
-            self.accX = accX[~(phase3==-1)]
-            self.accY = accY[~(phase3==-1)]
-            self.accZ = accZ[~(phase3==-1)]
-            phase4=np.append([phase],[np.zeros_like(np.arange(gX.shape[0]-phase.shape[0]))])
-            self.gX = gX[~(phase4==-1)]
-            self.gY = gY[~(phase4==-1)]
-            phase5=np.append([phase],[np.zeros_like(np.arange(lfZ.shape[0]-phase.shape[0]))])
-            self.lfZ = lfZ[~(phase5==-1)]
-            self.lfX = lfX[~(phase5==-1)]
-            self.lfY = lfY[~(phase5==-1)]
-            phase6=np.append([phase],[np.zeros_like(np.arange(rfZ.shape[0]-phase.shape[0]))])
-            self.rfZ = rfZ[~(phase6==-1)]
-            self.rfX = rfX[~(phase6==-1)]
-            self.rfY = rfY[~(phase6==-1)]
-            phase7=np.append([phase],[np.zeros_like(np.arange(ltZ.shape[0]-phase.shape[0]))])
-            self.ltZ = ltZ[~(phase7==-1)]
-            self.ltX = ltX[~(phase7==-1)]
-            self.ltY = ltY[~(phase7==-1)]
-            phase8=np.append([phase],[np.zeros_like(np.arange(rtZ.shape[0]-phase.shape[0]))])
-            self.rtZ = rtZ[~(phase8==-1)]
-            self.rtX = rtX[~(phase8==-1)]
-            self.rtY = rtY[~(phase8==-1)]
-            self.data_train=self.data_train[~(phase==-1)]
-            self.phase=phase[~(phase==-1)]
-            self.dlen = np.size(self.phase)
+            if(self.gem2):
+                self.phase = phase
+                self.dlen = dlen
+            else:
+                phase2=np.append([phase],[np.zeros_like(np.arange(cX.shape[0]-phase.shape[0]))])
+                self.cX = cX[~(phase2==-1)]
+                self.cY = cY[~(phase2==-1)]
+                self.cZ = cZ[~(phase2==-1)]
+                phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
+                self.accX = accX[~(phase3==-1)]
+                self.accY = accY[~(phase3==-1)]
+                self.accZ = accZ[~(phase3==-1)]
+                phase4=np.append([phase],[np.zeros_like(np.arange(gX.shape[0]-phase.shape[0]))])
+                self.gX = gX[~(phase4==-1)]
+                self.gY = gY[~(phase4==-1)]
+                phase5=np.append([phase],[np.zeros_like(np.arange(lfZ.shape[0]-phase.shape[0]))])
+                self.lfZ = lfZ[~(phase5==-1)]
+                self.lfX = lfX[~(phase5==-1)]
+                self.lfY = lfY[~(phase5==-1)]
+                phase6=np.append([phase],[np.zeros_like(np.arange(rfZ.shape[0]-phase.shape[0]))])
+                self.rfZ = rfZ[~(phase6==-1)]
+                self.rfX = rfX[~(phase6==-1)]
+                self.rfY = rfY[~(phase6==-1)]
+                phase7=np.append([phase],[np.zeros_like(np.arange(ltZ.shape[0]-phase.shape[0]))])
+                self.ltZ = ltZ[~(phase7==-1)]
+                self.ltX = ltX[~(phase7==-1)]
+                self.ltY = ltY[~(phase7==-1)]
+                phase8=np.append([phase],[np.zeros_like(np.arange(rtZ.shape[0]-phase.shape[0]))])
+                self.rtZ = rtZ[~(phase8==-1)]
+                self.rtX = rtX[~(phase8==-1)]
+                self.rtY = rtY[~(phase8==-1)]
+                self.data_train=self.data_train[~(phase==-1)]
+                self.phase=phase[~(phase==-1)]
+                self.dlen = np.size(self.phase)
         else:
             self.dlen = dlen
+        
 
         if(not self.gem2):
             self.cXdt.reset()
@@ -629,6 +639,7 @@ class GeM_tools():
             d1 = np.zeros((self.dlen,2))
             d2 = np.zeros((self.dlen,2))
             d3 = np.zeros((self.dlen,2))
+            
             for i in range(self.dlen):
                 if (self.phase[i]==0):
                     d1[i,0] = reduced_data[i,0]
@@ -643,7 +654,15 @@ class GeM_tools():
             d1=d1[~(d1==0).all(1)]
             d2=d2[~(d2==0).all(1)]
             d3=d3[~(d3==0).all(1)]
-
+            print('----')
+            print(d1)
+            print('----')
+            print('----')
+            print(d2)
+            print('----')
+            print('----')
+            print(d3)
+            print('----')
             mean=np.zeros((3,2))
             mean[0,0]=np.mean(d1[:,0])
             mean[0,1]=np.mean(d1[:,1])
@@ -651,6 +670,8 @@ class GeM_tools():
             mean[1,1]=np.mean(d2[:,1])
             mean[2,0]=np.mean(d3[:,0])
             mean[2,1]=np.mean(d3[:,1])
+
+            print(mean)
 
             self.mean = mean
             covariance1=np.cov(d1.T)

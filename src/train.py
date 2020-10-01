@@ -81,16 +81,25 @@ if __name__ == "__main__":
 		if(config['gem_gt_comparison']):
 			gt.genGroundTruthStatistics(g.reduced_data_train)
 			gt.plot_results(g.reduced_data_train, gt.phase, gt.mean, gt.covariance, 'Ground-Truth Labels')
-			gt.plot_latent_space(g)
-			cnf_matrix = confusion_matrix(gt.phase,  g.predicted_labels_train)
+			#gt.plot_latent_space(g)
+			predicted_labels_train = g.predicted_labels_train
+			for i in range(g.predicted_labels_train.shape[0]):
+				if(g.predicted_labels_train[i] == 0 ):
+					predicted_labels_train[i] = 1
+				elif(g.predicted_labels_train[i] == 1 ):
+					predicted_labels_train[i] = 0
+				elif(g.predicted_labels_train[i] == 2 ):
+					predicted_labels_train[i] = 2
+
+			cnf_matrix = confusion_matrix(gt.phase,  predicted_labels_train)
 			np.set_printoptions(precision=2)
 			class_names = ['DS','LSS','RSS']
 			gt.plot_confusion_matrix(cnf_matrix, class_names, 'Confusion matrix')
 
 		if(config['gem_clustering'] == "kmeans"):
-			gt.plot_results(g.reduced_data_train, g.predicted_labels_train, g.kmeans.cluster_centers_, None, 'Clustering with K-means')
+			gt.plot_results(g.reduced_data_train, predicted_labels_train, g.kmeans.cluster_centers_, None, 'Clustering with K-means')
 		elif(config['gem_clustering'] == "gmm"):
-			gt.plot_results(g.reduced_data_train, g.predicted_labels_train, g.gmm.means_, g.gmm.covariances_, 'Clustering with Gaussian Mixture Models')
+			gt.plot_results(g.reduced_data_train, predicted_labels_train, g.gmm.means_, g.gmm.covariances_, 'Clustering with Gaussian Mixture Models')
 		else:
 			print("Unsupported Result Plotting")
 
