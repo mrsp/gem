@@ -69,11 +69,12 @@ params = {
 plt.rcParams.update(params)
 
 class GeM_tools():
-    def __init__(self, comp_filtering=False, freq=500, a=0.9999, gt_comparison=False):
+    def __init__(self, comp_filtering=False, freq=500, a=0.9999, no_diff = False, gt_comparison=False, clean_gt = False):
 
+        self.no_diff = no_diff
         self.comp_filtering = comp_filtering
         self.gt_comparison = gt_comparison
-
+        self.clean_gt = clean_gt
         if(comp_filtering):
             self.compf = cf(freq, a)
 
@@ -85,9 +86,22 @@ class GeM_tools():
 
     def input_data(self, setpath,blf,blt,brf,brt):
 
-        cX = np.loadtxt(setpath+'/c_encx.txt')
-        cY = np.loadtxt(setpath+'/c_ency.txt')
-        cZ = np.loadtxt(setpath+'/c_encz.txt')
+        if(self.no_diff):
+            dcX = np.loadtxt(setpath+'/comvX.txt')
+            dcY = np.loadtxt(setpath+'/comvY.txt')
+            dcZ = np.loadtxt(setpath+'/comvZ.txt')
+            dlen0 = np.size(dcX)
+            dlen1 = np.size(dcY)
+        else:
+            cX = np.loadtxt(setpath+'/c_encx.txt')
+            cY = np.loadtxt(setpath+'/c_ency.txt')
+            cZ = np.loadtxt(setpath+'/c_encz.txt')
+            dlen0 = np.size(cX)
+            dlen1 = np.size(cY)
+            dcX = np.zeros((dlen0))
+            dcY = np.zeros((dlen0))
+            dcZ= np.zeros((dlen0))
+
         lfZ = np.loadtxt(setpath+'/lfZ.txt')
         rfZ = np.loadtxt(setpath+'/rfZ.txt')
         rfX = np.loadtxt(setpath+'/rfX.txt')
@@ -120,14 +134,39 @@ class GeM_tools():
         self.blt = blt
         self.brt = brt
         if(self.gt_comparison):
-            gt_lfZ  = np.loadtxt(setpath+'/gt_lfZ.txt')
-            gt_rfZ  = np.loadtxt(setpath+'/gt_rfZ.txt')
-            gt_lfX  = np.loadtxt(setpath+'/gt_lfX.txt')
-            gt_rfX  = np.loadtxt(setpath+'/gt_rfX.txt')
-            gt_lfY  = np.loadtxt(setpath+'/gt_lfY.txt')
-            gt_rfY  = np.loadtxt(setpath+'/gt_rfY.txt')
-            mu  = np.loadtxt(setpath+'/mu.txt')
-       	    self.mu = mu
+            if(self.clean_gt):
+                phase = np.loadtxt(setpath+'/gt.txt')
+                dlen4 = np.size(phase)
+                dlen5 = np.size(phase)
+            else:
+                gt_lfZ  = np.loadtxt(setpath+'/gt_lfZ.txt')
+                gt_rfZ  = np.loadtxt(setpath+'/gt_rfZ.txt')
+                gt_lfX  = np.loadtxt(setpath+'/gt_lfX.txt')
+                gt_rfX  = np.loadtxt(setpath+'/gt_rfX.txt')
+                gt_lfY  = np.loadtxt(setpath+'/gt_lfY.txt')
+                gt_rfY  = np.loadtxt(setpath+'/gt_rfY.txt')
+                dlen4 = np.size(gt_lfZ)
+                dlen5 = np.size(gt_rfX)
+                mu  = np.loadtxt(setpath+'/mu.txt')
+                self.mu = mu
+
+                dlen = min(dlen4,dlen5)
+                phase = np.zeros((dlen))
+                for i in range(dlen):
+                    lcon = np.sqrt(gt_lfX[i] * gt_lfX[i] + gt_lfY[i] * gt_lfY[i])
+                    rcon = np.sqrt(gt_rfX[i] * gt_rfX[i] + gt_rfY[i] * gt_rfY[i])
+
+                    if( ((self.mu[i]*gt_lfZ[i])>lcon) and ((self.mu[i] * gt_rfZ[i])>rcon)):
+                        phase[i] = 2
+                    elif( (self.mu[i]*gt_lfZ[i])>lcon ):
+                        phase[i] = 1
+                    elif( (self.mu[i]*gt_rfZ[i])>rcon ):
+                        phase[i] = 0
+                    else:
+                        phase[i] = -1
+
+            
+
         if(self.comp_filtering):
             aX = np.loadtxt(setpath+'/gX.txt')
             aY = np.loadtxt(setpath+'/gY.txt')
@@ -140,8 +179,7 @@ class GeM_tools():
 
 
 
-        dlen0 = np.size(cX)
-        dlen1 = np.size(cY)
+       
         dlen2 = np.size(lfZ)
         dlen6 = np.size(rfZ)
         if(self.comp_filtering):
@@ -150,8 +188,7 @@ class GeM_tools():
             dlen3 = np.size(roll_)
 
         if(self.gt_comparison):
-            dlen4 = np.size(gt_lfZ)
-            dlen5 = np.size(gt_rfX)
+
             dlen = min(dlen0, dlen1, dlen2, dlen3, dlen4, dlen5,dlen6)
         else:
             dlen = min(dlen0, dlen1, dlen2, dlen3,dlen6)
@@ -165,14 +202,11 @@ class GeM_tools():
             pitch = np.zeros((dlen))
 
 
-        dcX = np.zeros((dlen))
-        dcY = np.zeros((dlen))
-        dcZ= np.zeros((dlen))
+      
         droll = np.zeros((dlen))
         dpitch = np.zeros((dlen))
 
-        if(self.gt_comparison):
-            phase = np.zeros((dlen))
+            
 
 
 
@@ -182,27 +216,16 @@ class GeM_tools():
             if(self.comp_filtering):
                 roll[i], pitch[i] = self.compf.update(accX[i],accY[i],accZ[i],aX[i],aY[i])
 
+                if(not self.no_diff):
+                    dcX[i]=self.cXdt.diff(cX[i])
+                    dcY[i]=self.cYdt.diff(cY[i])
+                    dcZ[i]=self.cZdt.diff(cZ[i])
+                droll[i]=self.rolldt.diff(roll[i])
+                dpitch[i]=self.pitchdt.diff(pitch[i])
 
-            dcX[i]=self.cXdt.diff(cX[i])
-            dcY[i]=self.cYdt.diff(cY[i])
-            dcZ[i]=self.cZdt.diff(cZ[i])
-            droll[i]=self.rolldt.diff(roll[i])
-            dpitch[i]=self.pitchdt.diff(pitch[i])
 
 
-
-            if(self.gt_comparison):
-                lcon = np.sqrt(gt_lfX[i] * gt_lfX[i] + gt_lfY[i] * gt_lfY[i])
-                rcon = np.sqrt(gt_rfX[i] * gt_rfX[i] + gt_rfY[i] * gt_rfY[i])
-                if( ((self.mu[i]*gt_lfZ[i])>lcon) and ((self.mu[i] * gt_rfZ[i])>rcon)):
-                    phase[i] = 2
-                elif( (self.mu[i]*gt_lfZ[i])>lcon ):
-                    phase[i] = 1
-                elif( (self.mu[i]*gt_rfZ[i])>rcon ):
-                    phase[i] = 0
-                else:
-                    phase[i] = -1
-
+           
 
 
 
@@ -325,11 +348,11 @@ class GeM_tools():
 
 
         if (self.gt_comparison):
-            phase2=np.append([phase],[np.zeros_like(np.arange(cX.shape[0]-phase.shape[0]))])
-            self.cX = cX[~(phase2==-1)]
-            self.cY = cY[~(phase2==-1)]
-            self.cZ = cZ[~(phase2==-1)]
-
+            phase2=np.append([phase],[np.zeros_like(np.arange(dcX.shape[0]-phase.shape[0]))])
+            self.dcX = dcX[~(phase2==-1)]
+            self.dcY = dcY[~(phase2==-1)]
+            self.dcZ = dcZ[~(phase2==-1)]
+           
             if self.comp_filtering:
                 phase3=np.append([phase],[np.zeros_like(np.arange(accX.shape[0]-phase.shape[0]))])
                 self.accX = accX[~(phase3==-1)]
@@ -367,10 +390,11 @@ class GeM_tools():
 
 
 
-
-        self.cXdt.reset()
-        self.cYdt.reset()
-        self.cZdt.reset()
+        if(not self.no_diff):
+            self.cXdt.reset()
+            self.cYdt.reset()
+            self.cZdt.reset()
+        
         self.rolldt.reset()
         self.pitchdt.reset()
         if self.comp_filtering:
