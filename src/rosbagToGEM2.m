@@ -4,7 +4,7 @@ clc
 %%
 %Set the required paths
 saveData = 1;
-pathTorosbag = '~/Desktop/talos.bag';
+pathTorosbag = '~/Desktop/talos_simulation.bag';
 save_dir = './TALOS_GEM';
 mkdir(save_dir);
 
