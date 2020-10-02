@@ -15,6 +15,8 @@ gem_cf_a : 0.98  #complimentary filter parameter alpha
 gem_plot_results: True #plot the results only works when Dimensionality Reduction is performed
 gem_gt_comparison: True  #compare to ground-truth, to do so user must supply true friction coefficient mu and ground reaction forces and torques.
 gem_dim: 2
+gem_no_diff: False
+gem_direct_gt: False
 gem_save: True  #Save the Training Results to load in real-time
 gem_dim_reduction: "autoencoders" #autoencoders or pca supported at the current time
 gem_clustering: "gmm" #gmm or kmeans supported at the current time
