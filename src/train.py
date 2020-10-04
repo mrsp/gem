@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
 	g = GeM()
 	g.setFrames(config['gem_lfoot_frame'], config['gem_rfoot_frame'])
-	g.setDimReduction(config['gem_dim'])
+	g.setDimReduction(config['gem_dim'], config['gem2'])
 	data_train = gt.data_train
 	data_labels = gt.data_label
 	data_val = gt.data_val
@@ -72,8 +72,9 @@ if __name__ == "__main__":
 
 
 	g.fit(data_train, data_val,  config['gem_dim_reduction'], config['gem_clustering'], data_labels, data_val_labels)
-	gt.plot_accelerations_LR(g.reduced_data_train, data_labels)
-	gt.plot_accelerations_LRD(g.reduced_data_train, data_labels,g.predicted_labels_train)
+	if(g.gem2):
+		gt.plot_accelerations_LR(g.reduced_data_train, data_labels)
+		gt.plot_accelerations_LRD(g.reduced_data_train, data_labels,g.predicted_labels_train)
 
 
 

@@ -56,12 +56,15 @@ class GeM():
         self.gs = Gaussian()
         self.ef = 0.1
         self.firstrun = True
-
 	
-    def setDimReduction(self, dim_):
+    def setDimReduction(self, dim_, gem2):
         self.latent_dim = dim_
-        self.input_dim = 33
-        self.intermidiate_dim = 16
+        self.gem2 = gem2
+        if(self.gem2):
+            self.input_dim = 21
+        else:
+            self.input_dim = 15
+        self.intermidiate_dim = 10
         self.pca = PCA(n_components=self.latent_dim)
         self.ae = autoencoder()
         self.ae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim)
@@ -169,12 +172,12 @@ class GeM():
         print(mean_squared_error(data_train, self.pca.inverse_transform(self.reduced_data_train)))
 
     def reduceAE(self,data_train,data_validation):
-        self.ae.fit(data_train,data_validation,50, 2)
+        self.ae.fit(data_train,data_validation,10, 2)
         self.reduced_data_train =  self.ae.encoder.predict(data_train)
         self.pca_dim = False
 
     def reduceSAE(self,data_train,data_labels,data_validation,data_validation_labels):
-        self.sae.fit(data_train,data_labels,data_validation, data_validation_labels, 1, 2)
+        self.sae.fit(data_train,data_labels,data_validation, data_validation_labels, 20, 2)
         self.reduced_data_train =  self.sae.model.predict(data_train)[1]
         self.pca_dim = False
 

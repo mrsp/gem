@@ -73,20 +73,20 @@ class supervisedAutoencoder():
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim, num_classes):
         sae_input = Input(shape=(input_dim,), name='input')
         # this model maps an input to its encoded representation
-        encoded = Dense(intermediate_dim, activation='tanh', name='encode_1', use_bias=False)(sae_input)
-        encoded = Dense(latent_dim, activation='tanh', name='encode_2', use_bias=False)(encoded)
-        predicted = Dense(latent_dim, activation='sigmoid', name='class_output', use_bias=True)(encoded)
+        encoded = Dense(intermediate_dim, activation='tanh', name='encode_1')(sae_input)
+        encoded = Dense(latent_dim, activation='tanh', name='class_output')(encoded)
+        #predicted = Dense(latent_dim, activation='sigmoid', name='class_output')(encoded)
         self.encoder = Model(sae_input, encoded)
         # Reconstruction Decoder: Latent to input
-        decoded = Dense(intermediate_dim, activation='tanh', name='decode_1', use_bias=False)(encoded)
-        decoded = Dense(input_dim, activation='tanh', name='reconst_output', use_bias=False)(decoded)
+        decoded = Dense(intermediate_dim, activation='tanh', name='decode_1')(encoded)
+        decoded = Dense(input_dim, activation='tanh', name='reconst_output')(decoded)
         # Take input and give classification and reconstruction
-        self.model = Model(inputs=[sae_input], outputs=[decoded, predicted])
+        self.model = Model(inputs=[sae_input], outputs=[decoded, encoded])
         self.model.compile(optimizer='adam',
                            loss={'class_output': clf_loss,
-                                 'reconst_output': rmse},
-                           loss_weights={'class_output': 1.0,
-                                         'reconst_output': 0.1})
+                                 'reconst_output': 'log_cosh'},
+                           loss_weights={'class_output': 0.1,
+                                         'reconst_output': 1.0})
         #self.model.summary()
         self.firstrun = False
     
