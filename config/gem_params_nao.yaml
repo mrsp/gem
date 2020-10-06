@@ -1,54 +1,32 @@
 #Common Configuration Parameters
-gem_left_foot_wrench_topic: "/nao_robot/LLeg/force_torque_states"  #left foot FT
-gem_right_foot_wrench_topic: "/nao_robot/RLeg/force_torque_states" #right foot FT
+gem_left_foot_wrench_topic: "/gem/LLeg/force_torque_states"  #left foot FT
+gem_right_foot_wrench_topic: "/gem/RLeg/force_torque_states" #right foot FT
 gem_freq: 100    #min freq of all topics
 gem_lfoot_frame: "l_ankle"   #left foot frame 
 gem_rfoot_frame: "r_ankle"   #right foot frame 
-gem_mass: 5.14
+gem_mass: 100
 gem_gravity: 9.81
 #Unsupervisead Gait Phase Learning Parameters
 useUL: False  #Use Unsupervised Learning (Dimensionality Reduction + Clustering) for  Gait Phase Estimation
 #Only if use_UL is True
-gem_imu_topic: "/nao_robot/imu" # base_link (body) IMU
-gem_com_topic: "/SERoW/rel_CoM/pose"  #relative to base_link (body) CoM - computed with kinematics
+gem_imu_topic: "/gem/imu" # base_link (body) IMU
+gem_com_topic: "/gem/rel_CoM/pose"  #relative to base_link (body) CoM - computed with kinematics
 gem_plot_results: True #plot the results only works when Dimensionality Reduction is performed
 gem_dim: 2
 gem_gt_comparison: False  #compare to ground-truth, to do so user must supply true friction coefficient mu and ground reaction forces and torques.
 gem_save: False  #Save the Training Results to load in real-time
 #gem_dim_reduction: "supervisedClassifier" 
 #gem_dim_reduction: "supervisedVariationalAutoencoders" 
-gem_dim_reduction: "supervisedAutoencoders"
-#gem_dim_reduction: "variationalAutoencoders"
+#gem_dim_reduction: "supervisedAutoencoders"
+gem_dim_reduction: "autoencoders"
 gem_clustering: "gmm" #gmm or kmeans supported at the current time
 #gem_train_path: "/home/master/gem_ws/src/gem/src/GEM2_test_nao" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
 gem_train_path: "../GEM2_nao_training" #path to training data relative to src e.g. "../gem/src/gem_train_path", data must have same(or approx. same) sampling rate e.g. gem_freq.
 gem_validation_path: "../GEM2_nao_validation" #path to training data relative to src e.g. "../gem/src/gem_train_path", data must have same(or approx. same) sampling rate e.g. gem_freq.
-gem_validation: True
-gem2: True
+gem_validation: False
+gem2: False
 useLabels: True
 gem_lfoot_torque_bias: [0, 0, 0] #left foot FT bias  
 gem_lfoot_force_bias: [0, 0, 0] 
 gem_rfoot_torque_bias: [0, 0, 0] #right foot FT bias 
 gem_rfoot_force_bias: [0, 0, 0]
-
-#Custom Gait Phase Estimation Parameters if no learning was performed
-#Only if use_UL is False
-useGRF: True
-useCOP: False  #Use the full contact wrench in the detection process
-gem_foot_xmax: 0.1136       #Foot Polygon xmax
-gem_foot_xmin: -0.1564      #Foot Polygon xmin
-gem_foot_ymax: 0.135        #Foot Polygon ymax
-gem_foot_ymin: -0.135       #Foot Polygon ymin
-gem_lfoot_force_thres: 25   #left foot contact thres 
-gem_rfoot_force_thres: 25   #right foot contact thres 
-gem_lforce_std: 2.2734      #left foot force standard deviation
-gem_rforce_std: 5.6421      #right foot force standard deviation
-gem_lcop_std: 0.005         #left foot COP standard deviation
-gem_rcop_std: 0.005         #right foot COP standard deviation
-useKin: False #Use differential kinematic information in the detection process
-gem_lfoot_vel_topic: "/SERoW/LLeg/vel"
-gem_rfoot_vel_topic: "/SERoW/RLeg/vel"
-gem_lfoot_vel_std: 0.05
-gem_rfoot_vel_std: 0.05
-gem_lfoot_vel_thres: 0.1
-gem_rfoot_vel_thres: 0.1

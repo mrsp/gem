@@ -60,13 +60,13 @@ maxU = max([LLeg_prob(1,:); RLeg_prob(1,:)]);
 indexL = find(LLeg_prob(1,:) == maxU);
 indexR = find(RLeg_prob(1,:) == maxU);
 figure
-plot(indexL, accX_est(indexL), 'g--', 'LineWidth', 0.1);
-hold on;
-plot(indexR, accX_est(indexR), 'r--', 'LineWidth', 0.1);
-hold on
-plot(baccX)
+%plot(indexL, accX_est(indexL), 'g--', 'LineWidth', 0.1);
+%hold on;
+%plot(indexR, accX_est(indexR), 'r--', 'LineWidth', 0.1);
+%hold on
+plot(accX_est, 'r--', 'LineWidth', 0.1);
+hold
+plot(baccX,'black')
 error = 0.4 * abs(baccX - accX_est) + 0.4 * abs(baccY - accY_est) +  0.2 * abs(baccZ - accZ_est);
 error = mean(error)
-figure
-plot(baccZ-accZ_est)
 

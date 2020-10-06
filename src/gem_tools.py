@@ -75,10 +75,7 @@ class GeM_tools():
 
 
     def input_data(self, training_path, validation_path):
-
-
-     
-
+        
         if(self.gt_comparison):
             #if(self.gem2):
             phase = np.loadtxt(training_path+'/gt.txt')
@@ -157,17 +154,17 @@ class GeM_tools():
             raccZ = np.loadtxt(training_path+'/raccZ.txt')
             dlen = min(dlen,np.size(raccZ))
    
-            if(self.useLabels):
-                baccX_LL = np.loadtxt(training_path+'/baccX_LL.txt')
-                baccY_LL = np.loadtxt(training_path+'/baccY_LL.txt')
-                baccZ_LL = np.loadtxt(training_path+'/baccZ_LL.txt')
-                baccX_RL = np.loadtxt(training_path+'/baccX_RL.txt')
-                baccY_RL = np.loadtxt(training_path+'/baccY_RL.txt')
-                baccZ_RL = np.loadtxt(training_path+'/baccZ_RL.txt')
-                baccX = np.loadtxt(training_path+'/baccX.txt')
-                baccY = np.loadtxt(training_path+'/baccY.txt')
-                baccZ = np.loadtxt(training_path+'/baccZ.txt')
-                dlen = min(dlen,min(np.size(baccZ_LL),np.size(baccZ_RL)))
+        if(self.useLabels):
+            baccX_LL = np.loadtxt(training_path+'/baccX_LL.txt')
+            baccY_LL = np.loadtxt(training_path+'/baccY_LL.txt')
+            baccZ_LL = np.loadtxt(training_path+'/baccZ_LL.txt')
+            baccX_RL = np.loadtxt(training_path+'/baccX_RL.txt')
+            baccY_RL = np.loadtxt(training_path+'/baccY_RL.txt')
+            baccZ_RL = np.loadtxt(training_path+'/baccZ_RL.txt')
+            baccX = np.loadtxt(training_path+'/baccX.txt')
+            baccY = np.loadtxt(training_path+'/baccY.txt')
+            baccZ = np.loadtxt(training_path+'/baccZ.txt')
+            dlen = min(dlen,min(np.size(baccZ_LL),np.size(baccZ_RL)))
        
 
 
@@ -221,17 +218,17 @@ class GeM_tools():
                 raccZ_val = np.loadtxt(validation_path+'/raccZ.txt')
                 dlen = min(dlen,np.size(raccZ_val))
 
-                if(self.useLabels):
-                    baccX_LL_val = np.loadtxt(validation_path+'/baccX_LL.txt')
-                    baccY_LL_val = np.loadtxt(validation_path+'/baccY_LL.txt')
-                    baccZ_LL_val = np.loadtxt(validation_path+'/baccZ_LL.txt')
-                    baccX_RL_val = np.loadtxt(validation_path+'/baccX_RL.txt')
-                    baccY_RL_val = np.loadtxt(validation_path+'/baccY_RL.txt')
-                    baccZ_RL_val = np.loadtxt(validation_path+'/baccZ_RL.txt')
-                    baccX_val = np.loadtxt(validation_path+'/baccX.txt')
-                    baccY_val = np.loadtxt(validation_path+'/baccY.txt')
-                    baccZ_val = np.loadtxt(validation_path+'/baccZ.txt')
-                    dlen = min(dlen,min(np.size(baccZ_LL_val),np.size(baccZ_RL_val)))
+            if(self.useLabels):
+                baccX_LL_val = np.loadtxt(validation_path+'/baccX_LL.txt')
+                baccY_LL_val = np.loadtxt(validation_path+'/baccY_LL.txt')
+                baccZ_LL_val = np.loadtxt(validation_path+'/baccZ_LL.txt')
+                baccX_RL_val = np.loadtxt(validation_path+'/baccX_RL.txt')
+                baccY_RL_val = np.loadtxt(validation_path+'/baccY_RL.txt')
+                baccZ_RL_val = np.loadtxt(validation_path+'/baccZ_RL.txt')
+                baccX_val = np.loadtxt(validation_path+'/baccX.txt')
+                baccY_val = np.loadtxt(validation_path+'/baccY.txt')
+                baccZ_val = np.loadtxt(validation_path+'/baccZ.txt')
+                dlen = min(dlen,min(np.size(baccZ_LL_val),np.size(baccZ_RL_val)))
             
 
 
@@ -262,36 +259,39 @@ class GeM_tools():
             self.data_train = np.column_stack([self.data_train, lwZ[0:dlen] - rwZ[0:dlen]])
 
 
-            #Base/Legs Acceleration as labels
-            if(self.useLabels):
-                self.data_label = baccX_LL[0:dlen]
-                self.data_label = np.column_stack([self.data_label, baccY_LL[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, baccZ_LL[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, baccX_RL[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, baccY_RL[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, baccZ_RL[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, baccX[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, baccY[0:dlen]])
-                self.data_label = np.column_stack([self.data_label, baccZ[0:dlen]])
-                self.data_label_min = np.zeros((self.data_label.shape[1]))
-                self.data_label_max = np.zeros((self.data_label.shape[1]))
-                self.data_label_mean = np.zeros((self.data_label.shape[1]))
-                self.data_label_std = np.zeros((self.data_label.shape[1]))
-                #Label Statistics
-                for i in range(self.data_label.shape[1]):
-                    self.data_label_min[i] = np.min(self.data_label[:, i])
-                    self.data_label_max[i] = np.max(self.data_label[:, i])
-                    self.data_label_mean[i] = np.mean(self.data_label[:, i])
-                    self.data_label_std[i] = np.std(self.data_label[:, i])
-                    #self.data_label[:, i] = self.normalize_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i])   
-                    #self.data_label[:, i] = self.standarize_data(self.data_label[:, i],self.data_label_mean[i], self.data_label_std[i])
-                    self.data_label[:, i] = self.normalizeMean_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i],self.data_label_mean[i])   
+        #Base/Legs Acceleration as labels
+        if(self.useLabels):
+            self.data_label = baccX_LL[0:dlen]
+            self.data_label = np.column_stack([self.data_label, baccY_LL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, baccZ_LL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, baccX_RL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, baccY_RL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, baccZ_RL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, baccX[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, baccY[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, baccZ[0:dlen]])
+            self.data_label_min = np.zeros((self.data_label.shape[1]))
+            self.data_label_max = np.zeros((self.data_label.shape[1]))
+            self.data_label_mean = np.zeros((self.data_label.shape[1]))
+            self.data_label_std = np.zeros((self.data_label.shape[1]))
+            #Label Statistics
+            for i in range(self.data_label.shape[1]):
+                self.data_label_min[i] = np.min(self.data_label[:, i])
+                self.data_label_max[i] = np.max(self.data_label[:, i])
+                self.data_label_mean[i] = np.mean(self.data_label[:, i])
+                self.data_label_std[i] = np.std(self.data_label[:, i])
+                #self.data_label[:, i] = self.normalize_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i])   
+                #self.data_label[:, i] = self.standarize_data(self.data_label[:, i],self.data_label_mean[i], self.data_label_std[i])
+                self.data_label[:, i] = self.normalizeMean_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i],self.data_label_mean[i])   
+        else:
+            #Leg Linear Acceleration
+            self.data_train = np.column_stack([self.data_train, laccX[0:dlen] - raccX[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, laccY[0:dlen] - raccY[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, laccZ[0:dlen] - raccZ[0:dlen]])
 
-            else:
-                #Leg Linear Acceleration
-                self.data_train = np.column_stack([self.data_train, laccX[0:dlen] - raccX[0:dlen]])
-                self.data_train = np.column_stack([self.data_train, laccY[0:dlen] - raccY[0:dlen]])
-                self.data_train = np.column_stack([self.data_train, laccZ[0:dlen] - raccZ[0:dlen]])
+
+
+
 
         #Base Linear Acceleration and Base Angular Velocity
         self.data_train = np.column_stack([self.data_train, accX[0:dlen]])
@@ -317,6 +317,21 @@ class GeM_tools():
             #self.data_train[:, i] = self.standarize_data(self.data_train[:, i],self.data_train_mean[i], self.data_train_std[i])   
             #self.data_train[:, i] = self.normalizeMean_data(self.data_train[:, i],self.data_train_max[i], self.data_train_min[i],self.data_train_mean[i])   
 
+        '''
+        plt.plot(self.data_train[:,0], color = [0.5,0.5,0.5])
+        plt.grid('on')
+        plt.show()
+        plt.plot(self.data_train[:,1], color = [0,0.5,0.5])
+        plt.grid('on')
+        plt.show()
+        plt.plot(self.data_train[:,2], color = [0.8,0.36,0.36])
+        plt.grid('on')
+        plt.show()
+        plt.plot(self.data_train[:,3], color = [0,0,0])
+        plt.grid('on')
+        plt.show()
+        '''
+
         if(self.validation):
             #Leg Forces and Torques
             self.data_val = lfX_val[0:dlen] - rfX_val[0:dlen]
@@ -341,36 +356,35 @@ class GeM_tools():
 
 
 
-                #Base/Legs Acceleration as labels
-                if(self.useLabels):
-                    self.data_val_label = baccX_LL_val[0:dlen]
-                    self.data_val_label = np.column_stack([self.data_val_label, baccY_LL_val[0:dlen]])
-                    self.data_val_label = np.column_stack([self.data_val_label, baccZ_LL_val[0:dlen]])
-                    self.data_val_label = np.column_stack([self.data_val_label, baccX_RL_val[0:dlen]])
-                    self.data_val_label = np.column_stack([self.data_val_label, baccY_RL_val[0:dlen]])
-                    self.data_val_label = np.column_stack([self.data_val_label, baccZ_RL_val[0:dlen]])
-                    self.data_val_label = np.column_stack([self.data_val_label, baccX_val[0:dlen]])
-                    self.data_val_label = np.column_stack([self.data_val_label, baccY_val[0:dlen]])
-                    self.data_val_label = np.column_stack([self.data_val_label, baccZ_val[0:dlen]])
-                    self.data_val_label_min = np.zeros((self.data_val_label.shape[1]))
-                    self.data_val_label_max = np.zeros((self.data_val_label.shape[1]))
-                    self.data_val_label_mean = np.zeros((self.data_val_label.shape[1]))
-                    self.data_val_label_std = np.zeros((self.data_val_label.shape[1]))
-                    #Label Statistics
-                    for i in range(self.data_val_label.shape[1]):
-                        self.data_val_label_min[i] = np.min(self.data_val_label[:, i])
-                        self.data_val_label_max[i] = np.max(self.data_val_label[:, i])
-                        self.data_val_label_mean[i] = np.mean(self.data_val_label[:, i])
-                        self.data_val_label_std[i] = np.std(self.data_val_label[:, i])
-                        #self.data_val_label[:, i] = self.normalize_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i])   
-                        #self.data_val_label[:, i] = self.standarize_data(self.data_val_label[:, i],self.data_val_label_mean[i], self.data_val_label_std[i])
-                        self.data_val_label[:, i] = self.normalizeMean_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i],self.data_val_label_mean[i])   
-
-                else:
-                    #Leg Linear Acceleration
-                    self.data_val = np.column_stack([self.data_val, laccX_val[0:dlen] - raccX_val[0:dlen]])
-                    self.data_val = np.column_stack([self.data_val, laccY_val[0:dlen] - raccY_val[0:dlen]])
-                    self.data_val = np.column_stack([self.data_val, laccZ_val[0:dlen] - raccZ_val[0:dlen]])
+            #Base/Legs Acceleration as labels
+            if(self.useLabels):
+                self.data_val_label = baccX_LL_val[0:dlen]
+                self.data_val_label = np.column_stack([self.data_val_label, baccY_LL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, baccZ_LL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, baccX_RL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, baccY_RL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, baccZ_RL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, baccX_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, baccY_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, baccZ_val[0:dlen]])
+                self.data_val_label_min = np.zeros((self.data_val_label.shape[1]))
+                self.data_val_label_max = np.zeros((self.data_val_label.shape[1]))
+                self.data_val_label_mean = np.zeros((self.data_val_label.shape[1]))
+                self.data_val_label_std = np.zeros((self.data_val_label.shape[1]))
+                #Label Statistics
+                for i in range(self.data_val_label.shape[1]):
+                    self.data_val_label_min[i] = np.min(self.data_val_label[:, i])
+                    self.data_val_label_max[i] = np.max(self.data_val_label[:, i])
+                    self.data_val_label_mean[i] = np.mean(self.data_val_label[:, i])
+                    self.data_val_label_std[i] = np.std(self.data_val_label[:, i])
+                    #self.data_val_label[:, i] = self.normalize_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i])   
+                    #self.data_val_label[:, i] = self.standarize_data(self.data_val_label[:, i],self.data_val_label_mean[i], self.data_val_label_std[i])
+                    self.data_val_label[:, i] = self.normalizeMean_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i],self.data_val_label_mean[i])
+            else:
+                #Leg Linear Acceleration
+                self.data_val = np.column_stack([self.data_val, laccX_val[0:dlen] - raccX_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, laccY_val[0:dlen] - raccY_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, laccZ_val[0:dlen] - raccZ_val[0:dlen]])
 
 
 
@@ -669,11 +683,13 @@ class GeM_tools():
         plt.subplot(311)
         plt.plot(t,base_accX)
         plt.plot(t,est_accX_LSS,t,est_accX_RSS, t,est_accX_DS)
+        plt.grid('on')
         plt.ylabel('$acc_x$')
 
         plt.subplot(312)
         plt.plot(t,base_accY)
         plt.plot(t,est_accY_LSS,t,est_accY_RSS, t,est_accY_DS)
+        plt.grid('on')
         plt.ylabel('$acc_y$')
 
         plt.subplot(313)
@@ -681,6 +697,7 @@ class GeM_tools():
         plt.plot(t,est_accZ_LSS,t,est_accZ_RSS, t,est_accZ_DS)
         plt.ylabel('$acc_z$')
         plt.xlabel('$samples$')
+        plt.grid('on')
         plt.show()
 
 

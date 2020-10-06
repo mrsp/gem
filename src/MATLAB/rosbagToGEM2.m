@@ -4,12 +4,14 @@ clc
 %%
 %Set the required paths
 saveData = 1;
-pathTorosbag = '~/Desktop/talos_simulation.bag';
-save_dir = './TALOS_GEM';
+useGT = 0;
+pathTorosbag = 'C:\Users\stpip\Desktop\nao_first.bag';
+save_dir = '../NAO_GEM2';
 mkdir(save_dir);
 
 %Set the required topics
-imu_topic = '/gem/rel_base_imu';
+imu_topic = '/gem/rel_base_imu2';
+orientation_topic = '/gem/rel_base_imu2';
 lft_topic = '/gem/rel_LLeg_wrench';
 rft_topic = '/gem/rel_RLeg_wrench';
 limu_topic = '/gem/rel_LLeg_imu';
@@ -23,7 +25,6 @@ rlabel_topic = '/gem/rel_base_acceleration_RLeg';
 gt_topic = '/gem/ground_truth/gait_phase';
 
 
-useGT = 1;
 %%
 %Import the bagfile
 bag=rosbag(pathTorosbag);
@@ -50,6 +51,7 @@ accY = test.Data;
 test = timeseries(bagSelection,'LinearAcceleration.Z');
 accZ = test.Data;
 
+bagSelection = select(bag,'Topic',orientation_topic);
 test = timeseries(bagSelection,'Orientation.X');
 wX = test.Data;
 test = timeseries(bagSelection,'Orientation.Y');

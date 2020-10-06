@@ -172,7 +172,7 @@ class GeM():
         print(mean_squared_error(data_train, self.pca.inverse_transform(self.reduced_data_train)))
 
     def reduceAE(self,data_train,data_validation):
-        self.ae.fit(data_train,data_validation,10, 2)
+        self.ae.fit(data_train,data_validation,5, 2)
         self.reduced_data_train =  self.ae.encoder.predict(data_train)
         self.pca_dim = False
 

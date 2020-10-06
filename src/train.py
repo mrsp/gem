@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
 
 	g.fit(data_train, data_val,  config['gem_dim_reduction'], config['gem_clustering'], data_labels, data_val_labels)
-	if(g.gem2):
+	if(gt.useLabels):
 		gt.plot_accelerations_LR(g.reduced_data_train, data_labels)
 		gt.plot_accelerations_LRD(g.reduced_data_train, data_labels,g.predicted_labels_train)
 
@@ -98,9 +98,9 @@ if __name__ == "__main__":
 			gt.plot_confusion_matrix(cnf_matrix, class_names, 'Confusion matrix')
 
 		if(config['gem_clustering'] == "kmeans"):
-			gt.plot_results(g.reduced_data_train, predicted_labels_train, g.kmeans.cluster_centers_, None, 'Clustering with K-means')
+			gt.plot_results(g.reduced_data_train, g.predicted_labels_train, g.kmeans.cluster_centers_, None, 'Clustering with K-means')
 		elif(config['gem_clustering'] == "gmm"):
-			gt.plot_results(g.reduced_data_train, predicted_labels_train, g.gmm.means_, g.gmm.covariances_, 'Clustering with Gaussian Mixture Models')
+			gt.plot_results(g.reduced_data_train, g.predicted_labels_train, g.gmm.means_, g.gmm.covariances_, 'Clustering with Gaussian Mixture Models')
 		else:
 			print("Unsupported Result Plotting")
 

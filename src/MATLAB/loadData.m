@@ -1,4 +1,4 @@
-data_dir = 'TALOS_GEM/';
+data_dir = '../NAO_GEM2/';
 
 %Leg Forces
 lfX = load(strcat(data_dir, 'lfX.txt'));
@@ -10,10 +10,10 @@ rfZ = load(strcat(data_dir, 'rfZ.txt'));
 
 lfX =  normalize_data(lfX,-1,1);
 lfY =  normalize_data(lfY,-1,1);
-lfX =  normalize_data(lfX,-1,1);
+lfZ =  normalize_data(lfZ,-1,1);
 rfX =  normalize_data(rfX,-1,1);
 rfY =  normalize_data(rfY,-1,1);
-rfX =  normalize_data(rfX,-1,1);
+rfZ =  normalize_data(rfZ,-1,1);
 
 
 %Leg Torques
@@ -114,8 +114,8 @@ comvZ =  load(strcat(data_dir, 'comvZ.txt'));
 comvX =  normalize_data(comvX,-1,1);
 comvY =  normalize_data(comvY,-1,1);
 comvZ =  normalize_data(comvZ,-1,1);
-%GT 
-gt = load(strcat(data_dir, 'gt.txt'));
+%GT
+%gt = load(strcat(data_dir, 'gt.txt'));
 
 %Label Data
 baccX = load(strcat(data_dir, 'baccX.txt'));
@@ -141,16 +141,16 @@ baccZ_RL =  normalize_data_mean(baccZ_RL);
 
 
 
-    dvX = lvX - rvX;
-    dvY = lvY - rvY;
-    dvZ = lvZ - rvZ;
-    dwX = lwX - rwX;
-    dwY = lwY - rwY;
-    dwZ = lwZ - rwZ;
-    dfX = lfX - rfX;
-    dfY = lfY - rfY;
-    dfZ = lfZ - rfZ;
-    dtX = ltX - rtX;
-    dtY = ltY - rtY;
-    dtZ = ltZ - rtZ;
+dvX = lvX - rvX;
+dvY = lvY - rvY;
+dvZ = lvZ - rvZ;
+dwX = lwX - rwX;
+dwY = lwY - rwY;
+dwZ = lwZ - rwZ;
+dfX = lfX - rfX;
+dfY = lfY - rfY;
+dfZ = lfZ - rfZ;
+dtX = ltX - rtX;
+dtY = ltY - rtY;
+dtZ = ltZ - rtZ;
 
