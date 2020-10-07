@@ -5,12 +5,12 @@ clc
 %Set the required paths
 saveData = 1;
 useGT = 0;
-pathTorosbag = 'C:\Users\stpip\Desktop\nao_first.bag';
-save_dir = '../NAO_GEM2';
+pathTorosbag = '~/Desktop/nao_IMU_INTEL2.bag';
+save_dir = '../NAO_GEM2/2_10_2020';
 mkdir(save_dir);
 
 %Set the required topics
-imu_topic = '/gem/rel_base_imu2';
+imu_topic = '/gem/rel_base_imu';
 orientation_topic = '/gem/rel_base_imu2';
 lft_topic = '/gem/rel_LLeg_wrench';
 rft_topic = '/gem/rel_RLeg_wrench';
@@ -28,7 +28,7 @@ gt_topic = '/gem/ground_truth/gait_phase';
 %%
 %Import the bagfile
 bag=rosbag(pathTorosbag);
-datalen = min(bag.AvailableTopics.NumMessages);
+datalen = min(bag.AvailableTopics.NumMessages(5:end))
 
 %GT Gait-Phase
 if(useGT  == 1)

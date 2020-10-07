@@ -32,7 +32,6 @@
 from keras.layers import Input, Dense
 from keras.models import Model
 from keras.optimizers import Adam
-from keras.losses import binary_crossentropy
 from keras.utils import plot_model
 import keras.backend as K
 import numpy as np
@@ -42,6 +41,9 @@ def rmse(y_true, y_pred):
 
 def mae(y_true, y_pred):
     return K.mean(K.abs(y_pred - y_true)) 
+
+def logcosh(y_true,y_pred):
+    return tf.math.log( (tf.math.exp(y_pred - y_true) + tf.math.exp(-(y_pred - y_true)))/2)
 
 def clf_loss(y_true, y_pred):
     #x  = 1.0 * K.square(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
@@ -53,9 +55,9 @@ def clf_loss(y_true, y_pred):
     #z  = 1.0 * tf.math.cosh(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
     #loss = K.sum(tf.math.log(x + y + z), axis = -1)
 
-    x  = 0.4 * K.abs(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
-    y  = 0.4 * K.abs(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
-    z  = 0.2 * K.abs(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    x  = 0.25 * K.abs(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    y  = 0.25 * K.abs(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    z  = 0.5 * K.abs(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
     #loss = K.sum(x + y + z, axis = -1)
     loss = K.mean(x + y + z)
 
@@ -84,12 +86,12 @@ class supervisedAutoencoder():
         self.model = Model(inputs=[sae_input], outputs=[decoded, encoded])
         self.model.compile(optimizer='adam',
                            loss={'class_output': clf_loss,
-                                 'reconst_output': 'log_cosh'},
-                           loss_weights={'class_output': 0.1,
-                                         'reconst_output': 1.0})
+                                 'reconst_output': logcosh},
+                           loss_weights={'class_output': 1.0,
+                                         'reconst_output': 0.1})
         #self.model.summary()
         self.firstrun = False
     
-    def fit(self, x_train, y_train, x_validation, y_validation, epochs, batch_size):
-        self.model_log = self.model.fit(x_train, {'reconst_output': x_train, 'class_output': y_train}, validation_data = (x_validation,{'reconst_output': x_validation, 'class_output': y_validation}), epochs=epochs, batch_size=batch_size,  verbose=1, shuffle=True)
+    def fit(self, x_train, y_train, x_validation, y_validation, epochs_, batch_size_):
+        self.model_log = self.model.fit(x_train, {'reconst_output': x_train, 'class_output': y_train}, validation_data = (x_validation,{'reconst_output': x_validation, 'class_output': y_validation}), epochs=epochs_, batch_size=batch_size_,  verbose=1, shuffle=True)
 
