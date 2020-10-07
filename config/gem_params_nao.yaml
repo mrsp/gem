@@ -21,8 +21,8 @@ gem_dim_reduction: "supervisedAutoencoders"
 #gem_dim_reduction: "autoencoders"
 gem_clustering: "gmm" #gmm or kmeans supported at the current time
 #gem_train_path: "/home/master/gem_ws/src/gem/src/GEM2_test_nao" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
-gem_train_path: "./NAO_GEM2/2_10_2020" #path to training data relative to src e.g. "../gem/src/gem_train_path", data must have same(or approx. same) sampling rate e.g. gem_freq.
-gem_validation_path: "./NAO_GEM/GEM2_test_nao" #path to training data relative to src e.g. "../gem/src/gem_train_path", data must have same(or approx. same) sampling rate e.g. gem_freq.
+gem_train_path: "./NAO_GEM2/IMU_INTEL/5" #path to training data relative to src e.g. "../gem/src/gem_train_path", data must have same(or approx. same) sampling rate e.g. gem_freq.
+gem_validation_path: "./NAO_GEM2/IMU_INTEL/6" #path to training data relative to src e.g. "../gem/src/gem_train_path", data must have same(or approx. same) sampling rate e.g. gem_freq.
 gem_validation: True
 gem2: False
 useLabels: True
