@@ -3,14 +3,14 @@ close all
 clc
 %%
 %Set the required paths
-saveData = 0;
+saveData = 1;
 useGT = 0;
-pathTorosbag = 'D:\DATA_IMU_INTEL_NAO\naoIMUINTEL6_garbage.bag';
-save_dir = '../NAO_GEM2/IMU_INTEL/6';
+pathTorosbag = 'D:\DATA_IMU_INTEL_NAO\naoIntelCAM05.bag';
+save_dir = '../NAO_GEM2/IMU_INTEL/5';
 mkdir(save_dir);
 
 %Set the required topics
-imu_topic = '/gem/rel_base_imu';
+imu_topic = '/gem/rel_base_imu2';
 orientation_topic = '/gem/rel_base_imu';
 lft_topic = '/gem/rel_LLeg_wrench';
 rft_topic = '/gem/rel_RLeg_wrench';
@@ -306,75 +306,75 @@ if(saveData == 1)
     if(useGT == 1)
         dlmwrite('gt.txt',gt)
     end
-    
+    endl = datalen;
     %Base IMU
-    dlmwrite('gX.txt',gX(1:4562))
-    dlmwrite('gY.txt',gY(1:4562))
-    dlmwrite('gZ.txt',gZ(1:4562))
-    dlmwrite('accX.txt',accX(1:4562))
-    dlmwrite('accY.txt',accY(1:4562))
-    dlmwrite('accZ.txt',accZ(1:4562)) 
+    dlmwrite('gX.txt',gX(1:endl))
+    dlmwrite('gY.txt',gY(1:endl))
+    dlmwrite('gZ.txt',gZ(1:endl))
+    dlmwrite('accX.txt',accX(1:endl))
+    dlmwrite('accY.txt',accY(1:endl))
+    dlmwrite('accZ.txt',accZ(1:endl)) 
     %Right Leg IMU
-    dlmwrite('rgX.txt',rgX(1:4562))
-    dlmwrite('rgY.txt',rgY(1:4562))
-    dlmwrite('rgZ.txt',rgZ(1:4562))
-    dlmwrite('raccX.txt',raccX(1:4562))
-    dlmwrite('raccY.txt',raccY(1:4562))
-    dlmwrite('raccZ.txt',raccZ(1:4562)) 
+    dlmwrite('rgX.txt',rgX(1:endl))
+    dlmwrite('rgY.txt',rgY(1:endl))
+    dlmwrite('rgZ.txt',rgZ(1:endl))
+    dlmwrite('raccX.txt',raccX(1:endl))
+    dlmwrite('raccY.txt',raccY(1:endl))
+    dlmwrite('raccZ.txt',raccZ(1:endl)) 
     %Right Leg Velocity
-    dlmwrite('rvX.txt',rvX(1:4562))
-    dlmwrite('rvY.txt',rvY(1:4562))
-    dlmwrite('rvZ.txt',rvZ(1:4562))
-    dlmwrite('rwX.txt',rwX(1:4562))
-    dlmwrite('rwY.txt',rwY(1:4562))
-    dlmwrite('rwZ.txt',rwZ(1:4562)) 
+    dlmwrite('rvX.txt',rvX(1:endl))
+    dlmwrite('rvY.txt',rvY(1:endl))
+    dlmwrite('rvZ.txt',rvZ(1:endl))
+    dlmwrite('rwX.txt',rwX(1:endl))
+    dlmwrite('rwY.txt',rwY(1:endl))
+    dlmwrite('rwZ.txt',rwZ(1:endl)) 
     %Left Leg IMU
-    dlmwrite('lgX.txt',lgX(1:4562))
-    dlmwrite('lgY.txt',lgY(1:4562))
-    dlmwrite('lgZ.txt',lgZ(1:4562))
-    dlmwrite('laccX.txt',laccX(1:4562))
-    dlmwrite('laccY.txt',laccY(1:4562))
-    dlmwrite('laccZ.txt',laccZ(1:4562))    
+    dlmwrite('lgX.txt',lgX(1:endl))
+    dlmwrite('lgY.txt',lgY(1:endl))
+    dlmwrite('lgZ.txt',lgZ(1:endl))
+    dlmwrite('laccX.txt',laccX(1:endl))
+    dlmwrite('laccY.txt',laccY(1:endl))
+    dlmwrite('laccZ.txt',laccZ(1:endl))    
     %Left Leg Velocity
-    dlmwrite('lvX.txt',lvX(1:4562))
-    dlmwrite('lvY.txt',lvY(1:4562))
-    dlmwrite('lvZ.txt',lvZ(1:4562))
-    dlmwrite('lwX.txt',lwX(1:4562))
-    dlmwrite('lwY.txt',lwY(1:4562))
-    dlmwrite('lwZ.txt',lwZ(1:4562)) 
+    dlmwrite('lvX.txt',lvX(1:endl))
+    dlmwrite('lvY.txt',lvY(1:endl))
+    dlmwrite('lvZ.txt',lvZ(1:endl))
+    dlmwrite('lwX.txt',lwX(1:endl))
+    dlmwrite('lwY.txt',lwY(1:endl))
+    dlmwrite('lwZ.txt',lwZ(1:endl)) 
     %Left Leg F/T
-    dlmwrite('lfX.txt',lfX(1:4562))
-    dlmwrite('lfY.txt',lfY(1:4562))
-    dlmwrite('lfZ.txt',lfZ(1:4562))
-    dlmwrite('ltX.txt',ltX(1:4562))
-    dlmwrite('ltY.txt',ltY(1:4562))
-    dlmwrite('ltZ.txt',ltZ(1:4562))
+    dlmwrite('lfX.txt',lfX(1:endl))
+    dlmwrite('lfY.txt',lfY(1:endl))
+    dlmwrite('lfZ.txt',lfZ(1:endl))
+    dlmwrite('ltX.txt',ltX(1:endl))
+    dlmwrite('ltY.txt',ltY(1:endl))
+    dlmwrite('ltZ.txt',ltZ(1:endl))
     %Right Leg F/T
-    dlmwrite('rfX.txt',rfX(1:4562))
-    dlmwrite('rfY.txt',rfY(1:4562))
-    dlmwrite('rfZ.txt',rfZ(1:4562))
-    dlmwrite('rtX.txt',rtX(1:4562))
-    dlmwrite('rtY.txt',rtY(1:4562))
-    dlmwrite('rtZ.txt',rtZ(1:4562))
+    dlmwrite('rfX.txt',rfX(1:endl))
+    dlmwrite('rfY.txt',rfY(1:endl))
+    dlmwrite('rfZ.txt',rfZ(1:endl))
+    dlmwrite('rtX.txt',rtX(1:endl))
+    dlmwrite('rtY.txt',rtY(1:endl))
+    dlmwrite('rtZ.txt',rtZ(1:endl))
     %CoM Velocity
-    dlmwrite('comvX.txt',vcomX(1:4562))
-    dlmwrite('comvY.txt',vcomY(1:4562))
-    dlmwrite('comvZ.txt',vcomZ(1:4562))
+    dlmwrite('comvX.txt',vcomX(1:endl))
+    dlmwrite('comvY.txt',vcomY(1:endl))
+    dlmwrite('comvZ.txt',vcomZ(1:endl))
     %LLeg Label
-    dlmwrite('baccX_LL.txt',baccX_LL(1:4562))
-    dlmwrite('baccY_LL.txt',baccY_LL(1:4562))
-    dlmwrite('baccZ_LL.txt',baccZ_LL(1:4562))
+    dlmwrite('baccX_LL.txt',baccX_LL(1:endl))
+    dlmwrite('baccY_LL.txt',baccY_LL(1:endl))
+    dlmwrite('baccZ_LL.txt',baccZ_LL(1:endl))
     %RLeg Label
-    dlmwrite('baccX_RL.txt',baccX_RL(1:4562))
-    dlmwrite('baccY_RL.txt',baccY_RL(1:4562))
-    dlmwrite('baccZ_RL.txt',baccZ_RL(1:4562))
+    dlmwrite('baccX_RL.txt',baccX_RL(1:endl))
+    dlmwrite('baccY_RL.txt',baccY_RL(1:endl))
+    dlmwrite('baccZ_RL.txt',baccZ_RL(1:endl))
     %Base IMU local frame
-    dlmwrite('bgX.txt',bgX(1:4562))
-    dlmwrite('bgY.txt',bgY(1:4562))
-    dlmwrite('bgZ.txt',bgZ(1:4562))
-    dlmwrite('baccX.txt',baccX(1:4562))
-    dlmwrite('baccY.txt',baccY(1:4562))
-    dlmwrite('baccZ.txt',baccZ(1:4562)) 
+    dlmwrite('bgX.txt',bgX(1:endl))
+    dlmwrite('bgY.txt',bgY(1:endl))
+    dlmwrite('bgZ.txt',bgZ(1:endl))
+    dlmwrite('baccX.txt',baccX(1:endl))
+    dlmwrite('baccY.txt',baccY(1:endl))
+    dlmwrite('baccZ.txt',baccZ(1:endl)) 
     cd ..
 end
 

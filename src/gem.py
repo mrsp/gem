@@ -177,7 +177,7 @@ class GeM():
         self.pca_dim = False
 
     def reduceSAE(self,data_train,data_labels,data_validation,data_validation_labels):
-        self.sae.fit(data_train,data_labels,data_validation, data_validation_labels, 20, 2)
+        self.sae.fit(data_train,data_labels,data_validation, data_validation_labels, 10000, 2)
         self.reduced_data_train =  self.sae.model.predict(data_train)[1]
         self.pca_dim = False
 

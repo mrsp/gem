@@ -1,4 +1,7 @@
-data_dir = '../NAO_GEM2/';
+%clear all 
+%close all
+
+data_dir = '../NAO_GEM2/IMU_INTEL/1/';
 
 %Leg Forces
 lfX = load(strcat(data_dir, 'lfX.txt'));
@@ -140,17 +143,36 @@ baccY_RL =  normalize_data_mean(baccY_RL);
 baccZ_RL =  normalize_data_mean(baccZ_RL);
 
 
+fc = 5.0; %15 fsr 10 acc
+fs = 100;
+[b,a] = butter(2,fc/(fs/2));
+baccX_LL = filter(b,a,baccX_LL);
+baccX_RL = filter(b,a,baccX_RL);
+baccX = filter(b,a,baccX);
+baccY_LL = filter(b,a,baccY_LL);
+baccY_RL = filter(b,a,baccY_RL);
+baccY = filter(b,a,baccY);
+baccZ_LL = filter(b,a,baccZ_LL);
+baccZ_RL = filter(b,a,baccZ_RL);
+baccZ = filter(b,a,baccZ);
+% figure
+% plot(x)
+% hold on
+% plot(xL)
+% hold on
+% plot(xR)
 
-dvX = lvX - rvX;
-dvY = lvY - rvY;
-dvZ = lvZ - rvZ;
-dwX = lwX - rwX;
-dwY = lwY - rwY;
-dwZ = lwZ - rwZ;
-dfX = lfX - rfX;
-dfY = lfY - rfY;
-dfZ = lfZ - rfZ;
-dtX = ltX - rtX;
-dtY = ltY - rtY;
-dtZ = ltZ - rtZ;
-
+% dvX = lvX - rvX;
+% dvY = lvY - rvY;
+% dvZ = lvZ - rvZ;
+% dwX = lwX - rwX;
+% dwY = lwY - rwY;
+% dwZ = lwZ - rwZ;
+% dfX = lfX - rfX;
+% dfY = lfY - rfY;
+% dfZ = lfZ - rfZ;
+% dtX = ltX - rtX;
+% dtY = ltY - rtY;
+% dtZ = ltZ - rtZ;
+% 
+% 
