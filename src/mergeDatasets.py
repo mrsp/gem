@@ -321,6 +321,45 @@ def main():
             for line in open( file_, 'r' ):
                 result.write( line )
 
+    #lgX 48
+    files = glob.glob('./NAO_GEM2/IMU_INTEL/**/lgX.txt')
+    with open( '../GEM2_nao_training/lgX.txt', 'w' ) as result:
+        for file_ in files:
+            for line in open( file_, 'r' ):
+                result.write( line )
+
+    #lgY 49
+    files = glob.glob('./NAO_GEM2/IMU_INTEL/**/lgY.txt')
+    with open( '../GEM2_nao_training/lgY.txt', 'w' ) as result:
+        for file_ in files:
+            for line in open( file_, 'r' ):
+                result.write( line )
+    #lgZ 50
+    files = glob.glob('./NAO_GEM2/IMU_INTEL/**/lgZ.txt')
+    with open( '../GEM2_nao_training/lgZ.txt', 'w' ) as result:
+        for file_ in files:
+            for line in open( file_, 'r' ):
+                result.write( line )
+
+    #rgX 51
+    files = glob.glob('./NAO_GEM2/IMU_INTEL/**/rgX.txt')
+    with open( '../GEM2_nao_training/rgX.txt', 'w' ) as result:
+        for file_ in files:
+            for line in open( file_, 'r' ):
+                result.write( line )
+
+    #rgY 52
+    files = glob.glob('./NAO_GEM2/IMU_INTEL/**/rgY.txt')
+    with open( '../GEM2_nao_training/rgY.txt', 'w' ) as result:
+        for file_ in files:
+            for line in open( file_, 'r' ):
+                result.write( line )
+    #rgZ 53
+    files = glob.glob('./NAO_GEM2/IMU_INTEL/**/rgZ.txt')
+    with open( '../GEM2_nao_training/rgZ.txt', 'w' ) as result:
+        for file_ in files:
+            for line in open( file_, 'r' ):
+                result.write( line )
 
 
     #baccX_LL 4

@@ -1,7 +1,7 @@
 clear all
 close all
 loadData
-
+IMUFiltering
 OPTIONS(1) = 1.2;
 OPTIONS(2) = 10000;
 OPTIONS(3) = 1e-7;
@@ -55,6 +55,9 @@ accX_est = LLeg_prob(1,:)'.*baccX_LL + RLeg_prob(1,:)'.*baccX_RL;
 accY_est = LLeg_prob(1,:)'.*baccY_LL + RLeg_prob(1,:)'.*baccY_RL;
 accZ_est = LLeg_prob(1,:)'.*baccZ_LL + RLeg_prob(1,:)'.*baccZ_RL;
 
+accX_estf = LLeg_prob(1,:)'.*baccX_LLf + RLeg_prob(1,:)'.*baccX_RLf;
+accY_estf = LLeg_prob(1,:)'.*baccY_LLf + RLeg_prob(1,:)'.*baccY_RLf;
+accZ_estf = LLeg_prob(1,:)'.*baccZ_LLf + RLeg_prob(1,:)'.*baccZ_RLf;
 
 maxU = max([LLeg_prob(1,:); RLeg_prob(1,:)]);
 indexL = find(LLeg_prob(1,:) == maxU);
@@ -64,9 +67,11 @@ figure
 %hold on;
 %plot(indexR, accX_est(indexR), 'r--', 'LineWidth', 0.1);
 %hold on
-plot(accX_est, 'r--', 'LineWidth', 0.1);
+plot(accY_estf, 'r', 'LineWidth', 0.1);
 hold
-plot(baccX,'black')
+plot(baccYf,'black')
 error = 0.4 * abs(baccX - accX_est) + 0.4 * abs(baccY - accY_est) +  0.2 * abs(baccZ - accZ_est);
 error = mean(error)
 
+error = 0.4 * abs(baccXf - accX_estf) + 0.4 * abs(baccYf - accY_estf) +  0.2 * abs(baccZf - accZ_estf);
+error = mean(error)

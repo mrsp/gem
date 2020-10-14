@@ -155,15 +155,15 @@ class GeM_tools():
             dlen = min(dlen,np.size(raccZ))
    
         if(self.useLabels):
-            baccX_LL = np.loadtxt(training_path+'/baccX_LL.txt')
-            baccY_LL = np.loadtxt(training_path+'/baccY_LL.txt')
-            baccZ_LL = np.loadtxt(training_path+'/baccZ_LL.txt')
-            baccX_RL = np.loadtxt(training_path+'/baccX_RL.txt')
-            baccY_RL = np.loadtxt(training_path+'/baccY_RL.txt')
-            baccZ_RL = np.loadtxt(training_path+'/baccZ_RL.txt')
-            baccX = np.loadtxt(training_path+'/baccX.txt')
-            baccY = np.loadtxt(training_path+'/baccY.txt')
-            baccZ = np.loadtxt(training_path+'/baccZ.txt')
+            baccX_LL = np.loadtxt(training_path+'/baccX_LLf.txt')
+            baccY_LL = np.loadtxt(training_path+'/baccY_LLf.txt')
+            baccZ_LL = np.loadtxt(training_path+'/baccZ_LLf.txt')
+            baccX_RL = np.loadtxt(training_path+'/baccX_RLf.txt')
+            baccY_RL = np.loadtxt(training_path+'/baccY_RLf.txt')
+            baccZ_RL = np.loadtxt(training_path+'/baccZ_RLf.txt')
+            baccX = np.loadtxt(training_path+'/baccXf.txt')
+            baccY = np.loadtxt(training_path+'/baccYf.txt')
+            baccZ = np.loadtxt(training_path+'/baccZf.txt')
             dlen = min(dlen,min(np.size(baccZ_LL),np.size(baccZ_RL)))
        
 
@@ -280,9 +280,9 @@ class GeM_tools():
                 self.data_label_max[i] = np.max(self.data_label[:, i])
                 self.data_label_mean[i] = np.mean(self.data_label[:, i])
                 self.data_label_std[i] = np.std(self.data_label[:, i])
-                #self.data_label[:, i] = self.normalize_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i])   
+                self.data_label[:, i] = self.normalize_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i])   
                 #self.data_label[:, i] = self.standarize_data(self.data_label[:, i],self.data_label_mean[i], self.data_label_std[i])
-                self.data_label[:, i] = self.normalizeMean_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i],self.data_label_mean[i])   
+                #self.data_label[:, i] = self.normalizeMean_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i],self.data_label_mean[i])   
         else:
             #Leg Linear Acceleration
             self.data_train = np.column_stack([self.data_train, laccX[0:dlen] - raccX[0:dlen]])
@@ -377,9 +377,9 @@ class GeM_tools():
                     self.data_val_label_max[i] = np.max(self.data_val_label[:, i])
                     self.data_val_label_mean[i] = np.mean(self.data_val_label[:, i])
                     self.data_val_label_std[i] = np.std(self.data_val_label[:, i])
-                    #self.data_val_label[:, i] = self.normalize_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i])   
+                    self.data_val_label[:, i] = self.normalize_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i])   
                     #self.data_val_label[:, i] = self.standarize_data(self.data_val_label[:, i],self.data_val_label_mean[i], self.data_val_label_std[i])
-                    self.data_val_label[:, i] = self.normalizeMean_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i],self.data_val_label_mean[i])
+                    #self.data_val_label[:, i] = self.normalizeMean_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i],self.data_val_label_mean[i])
             else:
                 #Leg Linear Acceleration
                 self.data_val = np.column_stack([self.data_val, laccX_val[0:dlen] - raccX_val[0:dlen]])

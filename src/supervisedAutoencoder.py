@@ -76,7 +76,7 @@ class supervisedAutoencoder():
         sae_input = Input(shape=(input_dim,), name='input')
         # this model maps an input to its encoded representation
         encoded = Dense(intermediate_dim, activation='tanh', name='encode_1')(sae_input)
-        encoded = Dense(latent_dim, activation='tanh', name='class_output')(encoded)
+        encoded = Dense(latent_dim, activation='tanh', name='class_output', use_bias=True)(encoded)
         #predicted = Dense(latent_dim, activation='sigmoid', name='class_output')(encoded)
         self.encoder = Model(sae_input, encoded)
         # Reconstruction Decoder: Latent to input
@@ -87,8 +87,8 @@ class supervisedAutoencoder():
         self.model.compile(optimizer='adam',
                            loss={'class_output': clf_loss,
                                  'reconst_output': "logcosh"},
-                           loss_weights={'class_output': 1.0,
-                                         'reconst_output': 0.1})
+                           loss_weights={'class_output': 0.1,
+                                         'reconst_output': 1.0})
         #self.model.summary()
         self.firstrun = False
     

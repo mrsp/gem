@@ -46,9 +46,9 @@ def clf_loss(y_true, y_pred):
     #loss = K.mean(K.sqrt(x + y + z + K.epsilon()))
 
 
-    x  = 1.0 * K.abs(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
-    y  = 1.0 * K.abs(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
-    z  = 1.0 * K.abs(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    x  = 0.4 * K.abs(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    y  = 0.4 * K.abs(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    z  = 0.2 * K.abs(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
     #loss = K.sum(x + y + z, axis = -1)
     loss = K.mean(x + y + z)
     return loss
@@ -60,9 +60,9 @@ class supervisedClassifier():
 
     def setDimensions(self, input_dim_, latent_dim, intermediate_dim):
         self.model = Sequential()
-        self.model.add(Dense(intermediate_dim, activation='swish', use_bias = False, input_dim=input_dim_))
-        self.model.add(Dense(latent_dim, activation='swish', use_bias = False))
-        self.model.add(Dense(latent_dim, activation='softmax', use_bias = True))
+        self.model.add(Dense(20, activation='tanh', use_bias = False, input_dim=input_dim_))
+        self.model.add(Dense(intermediate_dim, activation='tanh', use_bias = False))
+        self.model.add(Dense(latent_dim, activation='tanh', use_bias = True))
         # Compile the model
         self.model.compile(optimizer='adam', 
                     loss=clf_loss, 
