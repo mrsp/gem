@@ -55,9 +55,9 @@ def clf_loss(y_true, y_pred):
     #z  = 1.0 * tf.math.cosh(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
     #loss = K.sum(tf.math.log(x + y + z), axis = -1)
 
-    x  = 0.4 * K.abs(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
-    y  = 0.4 * K.abs(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
-    z  = 0.2 * K.abs(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
+    x  = 1.0 * K.abs(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
+    y  = 1.0 * K.abs(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
+    z  = 1.0 * K.abs(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
     #loss = K.sum(x + y + z, axis = -1)
     loss = K.mean(x + y + z)
 
@@ -76,14 +76,14 @@ class supervisedAutoencoder():
         sae_input = Input(shape=(input_dim,), name='input')
         # this model maps an input to its encoded representation
         encoded = Dense(intermediate_dim, activation='tanh', name='encode_1')(sae_input)
-        encoded = Dense(latent_dim, activation='tanh', name='class_output', use_bias=True)(encoded)
-        #predicted = Dense(latent_dim, activation='sigmoid', name='class_output')(encoded)
+        encoded = Dense(latent_dim, activation='tanh', name='encode_2')(encoded)
+        predicted = Dense(latent_dim, activation='softmax', name='class_output', use_bias=True)(encoded)
         self.encoder = Model(sae_input, encoded)
         # Reconstruction Decoder: Latent to input
         decoded = Dense(intermediate_dim, activation='tanh', name='decode_1')(encoded)
         decoded = Dense(input_dim, activation='tanh', name='reconst_output')(decoded)
         # Take input and give classification and reconstruction
-        self.model = Model(inputs=[sae_input], outputs=[decoded, encoded])
+        self.model = Model(inputs=[sae_input], outputs=[decoded, encoded, predicted])
         self.model.compile(optimizer='adam',
                            loss={'class_output': clf_loss,
                                  'reconst_output': "logcosh"},
