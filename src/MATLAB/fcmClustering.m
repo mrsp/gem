@@ -1,7 +1,6 @@
 clear all
 close all
 loadData
-IMUFiltering
 OPTIONS(1) = 1.2;
 OPTIONS(2) = 10000;
 OPTIONS(3) = 1e-7;
@@ -51,27 +50,25 @@ RLeg_dataYaw = [rfX,rfY,rfZ,rtX,rtY,rtZ,rgZ];
 RLeg_prob(1,:) = max(RLeg_probX) .* max(RLeg_probY) .* max(RLeg_probZ) .* max(RLeg_probRoll) .* max(RLeg_probPitch) .* max(RLeg_probYaw);
 RLeg_prob(2,:) = min(RLeg_probX) .* min(RLeg_probY) .* min(RLeg_probZ) .* min(RLeg_probRoll) .* min(RLeg_probPitch) .* min(RLeg_probYaw);
 
-accX_est = LLeg_prob(1,:)'.*baccX_LL + RLeg_prob(1,:)'.*baccX_RL;
-accY_est = LLeg_prob(1,:)'.*baccY_LL + RLeg_prob(1,:)'.*baccY_RL;
-accZ_est = LLeg_prob(1,:)'.*baccZ_LL + RLeg_prob(1,:)'.*baccZ_RL;
+gX_est = (LLeg_prob(1,:)'.*bgX_LL + RLeg_prob(1,:)'.*bgX_RL) ./(LLeg_prob(1,:)' +RLeg_prob(1,:)');
+gY_est = (LLeg_prob(1,:)'.*bgY_LL + RLeg_prob(1,:)'.*bgY_RL) ./(LLeg_prob(1,:)' +RLeg_prob(1,:)');
+gZ_est = (LLeg_prob(1,:)'.*bgZ_LL + RLeg_prob(1,:)'.*bgZ_RL) ./(LLeg_prob(1,:)' +RLeg_prob(1,:)');
 
-accX_estf = LLeg_prob(1,:)'.*baccX_LLf + RLeg_prob(1,:)'.*baccX_RLf;
-accY_estf = LLeg_prob(1,:)'.*baccY_LLf + RLeg_prob(1,:)'.*baccY_RLf;
-accZ_estf = LLeg_prob(1,:)'.*baccZ_LLf + RLeg_prob(1,:)'.*baccZ_RLf;
+
+accX_est = (LLeg_prob(1,:)'.*baccX_LL + RLeg_prob(1,:)'.*baccX_RL)  ./(LLeg_prob(1,:)' +RLeg_prob(1,:)');
+accY_est = (LLeg_prob(1,:)'.*baccY_LL + RLeg_prob(1,:)'.*baccY_RL)./(LLeg_prob(1,:)'+RLeg_prob(1,:)');
+accZ_est = (LLeg_prob(1,:)'.*baccZ_LL + RLeg_prob(1,:)'.*baccZ_RL)  ./(LLeg_prob(1,:)' +RLeg_prob(1,:)');
 
 maxU = max([LLeg_prob(1,:); RLeg_prob(1,:)]);
 indexL = find(LLeg_prob(1,:) == maxU);
 indexR = find(RLeg_prob(1,:) == maxU);
 figure
-%plot(indexL, accX_est(indexL), 'g--', 'LineWidth', 0.1);
-%hold on;
-%plot(indexR, accX_est(indexR), 'r--', 'LineWidth', 0.1);
-%hold on
-plot(accY_estf, 'r', 'LineWidth', 0.1);
+% plot(indexL, accY_est(indexL), 'g--', 'LineWidth', 0.1);
+% hold on;
+% plot(indexR, accY_est(indexR), 'r--', 'LineWidth', 0.1);
+% hold on
+plot(gZ_est, 'r', 'LineWidth', 0.1);
 hold
-plot(baccYf,'black')
-error = 0.4 * abs(baccX - accX_est) + 0.4 * abs(baccY - accY_est) +  0.2 * abs(baccZ - accZ_est);
-error = mean(error)
-
-error = 0.4 * abs(baccXf - accX_estf) + 0.4 * abs(baccYf - accY_estf) +  0.2 * abs(baccZf - accZ_estf);
+plot(bgZ,'black')
+error = 0.5 * abs(baccX - accX_est) + 1.0 * abs(bgY - gY_est) +  1.0 * abs(bgZ - gZ_est);
 error = mean(error)

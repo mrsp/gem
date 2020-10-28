@@ -1,42 +1,80 @@
+lacc = [laccX,laccY,laccZ];
+racc = [raccX,raccY,raccZ];
+acc = [accX,accY,accZ];
+lgyro = [lgX,lgY,lgZ];
+rgyro = [rgX,rgY,rgZ];
+gyro = [gX,gY,gZ];
 
-save_data = 0;
-window = 7;
-baccY_RLf = sgolayfilt(baccY_RL,3,window);
-baccY_LLf = sgolayfilt(baccY_LL,3,window);
-baccYf = sgolayfilt(baccY,3,window);
+%delay = 9; %Nao
+delay = -1; %Talos
+fs = 100;
+%fc = 25; %Nao
+fc = 15; %Talos
+[b, a] = butter(2, (2*fc)/fs, 'low');
+laccf = filtfilt(b, a, lacc);
+raccf = filtfilt(b, a, racc);
+figure
+plot(laccf(:,3),'red');
+hold on
+plot(lacc(:,3),'black');
+fc = 15;
+[b, a] = butter(2, (2*fc)/fs, 'low');
+lgyrof = filtfilt(b, a, lgyro);
+rgyrof = filtfilt(b, a, rgyro);
+figure
+plot(rgyrof(:,3),'black');
+hold on
+plot(rgyro(:,3),'red');
+fc = 15;
+[b, a] = butter(2, (2*fc)/fs, 'low');
+accf = filtfilt(b, a, acc);
+figure
+plot(acc(:,3),'black');
+hold on
+plot(accf(:,3),'red');
+fc = 15;
+[b, a] = butter(2, (2*fc)/fs, 'low');
+gyrof = filtfilt(b, a, gyro);
+gyrodot = [0 0 0;diff(gyrof)];
 
-baccX_RLf = sgolayfilt(baccX_RL,3,window);
-baccX_LLf = sgolayfilt(baccX_LL,3,window);
-baccXf = sgolayfilt(baccX,3,window);
-
-baccZ_RLf = sgolayfilt(baccZ_RL,3,window);
-baccZ_LLf = sgolayfilt(baccZ_LL,3,window);
-baccZf = sgolayfilt(baccZ,3,window);
-
-if(save_data == 1)
-    data_dir = 'C:\Users\stpip\Desktop\gem\GEM2_nao_training\';
-    cd(data_dir)
-    %LLeg Label
-    dlmwrite('baccX_LLf.txt',baccX_LLf)
-    dlmwrite('baccY_LLf.txt',baccY_LLf)
-    dlmwrite('baccZ_LLf.txt',baccZ_LLf)
-    %RLeg Label 
-    dlmwrite('baccX_RLf.txt',baccX_RLf)
-    dlmwrite('baccY_RLf.txt',baccY_RLf)
-    dlmwrite('baccZ_RLf.txt',baccZ_RLf)
-    dlmwrite('baccXf.txt',baccXf)
-    dlmwrite('baccYf.txt',baccYf)
-    dlmwrite('baccZf.txt',baccZf)
+if(delay>0)
+    accf(:,1)  = delayseq(accf(:,1),delay);
+    accf(:,2)  = delayseq(accf(:,2),delay);
+    accf(:,3)  = delayseq(accf(:,3),delay);
 end
-% fc = 8.0; %15 fsr 10 acc
-% fs = 100;
-% [b,a] = butter(2,fc/(fs/2));
-% gXf = filter(b,a,gX);
-% dgXf = diff(gXf);
-% dgX = diff(gX);
-% 
-% 
-% figure
-% plot(dgX(5000:7000))
-% hold on
-% plot(dgXf(5000:7000))
+
+acc_LLegf  = -laccf - cross(gyrodot,lpos) - cross(gyrof,lv);
+acc_RLegf  = -raccf - cross(gyrodot,rpos) - cross(gyrof,rv);
+g_LLegf = -lgyrof;
+g_RLegf = -rgyrof;
+
+acc_LLeg  = -lacc - cross(gyrodot,lpos) - cross(gyro,lv);
+acc_RLeg  = -racc - cross(gyrodot,rpos) - cross(gyro,rv);
+figure
+plot(accf(:,2),'black');
+hold on
+plot(acc_LLegf(:,2),'red');
+hold on
+plot(acc_RLegf(:,2),'green');
+
+if(saveData == 1)
+    %LLeg Label
+    dlmwrite(strcat(saveDir,'/baccX_LL.txt'),acc_LLeg(1:dlen,1))
+    dlmwrite(strcat(saveDir,'/baccY_LL.txt'),acc_LLeg(1:dlen,2))
+    dlmwrite(strcat(saveDir,'/baccZ_LL.txt'),acc_LLeg(1:dlen,3))
+    %RLeg Label
+    dlmwrite(strcat(saveDir,'/baccX_RL.txt'),acc_RLeg(1:dlen,1))
+    dlmwrite(strcat(saveDir,'/baccY_RL.txt'),acc_RLeg(1:dlen,2))
+    dlmwrite(strcat(saveDir,'/baccZ_RL.txt'),acc_RLeg(1:dlen,3))
+    %LLeg Label
+    dlmwrite(strcat(saveDir,'/baccX_LLf.txt'),acc_LLegf(1:dlen,1))
+    dlmwrite(strcat(saveDir,'/baccY_LLf.txt'),acc_LLegf(1:dlen,2))
+    dlmwrite(strcat(saveDir,'/baccZ_LLf.txt'),acc_LLegf(1:dlen,3))
+    %RLeg Label
+    dlmwrite(strcat(saveDir,'/baccX_RLf.txt'),acc_RLegf(1:dlen,1))
+    dlmwrite(strcat(saveDir,'/baccY_RLf.txt'),acc_RLegf(1:dlen,2))
+    dlmwrite(strcat(saveDir,'/baccZ_RLf.txt'),acc_RLegf(1:dlen,3))
+    dlmwrite(strcat(saveDir,'/baccXf.txt'),accf(1:dlen,1))
+    dlmwrite(strcat(saveDir,'/baccYf.txt'),accf(1:dlen,2))
+    dlmwrite(strcat(saveDir,'/baccZf.txt'),accf(1:dlen,3))
+end

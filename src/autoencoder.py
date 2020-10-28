@@ -46,16 +46,16 @@ class autoencoder():
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim):
         input_= Input(shape=(input_dim,))
         # "encoded" is the encoded representation of the input
-        encoded = Dense(intermediate_dim, activation='tanh',name='encode_1')(input_)
-        encoded = Dense(latent_dim, activation='tanh',name='encode_2')(encoded)
+        encoded = Dense(intermediate_dim, activation='linear',name='encode_1')(input_)
+        encoded = Dense(latent_dim, activation='linear',name='encode_2')(encoded)
         ## "decoded" is the lossy reconstruction of the input
-        decoded = Dense(latent_dim, activation='tanh',name='decode_1')(encoded)
-        decoded = Dense(input_dim, activation='tanh',name='decode_2')(decoded)
+        decoded = Dense(intermediate_dim, activation='linear',name='decode_1')(encoded)
+        decoded = Dense(input_dim, activation='linear',name='reconst_output')(decoded)
         # this model maps an input to its reconstruction
         self.model = Model(inputs=[input_], outputs=[decoded])
         # this model maps an input to its encoded representation
         self.encoder = Model(inputs=[input_], outputs=[encoded])
-        self.model.compile(optimizer='adam', loss='log_cosh')
+        self.model.compile(optimizer='adam', loss={"reconst_output":"mse"})
         #self.model.summary()
         self.firstrun = False
 

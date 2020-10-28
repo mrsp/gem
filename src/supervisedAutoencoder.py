@@ -50,16 +50,50 @@ def clf_loss(y_true, y_pred):
     #y  = 1.0 * K.square(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
     #z  = 1.0 * K.square(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
     #loss = K.mean(K.sqrt(x + y + z + K.epsilon()))
-    #x  = 1.0 * tf.math.cosh(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
-    #y  = 1.0 * tf.math.cosh(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
-    #z  = 1.0 * tf.math.cosh(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
-    #loss = K.sum(tf.math.log(x + y + z), axis = -1)
 
-    x  = 1.0 * K.abs(y_true[:,6] - (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]))
-    y  = 1.0 * K.abs(y_true[:,7] - (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]))
-    z  = 1.0 * K.abs(y_true[:,8] - (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]))
-    #loss = K.sum(x + y + z, axis = -1)
-    loss = K.mean(x + y + z)
+    '''
+    wx  = 0.0 * (y_true[:,6] - tf.math.divide( (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]),(y_pred[:,0]+y_pred[:,1]) ))
+    wy  = 1.0 * (y_true[:,7] - tf.math.divide( (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]),(y_pred[:,0]+y_pred[:,1]) ))
+    wz  = 1.0 * (y_true[:,8] - tf.math.divide( (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]),(y_pred[:,0]+y_pred[:,1]) ))
+    ax  = 0.1 * (y_true[:,15] - tf.math.divide( (y_pred[:,0]*y_true[:,9] + y_pred[:,1]*y_true[:,12]),  (y_pred[:,0]+y_pred[:,1]) ))
+    ay  = 0.0 * (y_true[:,16] - tf.math.divide( (y_pred[:,0]*y_true[:,10] + y_pred[:,1]*y_true[:,13]), (y_pred[:,0]+y_pred[:,1]) ))
+    az  = 0.0 * (y_true[:,17] - tf.math.divide( (y_pred[:,0]*y_true[:,11] + y_pred[:,1]*y_true[:,14]), (y_pred[:,0]+y_pred[:,1]) ))
+    tmp = wx + wy + wz + ax + ay + az
+    loss = K.sum(tf.math.log((tf.math.exp(tmp) + tf.math.exp(-tmp))/2 + 0.01), axis = -1)
+    '''
+    '''
+    wx  = 0.0 * K.abs(y_true[:,6] - tf.math.divide( (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]),(y_pred[:,0]+y_pred[:,1]) ))
+    wy  = 1.0 * K.abs(y_true[:,7] - tf.math.divide( (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]),(y_pred[:,0]+y_pred[:,1]) ))
+    wz  = 1.0 * K.abs(y_true[:,8] - tf.math.divide( (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]),(y_pred[:,0]+y_pred[:,1]) ))
+
+
+    ax  = 0.1 * K.abs(y_true[:,15] - tf.math.divide( (y_pred[:,0]*y_true[:,9] + y_pred[:,1]*y_true[:,12]),  (y_pred[:,0]+y_pred[:,1]) ))
+    ay  = 0.0 * K.abs(y_true[:,16] - tf.math.divide( (y_pred[:,0]*y_true[:,10] + y_pred[:,1]*y_true[:,13]), (y_pred[:,0]+y_pred[:,1]) ))
+    az  = 0.0 * K.abs(y_true[:,17] - tf.math.divide( (y_pred[:,0]*y_true[:,11] + y_pred[:,1]*y_true[:,14]), (y_pred[:,0]+y_pred[:,1]) ))
+    '''
+
+    wx  = 0.0 * K.abs(y_true[:,6] -((y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3])/(y_pred[:,0]+y_pred[:,1]) ))
+    wy  = 1.0 * K.abs(y_true[:,7] -( (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4])/(y_pred[:,0]+y_pred[:,1]) ))
+    wz  = 0.1 * K.abs(y_true[:,8] -( (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5])/(y_pred[:,0]+y_pred[:,1]) ))
+
+
+    ax  = 0.1 * K.abs(y_true[:,15] - ( (y_pred[:,0]*y_true[:,9] + y_pred[:,1]*y_true[:,12])/  (y_pred[:,0]+y_pred[:,1]) ))
+    ay  = 0.0 * K.abs(y_true[:,16] - ( (y_pred[:,0]*y_true[:,10] + y_pred[:,1]*y_true[:,13])/ (y_pred[:,0]+y_pred[:,1]) ))
+    az  = 0.0 * K.abs(y_true[:,17] - ( (y_pred[:,0]*y_true[:,11] + y_pred[:,1]*y_true[:,14])/ (y_pred[:,0]+y_pred[:,1]) ))
+
+
+    loss = K.mean(wx + wy + wz + ax + ay + az)
+    '''
+    wx  = 0.0 * K.abs(y_true[:,6] - tf.math.divide( (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]),(y_pred[:,0]+y_pred[:,1]) ))
+    wy  = 1.0 * K.abs(y_true[:,7] - tf.math.divide( (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]),(y_pred[:,0]+y_pred[:,1]) ))
+    wz  = 0.1 * K.abs(y_true[:,8] - tf.math.divide( (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5]),(y_pred[:,0]+y_pred[:,1]) ))
+
+
+    ax  = 0.1 * K.abs(y_true[:,15] - tf.math.divide( (y_pred[:,0]*y_true[:,9] + y_pred[:,1]*y_true[:,12]),  (y_pred[:,0]+y_pred[:,1]) ))
+    ay  = 0.0 * K.abs(y_true[:,16] - tf.math.divide( (y_pred[:,0]*y_true[:,10] + y_pred[:,1]*y_true[:,13]), (y_pred[:,0]+y_pred[:,1]) ))
+    az  = 0.0 * K.abs(y_true[:,17] - tf.math.divide( (y_pred[:,0]*y_true[:,11] + y_pred[:,1]*y_true[:,14]), (y_pred[:,0]+y_pred[:,1]) ))
+    loss = K.mean(wx + wy + wz + ax + ay + az)
+    '''
 
     return loss
 
@@ -75,19 +109,22 @@ class supervisedAutoencoder():
     def setDimReduction(self, input_dim, latent_dim, intermediate_dim, num_classes):
         sae_input = Input(shape=(input_dim,), name='input')
         # this model maps an input to its encoded representation
-        encoded = Dense(intermediate_dim, activation='tanh', name='encode_1')(sae_input)
-        encoded = Dense(latent_dim, activation='tanh', name='encode_2')(encoded)
-        predicted = Dense(latent_dim, activation='softmax', name='class_output', use_bias=True)(encoded)
+        #encoded = Dense(15, activation='tanh', name='encode_0')(sae_input)
+        encoded = Dense(intermediate_dim, activation='selu', name='encode_1')(sae_input)
+        #encoded = Dense(2, activation='selu', name='encode_2')(encoded)
+        encoded = Dense(2, activation='selu', name='class_output',   kernel_initializer='random_normal')(encoded)
+        predicted = encoded
         self.encoder = Model(sae_input, encoded)
         # Reconstruction Decoder: Latent to input
-        decoded = Dense(intermediate_dim, activation='tanh', name='decode_1')(encoded)
-        decoded = Dense(input_dim, activation='tanh', name='reconst_output')(decoded)
+        decoded = Dense(intermediate_dim, activation='selu', name='decode_1')(encoded)
+        #decoded = Dense(15, activation='tanh', name='decode_2')(decoded)
+        decoded = Dense(input_dim, activation='selu', name='reconst_output')(decoded)
         # Take input and give classification and reconstruction
         self.model = Model(inputs=[sae_input], outputs=[decoded, encoded, predicted])
-        self.model.compile(optimizer='adam',
+        self.model.compile(optimizer='rmsprop',
                            loss={'class_output': clf_loss,
                                  'reconst_output': "logcosh"},
-                           loss_weights={'class_output': 0.1,
+                           loss_weights={'class_output': 0.5,
                                          'reconst_output': 1.0})
         #self.model.summary()
         self.firstrun = False

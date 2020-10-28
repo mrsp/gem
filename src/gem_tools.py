@@ -155,16 +155,26 @@ class GeM_tools():
             dlen = min(dlen,np.size(raccZ))
    
         if(self.useLabels):
-            baccX_LL = np.loadtxt(training_path+'/baccX_LLf.txt')
-            baccY_LL = np.loadtxt(training_path+'/baccY_LLf.txt')
-            baccZ_LL = np.loadtxt(training_path+'/baccZ_LLf.txt')
-            baccX_RL = np.loadtxt(training_path+'/baccX_RLf.txt')
-            baccY_RL = np.loadtxt(training_path+'/baccY_RLf.txt')
-            baccZ_RL = np.loadtxt(training_path+'/baccZ_RLf.txt')
-            baccX = np.loadtxt(training_path+'/baccXf.txt')
-            baccY = np.loadtxt(training_path+'/baccYf.txt')
-            baccZ = np.loadtxt(training_path+'/baccZf.txt')
-            dlen = min(dlen,min(np.size(baccZ_LL),np.size(baccZ_RL)))
+            baccX_LL = np.loadtxt(training_path+'/baccX_LL.txt')
+            baccY_LL = np.loadtxt(training_path+'/baccY_LL.txt')
+            baccZ_LL = np.loadtxt(training_path+'/baccZ_LL.txt')
+            baccX_RL = np.loadtxt(training_path+'/baccX_RL.txt')
+            baccY_RL = np.loadtxt(training_path+'/baccY_RL.txt')
+            baccZ_RL = np.loadtxt(training_path+'/baccZ_RL.txt')
+            baccX = np.loadtxt(training_path+'/baccX.txt')
+            baccY = np.loadtxt(training_path+'/baccY.txt')
+            baccZ = np.loadtxt(training_path+'/baccZ.txt')
+
+            bgX_LL = np.loadtxt(training_path+'/bgX_LL.txt')
+            bgY_LL = np.loadtxt(training_path+'/bgY_LL.txt')
+            bgZ_LL = np.loadtxt(training_path+'/bgZ_LL.txt')
+            bgX_RL = np.loadtxt(training_path+'/bgX_RL.txt')
+            bgY_RL = np.loadtxt(training_path+'/bgY_RL.txt')
+            bgZ_RL = np.loadtxt(training_path+'/bgZ_RL.txt')
+            bgX = np.loadtxt(training_path+'/bgX.txt')
+            bgY = np.loadtxt(training_path+'/bgY.txt')
+            bgZ = np.loadtxt(training_path+'/bgZ.txt')
+            dlen = min(dlen,min(np.size(bgZ_LL),np.size(baccZ_RL)))
        
 
 
@@ -228,7 +238,19 @@ class GeM_tools():
                 baccX_val = np.loadtxt(validation_path+'/baccX.txt')
                 baccY_val = np.loadtxt(validation_path+'/baccY.txt')
                 baccZ_val = np.loadtxt(validation_path+'/baccZ.txt')
-                dlen = min(dlen,min(np.size(baccZ_LL_val),np.size(baccZ_RL_val)))
+
+                bgX_LL_val = np.loadtxt(training_path+'/bgX_LL.txt')
+                bgY_LL_val = np.loadtxt(training_path+'/bgY_LL.txt')
+                bgZ_LL_val = np.loadtxt(training_path+'/bgZ_LL.txt')
+                bgX_RL_val = np.loadtxt(training_path+'/bgX_RL.txt')
+                bgY_RL_val = np.loadtxt(training_path+'/bgY_RL.txt')
+                bgZ_RL_val = np.loadtxt(training_path+'/bgZ_RL.txt')
+                bgX_val = np.loadtxt(training_path+'/bgX.txt')
+                bgY_val = np.loadtxt(training_path+'/bgY.txt')
+                bgZ_val = np.loadtxt(training_path+'/bgZ.txt')
+
+
+                dlen = min(dlen,min(np.size(bgZ_LL_val),np.size(baccZ_RL_val)))
             
 
 
@@ -257,11 +279,25 @@ class GeM_tools():
             self.data_train = np.column_stack([self.data_train, lwX[0:dlen] - rwX[0:dlen]])
             self.data_train = np.column_stack([self.data_train, lwY[0:dlen] - rwY[0:dlen]])
             self.data_train = np.column_stack([self.data_train, lwZ[0:dlen] - rwZ[0:dlen]])
-
+            #Leg Linear Acceleration
+            self.data_train = np.column_stack([self.data_train, laccX[0:dlen] - raccX[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, laccY[0:dlen] - raccY[0:dlen]])
+            self.data_train = np.column_stack([self.data_train, laccZ[0:dlen] - raccZ[0:dlen]])
 
         #Base/Legs Acceleration as labels
         if(self.useLabels):
-            self.data_label = baccX_LL[0:dlen]
+            self.data_label = bgX_LL[0:dlen]
+            self.data_label = np.column_stack([self.data_label, bgY_LL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, bgZ_LL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, bgX_RL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, bgY_RL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, bgZ_RL[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, bgX[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, bgY[0:dlen]])
+            self.data_label = np.column_stack([self.data_label, bgZ[0:dlen]])
+
+
+            self.data_label = np.column_stack([self.data_label, baccX_LL[0:dlen]])
             self.data_label = np.column_stack([self.data_label, baccY_LL[0:dlen]])
             self.data_label = np.column_stack([self.data_label, baccZ_LL[0:dlen]])
             self.data_label = np.column_stack([self.data_label, baccX_RL[0:dlen]])
@@ -280,14 +316,9 @@ class GeM_tools():
                 self.data_label_max[i] = np.max(self.data_label[:, i])
                 self.data_label_mean[i] = np.mean(self.data_label[:, i])
                 self.data_label_std[i] = np.std(self.data_label[:, i])
-                self.data_label[:, i] = self.normalize_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i])   
+                #self.data_label[:, i] = self.normalize_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i])   
                 #self.data_label[:, i] = self.standarize_data(self.data_label[:, i],self.data_label_mean[i], self.data_label_std[i])
                 #self.data_label[:, i] = self.normalizeMean_data(self.data_label[:, i],self.data_label_max[i], self.data_label_min[i],self.data_label_mean[i])   
-        else:
-            #Leg Linear Acceleration
-            self.data_train = np.column_stack([self.data_train, laccX[0:dlen] - raccX[0:dlen]])
-            self.data_train = np.column_stack([self.data_train, laccY[0:dlen] - raccY[0:dlen]])
-            self.data_train = np.column_stack([self.data_train, laccZ[0:dlen] - raccZ[0:dlen]])
 
 
 
@@ -300,6 +331,7 @@ class GeM_tools():
         self.data_train = np.column_stack([self.data_train, gX[0:dlen]])
         self.data_train = np.column_stack([self.data_train, gY[0:dlen]])
         self.data_train = np.column_stack([self.data_train, gZ[0:dlen]])
+
 
 
         self.data_train_min = np.zeros((self.data_train.shape[1]))
@@ -318,19 +350,12 @@ class GeM_tools():
             #self.data_train[:, i] = self.normalizeMean_data(self.data_train[:, i],self.data_train_max[i], self.data_train_min[i],self.data_train_mean[i])   
 
         '''
-        plt.plot(self.data_train[:,0], color = [0.5,0.5,0.5])
+        plt.plot(self.data_label[:,1], color = [0.5,0.5,0.5])
+        plt.plot(self.data_label[:,4], color = [0,0.5,0.5])
+        plt.plot(self.data_label[:,7], color = [0.8,0.36,0.36])
         plt.grid('on')
         plt.show()
-        plt.plot(self.data_train[:,1], color = [0,0.5,0.5])
-        plt.grid('on')
-        plt.show()
-        plt.plot(self.data_train[:,2], color = [0.8,0.36,0.36])
-        plt.grid('on')
-        plt.show()
-        plt.plot(self.data_train[:,3], color = [0,0,0])
-        plt.grid('on')
-        plt.show()
-        '''
+       '''
 
         if(self.validation):
             #Leg Forces and Torques
@@ -353,12 +378,26 @@ class GeM_tools():
                 self.data_val = np.column_stack([self.data_val, lwX_val[0:dlen] - rwX_val[0:dlen]])
                 self.data_val = np.column_stack([self.data_val, lwY_val[0:dlen] - rwY_val[0:dlen]])
                 self.data_val = np.column_stack([self.data_val, lwZ_val[0:dlen] - rwZ_val[0:dlen]])
-
+                #Leg Linear Acceleration
+                self.data_val = np.column_stack([self.data_val, laccX_val[0:dlen] - raccX_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, laccY_val[0:dlen] - raccY_val[0:dlen]])
+                self.data_val = np.column_stack([self.data_val, laccZ_val[0:dlen] - raccZ_val[0:dlen]])
 
 
             #Base/Legs Acceleration as labels
             if(self.useLabels):
-                self.data_val_label = baccX_LL_val[0:dlen]
+                self.data_val_label = bgX_LL_val[0:dlen]    
+                self.data_val_label = np.column_stack([self.data_val_label, bgY_LL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, bgZ_LL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, bgX_RL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, bgY_RL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, bgZ_RL_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, bgX_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, bgY_val[0:dlen]])
+                self.data_val_label = np.column_stack([self.data_val_label, bgZ_val[0:dlen]])
+
+
+                self.data_val_label = np.column_stack([self.data_val_label, baccX_LL_val[0:dlen]])
                 self.data_val_label = np.column_stack([self.data_val_label, baccY_LL_val[0:dlen]])
                 self.data_val_label = np.column_stack([self.data_val_label, baccZ_LL_val[0:dlen]])
                 self.data_val_label = np.column_stack([self.data_val_label, baccX_RL_val[0:dlen]])
@@ -367,25 +406,20 @@ class GeM_tools():
                 self.data_val_label = np.column_stack([self.data_val_label, baccX_val[0:dlen]])
                 self.data_val_label = np.column_stack([self.data_val_label, baccY_val[0:dlen]])
                 self.data_val_label = np.column_stack([self.data_val_label, baccZ_val[0:dlen]])
+
+                #Validation Label Statistics
                 self.data_val_label_min = np.zeros((self.data_val_label.shape[1]))
                 self.data_val_label_max = np.zeros((self.data_val_label.shape[1]))
                 self.data_val_label_mean = np.zeros((self.data_val_label.shape[1]))
                 self.data_val_label_std = np.zeros((self.data_val_label.shape[1]))
-                #Label Statistics
                 for i in range(self.data_val_label.shape[1]):
                     self.data_val_label_min[i] = np.min(self.data_val_label[:, i])
                     self.data_val_label_max[i] = np.max(self.data_val_label[:, i])
                     self.data_val_label_mean[i] = np.mean(self.data_val_label[:, i])
                     self.data_val_label_std[i] = np.std(self.data_val_label[:, i])
-                    self.data_val_label[:, i] = self.normalize_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i])   
+                    #self.data_val_label[:, i] = self.normalize_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i])   
                     #self.data_val_label[:, i] = self.standarize_data(self.data_val_label[:, i],self.data_val_label_mean[i], self.data_val_label_std[i])
                     #self.data_val_label[:, i] = self.normalizeMean_data(self.data_val_label[:, i],self.data_val_label_max[i], self.data_val_label_min[i],self.data_val_label_mean[i])
-            else:
-                #Leg Linear Acceleration
-                self.data_val = np.column_stack([self.data_val, laccX_val[0:dlen] - raccX_val[0:dlen]])
-                self.data_val = np.column_stack([self.data_val, laccY_val[0:dlen] - raccY_val[0:dlen]])
-                self.data_val = np.column_stack([self.data_val, laccZ_val[0:dlen] - raccZ_val[0:dlen]])
-
 
 
             #Base Linear Acceleration and Base Angular Velocity
@@ -395,6 +429,7 @@ class GeM_tools():
             self.data_val = np.column_stack([self.data_val, gX_val[0:dlen]])
             self.data_val = np.column_stack([self.data_val, gY_val[0:dlen]])
             self.data_val = np.column_stack([self.data_val, gZ_val[0:dlen]])
+
 
 
             self.data_val_min = np.zeros((self.data_val.shape[1]))
@@ -626,20 +661,22 @@ class GeM_tools():
 
 
 
-    def plot_accelerations_LR(self,reduced_data, data_labels):
-        t = np.arange(0,reduced_data.shape[0], 1)
-        base_accX = data_labels[:,6]
-        base_accY = data_labels[:,7]
-        base_accZ = data_labels[:,8]
-        est_accX = reduced_data[:,0].T*data_labels[:,0] + reduced_data[:,1].T*data_labels[:,3]
-        est_accY = reduced_data[:,0].T*data_labels[:,1] + reduced_data[:,1].T*data_labels[:,4]
-        est_accZ = reduced_data[:,0].T*data_labels[:,2] + reduced_data[:,1].T*data_labels[:,5]
-        est_accX_LL = np.ma.masked_where(reduced_data[:,0] < reduced_data[:,1], est_accX)
-        est_accX_RL = np.ma.masked_where(reduced_data[:,0] >= reduced_data[:,1], est_accX)
-        est_accY_LL = np.ma.masked_where(reduced_data[:,0] < reduced_data[:,1], est_accY)
-        est_accY_RL = np.ma.masked_where(reduced_data[:,0] >= reduced_data[:,1], est_accY)
-        est_accZ_LL = np.ma.masked_where(reduced_data[:,0] < reduced_data[:,1], est_accZ)
-        est_accZ_RL = np.ma.masked_where(reduced_data[:,0] >= reduced_data[:,1], est_accZ)
+    def plot_accelerations_LR(self,leg_probabilities, data_labels):
+        t = np.arange(0,leg_probabilities.shape[0], 1)
+        base_accX = data_labels[:,15]
+        base_accY = data_labels[:,16]
+        base_accZ = data_labels[:,17]
+        
+        est_accX = np.divide( (np.multiply(leg_probabilities[:,0], data_labels[:,9]) + np.multiply(leg_probabilities[:,1],data_labels[:,12]) ), (leg_probabilities[:,0] + leg_probabilities[:,1]))
+        est_accY = np.divide( (np.multiply(leg_probabilities[:,0], data_labels[:,10]) + np.multiply(leg_probabilities[:,1],data_labels[:,13])), (leg_probabilities[:,0] + leg_probabilities[:,1]))
+        est_accZ = np.divide( (np.multiply(leg_probabilities[:,0], data_labels[:,11]) + np.multiply(leg_probabilities[:,1],data_labels[:,14])), (leg_probabilities[:,0] + leg_probabilities[:,1]))
+
+        est_accX_LL = np.ma.masked_where(leg_probabilities[:,0] < leg_probabilities[:,1], est_accX)
+        est_accX_RL = np.ma.masked_where(leg_probabilities[:,0] >= leg_probabilities[:,1], est_accX)
+        est_accY_LL = np.ma.masked_where(leg_probabilities[:,0] < leg_probabilities[:,1], est_accY)
+        est_accY_RL = np.ma.masked_where(leg_probabilities[:,0] >= leg_probabilities[:,1], est_accY)
+        est_accZ_LL = np.ma.masked_where(leg_probabilities[:,0] < leg_probabilities[:,1], est_accZ)
+        est_accZ_RL = np.ma.masked_where(leg_probabilities[:,0] >= leg_probabilities[:,1], est_accZ)
 
         plt.figure()
         plt.subplot(311)
@@ -660,15 +697,51 @@ class GeM_tools():
         plt.xlabel('$samples$')
         plt.show()
 
+        base_gX = data_labels[:,6]
+        base_gY = data_labels[:,7]
+        base_gZ = data_labels[:,8]
+        
+        est_gX = np.divide( (np.multiply(leg_probabilities[:,0], data_labels[:,0]) + np.multiply(leg_probabilities[:,1],data_labels[:,3])), (leg_probabilities[:,0] + leg_probabilities[:,1]))
+        est_gY = np.divide( (np.multiply(leg_probabilities[:,0], data_labels[:,1]) + np.multiply(leg_probabilities[:,1],data_labels[:,4])), (leg_probabilities[:,0] + leg_probabilities[:,1]))
+        est_gZ = np.divide( (np.multiply(leg_probabilities[:,0], data_labels[:,2]) + np.multiply(leg_probabilities[:,1],data_labels[:,5])), (leg_probabilities[:,0] + leg_probabilities[:,1]))
 
-    def plot_accelerations_LRD(self,reduced_data, data_labels, predicted_labels):
-        t = np.arange(0,reduced_data.shape[0], 1)
+        est_gX_LL = np.ma.masked_where(leg_probabilities[:,0] < leg_probabilities[:,1], est_gX)
+        est_gX_RL = np.ma.masked_where(leg_probabilities[:,0] >= leg_probabilities[:,1], est_gX)
+        est_gY_LL = np.ma.masked_where(leg_probabilities[:,0] < leg_probabilities[:,1], est_gY)
+        est_gY_RL = np.ma.masked_where(leg_probabilities[:,0] >= leg_probabilities[:,1], est_gY)
+        est_gZ_LL = np.ma.masked_where(leg_probabilities[:,0] < leg_probabilities[:,1], est_gZ)
+        est_gZ_RL = np.ma.masked_where(leg_probabilities[:,0] >= leg_probabilities[:,1], est_gZ)
+
+        plt.figure()
+        plt.subplot(311)
+        plt.plot(t,base_gX)
+        #plt.scatter(t,est_gX,s=2.0, color=c)
+        plt.plot(t,est_gX_LL,t,est_gX_RL)
+        plt.ylabel('$g_x$')
+        plt.subplot(312)
+        plt.plot(t,base_gY)
+        #plt.scatter(t,est_gY, s=2.0,color=c)
+        plt.plot(t,est_gY_LL,t,est_gY_RL)
+        plt.ylabel('$g_y$')
+        plt.subplot(313)
+        plt.plot(t,base_gZ)
+        #plt.scatter(t,est_gZ, s=2.0,color=c)
+        plt.plot(t,est_gZ_LL,t,est_gZ_RL)
+        plt.ylabel('$g_z$')
+        plt.xlabel('$samples$')
+        plt.show()
+
+
+
+
+    def plot_accelerations_LRD(self,leg_probabilities, data_labels, predicted_labels):
+        t = np.arange(0,leg_probabilities.shape[0], 1)
         base_accX = data_labels[:,6]
         base_accY = data_labels[:,7]
         base_accZ = data_labels[:,8]
-        est_accX = reduced_data[:,0].T*data_labels[:,0] + reduced_data[:,1].T*data_labels[:,3]
-        est_accY = reduced_data[:,0].T*data_labels[:,1] + reduced_data[:,1].T*data_labels[:,4]
-        est_accZ = reduced_data[:,0].T*data_labels[:,2] + reduced_data[:,1].T*data_labels[:,5]
+        est_accX = leg_probabilities[:,0].T*data_labels[:,0] + leg_probabilities[:,1].T*data_labels[:,3]
+        est_accY = leg_probabilities[:,0].T*data_labels[:,1] + leg_probabilities[:,1].T*data_labels[:,4]
+        est_accZ = leg_probabilities[:,0].T*data_labels[:,2] + leg_probabilities[:,1].T*data_labels[:,5]
         est_accX_LSS = np.ma.masked_where(predicted_labels == 0, est_accX)
         est_accX_RSS = np.ma.masked_where(predicted_labels == 1, est_accX)
         est_accX_DS = np.ma.masked_where(predicted_labels == 2, est_accX)

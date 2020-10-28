@@ -2,7 +2,9 @@ clear all
 close all
 
 %data_dir = '../NAO_GEM2/IMU_INTEL/1/';
-data_dir = 'C:\Users\stpip\Desktop\gem\GEM2_nao_training\';
+%data_dir = 'C:\Users\stpip\Desktop\gem\GEM2_talos_training\';
+data_dir = 'C:\Users\stpip\Desktop\NEW_TALOS_DATA\1\';
+
 normalize_dataset = 1;
 %Leg Forces
 lfX = load(strcat(data_dir, 'lfX.txt'));
@@ -78,11 +80,21 @@ baccZ = load(strcat(data_dir, 'baccZ.txt'));
 baccX_LL = load(strcat(data_dir, 'baccX_LL.txt'));
 baccY_LL = load(strcat(data_dir, 'baccY_LL.txt'));
 baccZ_LL = load(strcat(data_dir, 'baccZ_LL.txt'));
-
-
 baccX_RL = load(strcat(data_dir, 'baccX_RL.txt'));
 baccY_RL = load(strcat(data_dir, 'baccY_RL.txt'));
 baccZ_RL = load(strcat(data_dir, 'baccZ_RL.txt'));
+
+
+
+bgX = load(strcat(data_dir, 'bgX.txt'));
+bgY = load(strcat(data_dir, 'bgY.txt'));
+bgZ = load(strcat(data_dir, 'bgZ.txt'));
+bgX_LL = load(strcat(data_dir, 'bgX_LL.txt'));
+bgY_LL = load(strcat(data_dir, 'bgY_LL.txt'));
+bgZ_LL = load(strcat(data_dir, 'bgZ_LL.txt'));
+bgX_RL = load(strcat(data_dir, 'bgX_RL.txt'));
+bgY_RL = load(strcat(data_dir, 'bgY_RL.txt'));
+bgZ_RL = load(strcat(data_dir, 'bgZ_RL.txt'));
 %GT
 %gt = load(strcat(data_dir, 'gt.txt'));
 
@@ -148,20 +160,8 @@ if(normalize_dataset == 1)
     rtY =  normalize_data(rtY,-1,1);
     rtZ =  normalize_data(rtZ,-1,1);
     
-    baccX =  normalize_data(baccX,-1,1);
-    baccY =  normalize_data(baccY,-1,1);
-    baccZ =  normalize_data(baccZ,-1,1);
-    
-    baccX_LL =  normalize_data(baccX_LL,-1,1);
-    baccY_LL =  normalize_data(baccY_LL,-1,1);
-    baccZ_LL =  normalize_data(baccZ_LL,-1,1);
-    
-    
-    baccX_RL =  normalize_data(baccX_RL,-1,1);
-    baccY_RL =  normalize_data(baccY_RL,-1,1);
-    baccZ_RL =  normalize_data(baccZ_RL,-1,1);
-end
 
+end
 
 
 

@@ -4,13 +4,14 @@ clc
 %%
 %Set the required paths
 saveData = 1;
-useGT = 0;
-pathTorosbag = 'D:\DATA_IMU_INTEL_NAO\naoIntelCAM05.bag';
-save_dir = '../NAO_GEM2/IMU_INTEL/5';
+useGT = 1;
+pathTorosbag = 'C:\Users\stpip\Desktop\NEW_TALOS_DATA\talos_26_10_2.bag';
+%save_dir = '../NAO_GEM2/IMU_INTEL/SimpleMotions/back2';
+save_dir = 'C:\Users\stpip\Desktop\NEW_TALOS_DATA\2';
 mkdir(save_dir);
 
 %Set the required topics
-imu_topic = '/gem/rel_base_imu2';
+imu_topic = '/gem/rel_base_imu';
 orientation_topic = '/gem/rel_base_imu';
 lft_topic = '/gem/rel_LLeg_wrench';
 rft_topic = '/gem/rel_RLeg_wrench';
@@ -20,6 +21,8 @@ rimu_topic = '/gem/rel_RLeg_imu';
 vcom_topic = '/gem/rel_CoM_velocity';
 lvel_topic = '/gem/rel_LLeg_velocity';
 rvel_topic = '/gem/rel_RLeg_velocity';
+lpos_topic = '/gem/rel_LLeg_pose';
+rpos_topic = '/gem/rel_RLeg_pose';
 llabel_topic = '/gem/rel_base_acceleration_LLeg';
 rlabel_topic = '/gem/rel_base_acceleration_RLeg';
 gt_topic = '/gem/ground_truth/gait_phase';
