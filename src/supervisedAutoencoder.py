@@ -72,17 +72,17 @@ def clf_loss(y_true, y_pred):
     az  = 0.0 * K.abs(y_true[:,17] - tf.math.divide( (y_pred[:,0]*y_true[:,11] + y_pred[:,1]*y_true[:,14]), (y_pred[:,0]+y_pred[:,1]) ))
     '''
 
-    wx  = 0.0 * K.abs(y_true[:,6] -((y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3])/(y_pred[:,0]+y_pred[:,1]) ))
+    wx  = 0.25 * K.abs(y_true[:,6] -( (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3])/(y_pred[:,0]+y_pred[:,1]) ))
     wy  = 1.0 * K.abs(y_true[:,7] -( (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4])/(y_pred[:,0]+y_pred[:,1]) ))
-    wz  = 0.1 * K.abs(y_true[:,8] -( (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5])/(y_pred[:,0]+y_pred[:,1]) ))
+    wz  = 0.5 * K.abs(y_true[:,8] -( (y_pred[:,0]*y_true[:,2] + y_pred[:,1]*y_true[:,5])/(y_pred[:,0]+y_pred[:,1]) ))
 
 
-    ax  = 0.1 * K.abs(y_true[:,15] - ( (y_pred[:,0]*y_true[:,9] + y_pred[:,1]*y_true[:,12])/  (y_pred[:,0]+y_pred[:,1]) ))
-    ay  = 0.0 * K.abs(y_true[:,16] - ( (y_pred[:,0]*y_true[:,10] + y_pred[:,1]*y_true[:,13])/ (y_pred[:,0]+y_pred[:,1]) ))
-    az  = 0.0 * K.abs(y_true[:,17] - ( (y_pred[:,0]*y_true[:,11] + y_pred[:,1]*y_true[:,14])/ (y_pred[:,0]+y_pred[:,1]) ))
+    ax  = 0.25 * K.abs(y_true[:,15] - ( (y_pred[:,0]*y_true[:,9] + y_pred[:,1]*y_true[:,12])/  (y_pred[:,0]+y_pred[:,1]) ))
+    ay  = 1.0 * K.abs(y_true[:,16] - ( (y_pred[:,0]*y_true[:,10] + y_pred[:,1]*y_true[:,13])/ (y_pred[:,0]+y_pred[:,1]) ))
+    az  = 0.5 * K.abs(y_true[:,17] - ( (y_pred[:,0]*y_true[:,11] + y_pred[:,1]*y_true[:,14])/ (y_pred[:,0]+y_pred[:,1]) ))
 
 
-    loss = K.mean(wx + wy + wz + ax + ay + az)
+    loss = K.mean(wx + wy + wz) +  K.mean(ax + ay + az)
     '''
     wx  = 0.0 * K.abs(y_true[:,6] - tf.math.divide( (y_pred[:,0]*y_true[:,0] + y_pred[:,1]*y_true[:,3]),(y_pred[:,0]+y_pred[:,1]) ))
     wy  = 1.0 * K.abs(y_true[:,7] - tf.math.divide( (y_pred[:,0]*y_true[:,1] + y_pred[:,1]*y_true[:,4]),(y_pred[:,0]+y_pred[:,1]) ))

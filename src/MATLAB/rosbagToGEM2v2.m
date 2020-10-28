@@ -6,15 +6,17 @@ clc
 %%
 %Set the required paths
 saveData = 1;
-useGT = 1;
-pathTorosbag = 'C:\Users\stpip\Desktop\NEW_TALOS_DATA\talos_27_10_1.bag';
+useGT = 0;
+pathTorosbag = 'C:\Users\stpip\Desktop\NEW_TALOS_DATA\naoGEM_27_10_5.bag';
 %saveDir = '../NAO_GEM2/IMU_INTEL/SimpleMotions/back2';
-saveDir = 'C:\Users\stpip\Desktop\NEW_TALOS_DATA\TALOS3';
+saveDir = 'C:\Users\stpip\Desktop\NEW_TALOS_DATA\NAO5';
 
-if ~exist(saveDir, 'dir')
-    mkdir(saveDir);
-else
-    delete(strcat(saveDir,'\*'))
+if(saveData == 1)
+    if ~exist(saveDir, 'dir')
+        mkdir(saveDir);
+    else
+        delete(strcat(saveDir,'\*'))
+    end
 end
 %Set the required topics
 imu_topic = '/gem/rel_base_imu';
@@ -258,5 +260,5 @@ if(saveData == 1)
     dlmwrite(strcat(saveDir,'/comvY.txt'),vcomW(1:dlen,2))
     dlmwrite(strcat(saveDir,'/comvZ.txt'),vcomW(1:dlen,3))
 end
-talosFiltering
-%NAOFiltering
+%talosFiltering
+NAOFiltering
