@@ -11,8 +11,7 @@ Video: https://www.youtube.com/watch?v=w09yb81IXpQ
 Papers: 
 * Unsupervised Gait Phase Estimation for Humanoid Robot Walking (Intl. Conf. on Robotics and Automation (ICRA), 2019)
 
-### New feature: GEM State Publisher (https://github.com/mrsp/gem_state_publisher) 
-A ROS - C/C++ package for gathering  all necessary data for GEM in real-time.
+
 
 ## Training
 Solely proprioceptive sensing is utilized in training, namely joint encoder, F/T, and IMU.
