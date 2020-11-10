@@ -1,7 +1,7 @@
 # gem
 Gait-phase Estimation Module (GEM) for Humanoid Robot Walking. The code is open-source (BSD License). Please note that this work is an on-going research and thus some parts are not fully developed yet. Furthermore, the code will be subject to changes in the future which could include greater re-factoring.
 
-GEM is an unsupervised learning framework which employs a 2D latent space and Gaussian Mixture Models (GMMs) to facilitate accurate prediction/classification of the gait phase during locomotion.
+GEM is an unsupervised learning framework which employs a 2D latent space obtained with PCA and Gaussian Mixture Models (GMMs) to facilitate accurate prediction/classification of the gait phase during locomotion.
 
 
 Video: https://www.youtube.com/watch?v=w09yb81IXpQ
