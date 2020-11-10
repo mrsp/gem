@@ -33,7 +33,7 @@ GEM can be readily employed in real-time for estimating the gait phase. The latt
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ## Prerequisites
-* Ubuntu 14.04 and later
+* Ubuntu 16.04 and later
 * ROS kinetic and later
 * Sklearn 
 * Keras 2.2.4
@@ -42,7 +42,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Installing
 * pip install tensorflow
-* pip install --no-dependencies keras==2.2.4
+* pip install keras
 * pip install sklearn
 * git clone https://github.com/mrsp/gem.git
 * catkin_make
@@ -50,13 +50,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## ROS Examples
 ### Train the Valkyrie module
-* Download the valkyrie bag file from [valk_bagfile](http://users.ics.forth.gr/~spiperakis/gem_test_valkyrie.zip)
-* Uncompress
 * train: python train.py '../config/gem_params.yaml'
 
 ### Train your own module
-* Save the corresponding files in a similar form as the valkyrie bag file from [valk_bagfile](http://users.ics.forth.gr/~spiperakis/gem_test_valkyrie.zip)
-* train: python train.py
+* Save the corresponding files in a similar form as the valkyrie files 
+* train: python train.py '../config/gem_params_your_robot.yaml'
 
 ### Run in real-time to infer the gait-phase:
 * configure appropriately the config yaml file (in config folder) with the corresponding topics 
