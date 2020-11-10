@@ -50,11 +50,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## ROS Examples
 ### Train the Valkyrie module
-* train: python train.py '../config/gem_params.yaml'
+* train: python train.py ../config/gem_params.yaml
 
 ### Train your own module
 * Save the corresponding files in a similar form as the valkyrie files 
-* train: python train.py '../config/gem_params_your_robot.yaml'
+* train: python train.py ../config/gem_params_your_robot.yaml
 
 ### Run in real-time to infer the gait-phase:
 * configure appropriately the config yaml file (in config folder) with the corresponding topics 
