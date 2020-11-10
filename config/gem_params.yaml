@@ -1,4 +1,5 @@
 #Common Configuration Parameters
+gem_robot: valkyrie
 gem_left_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/left"  #left foot FT
 gem_right_foot_wrench_topic: "/ihmc_ros/valkyrie/output/foot_force_sensor/right" #right foot FT
 gem_freq: 200    #min freq of all topics
@@ -12,16 +13,13 @@ gem_imu_topic: "/pelvisMiddleImu/imu" # base_link (body) IMU
 gem_com_topic: "/SERoW/rel_CoM/pose"  #relative to base_link (body) CoM - computed with kinematics
 gem_plot_results: True #plot the results only works when Dimensionality Reduction is performed
 gem_gt_comparison: True  #compare to ground-truth, to do so user must supply true friction coefficient mu and ground reaction forces and torques.
-gem_save: False  #Save the Training Results to load in real-time
-#gem_dim_reduction: "variationalAutoencoders" #autoencoders or pca supported at the current time
-gem_dim_reduction: "autoencoders" #autoencoders or pca supported at the current time
+gem_save: True  #Save the Training Results to load in real-time
+gem_dim_reduction: "pca" #autoencoders or pca supported at the current time
 gem_clustering: "gmm" #gmm or kmeans supported at the current time
-gem_train_path: "/home/master/gem_ws/src/gem/src/GEM_test_valkyrie" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
-gem2: True
-gem_lfoot_torque_bias: [0, 0, 0] #left foot FT bias  
-gem_lfoot_force_bias: [0,0,-19.1734] 
-gem_rfoot_torque_bias: [0, 0, 0] #right foot FT bias 
-gem_rfoot_force_bias: [0,0,-17.1439]
+gem_train_path: "../GEM_test_valkyrie" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
+gem_validation_path: "../GEM_test_valkyrie" #path to training data, data must have same(or approx. same) sampling rate e.g. gem_freq.
+gem_validation: True
+
 
 #Custom Gait Phase Estimation Parameters if no learning was performed
 #Only if use_UL is False

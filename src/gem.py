@@ -3,7 +3,7 @@
 '''
  * GeM - Gait-phase Estimation Module
  *
- * Copyright 2018-2020 Stylianos Piperakis, Foundation for Research and Technology Hellas (FORTH)
+ * Copyright 2018-2021 Stylianos Piperakis, Foundation for Research and Technology Hellas (FORTH)
  * License: BSD
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,15 +41,12 @@ from sklearn.cluster import KMeans
 from keras.layers import Input, Dense
 from keras.models import Model
 from Gaussian import Gaussian
-from variationalAutoencoder import variationalAutoencoder
 from autoencoder import autoencoder
-from supervisedAutoencoder import supervisedAutoencoder
-from supervisedVariationalAutoencoder import supervisedVariationalAutoencoder
-from supervisedClassifier import supervisedClassifier
+
 class GeM():
     def __init__(self):
-        self.gmm = mixture.GaussianMixture(n_components=3, covariance_type='full', max_iter=200, tol=5.0e-2, init_params = 'kmeans', n_init=100,warm_start=False,verbose=1)
-        self.kmeans = KMeans(init='k-means++',n_clusters=3, n_init=500,tol=1.0e-3)
+        self.gmm = mixture.GaussianMixture(n_components=3, covariance_type='full', max_iter=200, tol=5.0e-3, init_params = 'kmeans', n_init=50,warm_start=False,verbose=1)
+        self.kmeans = KMeans(init='k-means++',n_clusters=3, n_init=50,tol=1.0e-3)
         self.pca_dim = False
         self.gmm_cl_id = False
         self.kmeans_cl_id = False
@@ -57,27 +54,13 @@ class GeM():
         self.ef = 0.1
         self.firstrun = True
 	
-    def setDimReduction(self, dim_, gem2):
+    def setDimReduction(self, dim_):
         self.latent_dim = dim_
-        self.gem2 = gem2
-
-        if(self.gem2):
-            self.input_dim = 24
-        else:
-            self.input_dim = 15
-
-        self.intermidiate_dim = 10
+        self.input_dim = 15
+        self.intermidiate_dim = 8
         self.pca = PCA(n_components=self.latent_dim)
         self.ae = autoencoder()
         self.ae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim)
-        self.vae = variationalAutoencoder()
-        self.vae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim)
-        self.sae = supervisedAutoencoder()
-        self.sae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim, 2)
-        self.svae = supervisedVariationalAutoencoder()
-        self.svae.setDimReduction(self.input_dim, self.latent_dim, self.intermidiate_dim, 2)
-        self.sc = supervisedClassifier()
-        self.sc.setDimensions(self.input_dim, self.latent_dim, self.intermidiate_dim)
 
     def setFrames(self,lfoot_frame_,rfoot_frame_):
         self.lfoot_frame = lfoot_frame_
@@ -93,18 +76,6 @@ class GeM():
         elif red == 'autoencoders':
             print("Dimensionality reduction with autoencoders")
             self.reduceAE(data_train, data_validation)
-        elif red == "variationalAutoencoders":
-            print("Dimensionality reduction with variational autoencoders")
-            self.reduceVAE(data_train, data_validation)
-        elif red == "supervisedAutoencoders":
-            print("Dimensionality reduction with supervised autoencoders")     
-            self.reduceSAE(data_train,data_labels,data_validation,data_validation_labels)
-        elif red == "supervisedVariationalAutoencoders":
-            print("Dimensionality reduction with supervised variational autoencoders")
-            self.reduceSVAE(data_train,data_labels,data_validation,data_validation_labels)
-        elif red == "supervisedClassifier":
-            print("Classification with Labels")
-            self.reduceSC(data_train,data_labels,data_validation,data_validation_labels)
         else:
             self.reduced_data_train = data_train
             print("Choose a valid dimensionality reduction method")
@@ -130,14 +101,6 @@ class GeM():
             reduced_data = self.pca.transform(data_.reshape(1,-1))
         elif(self.red == 'autoencoders'):
             reduced_data = self.ae.encoder.predict(data_.reshape(1,-1))
-        elif(self.red == 'variationalAutoencoders'):
-            reduced_data = self.vae.encoder.predict(data_.reshape(1,-1))[0]
-        elif(self.red == 'supervisedAutoencoders'):
-            reduced_data = self.sae.encoder.predict(data_.reshape(1,-1))
-        elif(self.red == 'supervisedVariationalAutoencoders'):
-            reduced_data = self.svae.encoder.predict(data_.reshape(1,-1))[0]
-        elif(self.red == "supervisedClassifier"):
-            reduced_data = self.sc.model.predict(data_.reshape(1,-1))[0]
         else:
             print('Unrecognired Training Method')
             reduced_data = data_
@@ -176,29 +139,6 @@ class GeM():
     def reduceAE(self,data_train,data_validation):
         self.ae.fit(data_train,data_validation,25, 6)
         self.reduced_data_train =  self.ae.encoder.predict(data_train)
-        self.pca_dim = False
-
-    def reduceSAE(self,data_train,data_labels,data_validation,data_validation_labels):
-        print("Data Size")
-        print(data_train.shape)
-        self.sae.fit(data_train,data_labels,data_validation, data_validation_labels, 120, 1)
-        self.reduced_data_train =  self.sae.model.predict(data_train)[1]
-        self.leg_probabilities = self.sae.model.predict(data_train)[2]
-        self.pca_dim = False
-
-    def reduceSVAE(self,data_train,data_labels,data_validation,data_validation_labels):
-        self.svae.fit(data_train,data_labels,data_validation, data_validation_labels, 500, 2)
-        self.reduced_data_train =  self.svae.encoder.predict(data_train)[0]
-        self.pca_dim = False
-
-    def reduceVAE(self,data_train,data_validation):
-        self.vae.fit(data_train,data_validation,50,2)
-        self.reduced_data_train =  self.vae.encoder.predict(data_train)[0]
-        self.pca_dim = False
-
-    def reduceSC(self,data_train,data_labels,data_validation,data_validation_labels):
-        self.sc.fit(data_train,data_labels,data_validation, data_validation_labels, 50, 2)
-        self.reduced_data_train =  self.sc.model.predict(data_train)
         self.pca_dim = False
 
     def clusterGMM(self):

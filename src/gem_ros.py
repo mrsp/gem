@@ -5,7 +5,7 @@
 '''
  * GeM - Gait-phase Estimation Module
  *
- * Copyright 2018-2020 Stylianos Piperakis, Foundation for Research and Technology Hellas (FORTH)
+ * Copyright 2018-2021 Stylianos Piperakis, Foundation for Research and Technology Hellas (FORTH)
  * License: BSD
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@
 import rospy
 from gem import GeM
 from gem_tools import GeM_tools
+from gem_tools import GEM_data
 import numpy as np
 import pickle
 from std_msgs.msg import Int32 
@@ -45,7 +46,6 @@ from std_msgs.msg import String
 from geometry_msgs.msg import WrenchStamped
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import TwistStamped
-
 from sensor_msgs.msg import Imu
 from gem import Gaussian 
 
@@ -77,17 +77,13 @@ class  gem_ros():
 			print('Using Unsupervised Deep Learning')
 			imu_topic = rospy.get_param('gem_imu_topic')
 			com_topic = rospy.get_param('gem_com_topic')
-			path = rospy.get_param('gem_train_path') 	
+			robot = rospy.get_param('gem_robot','valkyrie')
 			self.com_sub  = rospy.Subscriber(com_topic,PoseStamped,  self.comcb)
 			self.com_sub  = rospy.Subscriber(imu_topic,Imu,  self.imucb)
 			self.imu_inc = False
 			self.com_inc = False
-			f = open(path+'/gem_train.save', 'rb')
-			self.g = pickle.load(f)
-			f.close()
-			f = open(path+'/gem_train_tools.save', 'rb')
-			self.gt = pickle.load(f)
-			f.close()
+			self.g = pickle.load(open(robot + '_gem.sav','rb'))
+			self.gt = pickle.load(open(robot + '_gem_tools.sav', 'rb'))
 		else:
 			self.g = GeM()
 			self.g.setFrames(rospy.get_param('gem_lfoot_frame'), rospy.get_param('gem_rfoot_frame'))
@@ -149,7 +145,30 @@ class  gem_ros():
 			self.rwrench_inc = False
 			self.com_inc = False
 
-			self.phase, self.reduced_data = self.g.predict(self.gt.genInput(self.com.pose.position.x,self.com.pose.position.y,self.com.pose.position.z, self.imu.linear_acceleration.x,self.imu.linear_acceleration.y, self.imu.linear_acceleration.z, self.imu.angular_velocity.x, self.imu.angular_velocity.y, self.imu.angular_velocity.z,  0,0,0,0,0,0,0,0,0,0,0,0, self.lwrench.wrench.force.x,self.lwrench.wrench.force.y,self.lwrench.wrench.force.z, self.rwrench.wrench.force.x,self.rwrench.wrench.force.y,self.rwrench.wrench.force.z, self.lwrench.wrench.torque.x,self.lwrench.wrench.torque.y, self.lwrench.wrench.torque.z,self.rwrench.wrench.torque.x,self.rwrench.wrench.torque.y,self.rwrench.wrench.torque.z,self.gt))
+
+			data = GEM_data()
+			#Leg Ground Reaction Forces (F/T)
+			data.lfX =  self.lwrench.wrench.force.x
+			data.lfY =  self.lwrench.wrench.force.y 
+			data.lfZ =  self.lwrench.wrench.force.z 
+			data.rfX =  self.rwrench.wrench.force.x
+			data.rfY =  self.rwrench.wrench.force.y 
+			data.rfZ =  self.rwrench.wrench.force.z 
+			#Leg Ground Reaction Torques (F/T)
+			data.ltX =  self.lwrench.wrench.torque.x
+			data.ltY =  self.lwrench.wrench.torque.y 
+			data.ltZ =  self.lwrench.wrench.torque.z 
+			data.rtX =  self.rwrench.wrench.torque.x
+			data.rtY =  self.rwrench.wrench.torque.y 
+			data.rtZ =  self.rwrench.wrench.torque.z 
+			#Base IMU
+			data.accX = self.imu.linear_acceleration.x
+			data.accY = self.imu.linear_acceleration.y
+			data.accZ = self.imu.linear_acceleration.z
+			data.gX = self.imu.angular_velocity.x
+			data.gY = self.imu.angular_velocity.y
+			data.gZ = self.imu.angular_velocity.z
+			self.phase, self.reduced_data = self.g.predict(self.gt.genInput(data,self.gt))
 			
 			self.support_leg = self.g.getSupportLeg()
 			self.phase_msg.data = self.phase        	
