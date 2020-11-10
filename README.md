@@ -9,7 +9,6 @@ Video: https://www.youtube.com/watch?v=w09yb81IXpQ
 Papers: 
 * Unsupervised Gait Phase Estimation for Humanoid Robot Walking (Intl. Conf. on Robotics and Automation (ICRA), 2019)
 
-## GEM is a part of GEM2
 GEM functionalities have been encapsulated in the GEM2 package (https://github.com/mrsp/gem2). This package is now deprecated.
  
 ## Training
